@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<h1 style="color: red;"> BOOKING DU LỊCH NHÓM H</h1>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
