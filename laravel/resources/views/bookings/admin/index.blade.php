@@ -113,6 +113,11 @@
         </div>
     </div>
 
+    {{-- Phân trang --}}
+    <div class="d-flex justify-content-center mt-3">
+     {{ $bookings->links() }}
+    </div>
+
 </div>
 
 </body>
