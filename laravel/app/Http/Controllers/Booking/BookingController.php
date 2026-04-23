@@ -115,4 +115,22 @@ class BookingController extends Controller
 
     return view('bookings.admin.index', compact('bookings'));
 }
+
+
+// Admin xác nhận booking
+public function confirm($id)
+{
+    $booking = Booking::findOrFail($id);
+
+    // Không cho confirm nếu không phải pending
+    if ($booking->status != 'pending') {
+        return back()->with('error', 'Không thể xác nhận booking này');
+    }
+
+    $booking->update([
+        'status' => 'confirmed'
+    ]);
+
+    return back()->with('success', 'Xác nhận booking thành công');
+}
 }
