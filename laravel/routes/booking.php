@@ -9,3 +9,6 @@ Route::get('/bookings/create/{tour}', [BookingController::class, 'create'])
 
 Route::post('/bookings/store', [BookingController::class, 'store'])
     ->name('bookings.store');
+
+    Route::get('/bookings', [BookingController::class, 'index'])
+    ->name('bookings.index');
