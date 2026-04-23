@@ -76,4 +76,33 @@ class BookingController extends Controller
 
         return view('bookings.show', compact('booking'));
     }
+
+
+    // Hủy booking
+    public function cancel($id)
+    {
+        $booking = Booking::with('bookingDetail')
+            ->where('user_id', 1) // tạm
+            ->findOrFail($id);
+
+        // Không cho hủy nếu đã hủy rồi
+        if ($booking->status == 'cancelled') {
+            return back()->with('error', 'Booking đã bị hủy');
+        }
+
+        // 1. Đổi trạng thái
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
+
+        // 2. Cộng lại slot
+        $tour = Tour::find($booking->tour_id);
+
+        $tour->increment(
+            'available_slots',
+            $booking->bookingDetail->quantity
+        );
+
+        return back()->with('success', 'Hủy booking thành công');
+    }
 }
