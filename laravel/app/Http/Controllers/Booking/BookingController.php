@@ -58,4 +58,14 @@ class BookingController extends Controller
 
     return redirect()->back()->with('success', 'Đặt tour thành công');
 }
+
+public function index()
+{
+    $bookings = Booking::with('tour')
+        ->where('user_id', 1) // tạm
+        ->latest()
+        ->get();
+
+    return view('bookings.index', compact('bookings'));
+}
 }
