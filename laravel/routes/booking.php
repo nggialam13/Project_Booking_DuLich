@@ -18,3 +18,6 @@ Route::get('/bookings/{id}', [BookingController::class, 'show'])
 
 Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])
     ->name('bookings.cancel');
+
+Route::get('/admin/bookings', [BookingController::class, 'adminIndex'])
+    ->name('admin.bookings.index');
