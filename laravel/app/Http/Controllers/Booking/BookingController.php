@@ -105,4 +105,14 @@ class BookingController extends Controller
 
         return back()->with('success', 'Hủy booking thành công');
     }
+    // Admin xem tất cả booking
+
+    public function adminIndex()
+{
+    $bookings = Booking::with(['tour', 'user'])
+        ->latest()
+        ->get();
+
+    return view('bookings.admin.index', compact('bookings'));
+}
 }
