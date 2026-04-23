@@ -108,29 +108,56 @@ class BookingController extends Controller
     // Admin xem tất cả booking
 
     public function adminIndex()
-{
-    $bookings = Booking::with(['tour', 'user'])
-        ->latest()
-        ->get();
+    {
+        $bookings = Booking::with(['tour', 'user'])
+            ->latest()
+            ->get();
 
-    return view('bookings.admin.index', compact('bookings'));
-}
-
-
-// Admin xác nhận booking
-public function confirm($id)
-{
-    $booking = Booking::findOrFail($id);
-
-    // Không cho confirm nếu không phải pending
-    if ($booking->status != 'pending') {
-        return back()->with('error', 'Không thể xác nhận booking này');
+        return view('bookings.admin.index', compact('bookings'));
     }
 
+
+    // Admin xác nhận booking
+    public function confirm($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        // Không cho confirm nếu không phải pending
+        if ($booking->status != 'pending') {
+            return back()->with('error', 'Không thể xác nhận booking này');
+        }
+
+        $booking->update([
+            'status' => 'confirmed'
+        ]);
+
+        return back()->with('success', 'Xác nhận booking thành công');
+    }
+
+    // Admin hủy booking
+  public function adminCancel($id)
+{
+    $booking = Booking::with('bookingDetail')->findOrFail($id);
+
+    if ($booking->status == 'cancelled') {
+        return back()->with('error', 'Booking đã bị hủy');
+    }
+
+    // LẤY quantity AN TOÀN
+    $quantity = $booking->bookingDetail?->quantity ?? 0;
+
+    // update status
     $booking->update([
-        'status' => 'confirmed'
+        'status' => 'cancelled'
     ]);
 
-    return back()->with('success', 'Xác nhận booking thành công');
+    // cộng lại slot
+    $tour = Tour::find($booking->tour_id);
+
+    if ($tour) {
+        $tour->increment('available_slots', $quantity);
+    }
+
+    return back()->with('success', 'Admin đã hủy booking');
 }
 }
