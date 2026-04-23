@@ -1,5 +1,11 @@
 @extends('layouts.app')
+@if(session('error'))
+    <p style="color:red">{{ session('error') }}</p>
+@endif
 
+@if(session('success'))
+    <p style="color:green">{{ session('success') }}</p>
+@endif
 @section('content')
 <div class="container">
     <h2>Đặt Tour</h2>
