@@ -25,6 +25,35 @@ class TourController extends Controller
     }
 
     /**
+     * Display tours for users (public view)
+     */
+    public function userIndex()
+    {
+        $search = request('search');
+        $query = Tour::where('status', 'active');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $tours = $query->paginate(12);
+        return view('tours.user-tours', compact('tours'));
+    }
+
+    /**
+     * Show single tour for user
+     */
+    public function show($id)
+    {
+        $tour = Tour::findOrFail($id);
+        return view('tours.show', compact('tour'));
+    }
+
+    /**
      * Store a newly created tour in database.
      */
     public function storeNewTour(Request $request)
