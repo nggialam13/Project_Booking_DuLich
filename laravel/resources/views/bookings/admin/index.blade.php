@@ -9,16 +9,33 @@
                 <p><b>User:</b> {{ $booking->user->name ?? 'N/A' }}</p>
                 <p><b>Tour:</b> {{ $booking->tour->title }}</p>
                 <p><b>Tổng tiền:</b> {{ number_format($booking->total_price) }} VNĐ</p>
-                <p><b>Trạng thái:</b> {{ $booking->status }}</p>
-                
-                @if($booking->status == 'pending')
-             <form action="{{ route('admin.bookings.confirm', $booking->id) }}" method="POST">
-               @csrf
-            <button type="submit" onclick="return confirm('Xác nhận booking này?')">
-                                 Xác nhận
-            </button>
-             </form>
-                @endif
+             <p><b>Trạng thái:</b> {{ $booking->status }}</p>
+
+            {{-- Nếu pending --}}
+            @if($booking->status == 'pending')
+                <form action="{{ route('admin.bookings.confirm', $booking->id) }}" method="POST">
+                    @csrf
+                    <button type="submit">Xác nhận</button>
+                </form>
+
+                <form action="{{ route('admin.bookings.cancel', $booking->id) }}" method="POST">
+                    @csrf
+                    <button type="submit">Hủy</button>
+                </form>
+            @endif
+
+            {{-- Nếu confirmed --}}
+            @if($booking->status == 'confirmed')
+                <form action="{{ route('admin.bookings.cancel', $booking->id) }}" method="POST">
+                    @csrf
+                    <button type="submit">Hủy</button>
+                </form>
+            @endif
+
+            {{-- Nếu cancelled --}}
+            @if($booking->status == 'cancelled')
+                <p style="color:red">Đã hủy</p>
+            @endif
             </div>
         @endforeach
 
