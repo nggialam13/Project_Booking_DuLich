@@ -6,5 +6,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Load routes
+// tour routes
 require __DIR__ . '/tour.php';
+
+// booking routes
+require __DIR__.'/booking.php';
