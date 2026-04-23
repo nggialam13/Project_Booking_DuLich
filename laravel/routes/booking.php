@@ -21,3 +21,6 @@ Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])
 
 Route::get('/admin/bookings', [BookingController::class, 'adminIndex'])
     ->name('admin.bookings.index');
+
+Route::post('/admin/bookings/{id}/confirm', [BookingController::class, 'confirm'])
+    ->name('admin.bookings.confirm');

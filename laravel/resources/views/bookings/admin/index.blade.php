@@ -10,6 +10,15 @@
                 <p><b>Tour:</b> {{ $booking->tour->title }}</p>
                 <p><b>Tổng tiền:</b> {{ number_format($booking->total_price) }} VNĐ</p>
                 <p><b>Trạng thái:</b> {{ $booking->status }}</p>
+                
+                @if($booking->status == 'pending')
+             <form action="{{ route('admin.bookings.confirm', $booking->id) }}" method="POST">
+               @csrf
+            <button type="submit" onclick="return confirm('Xác nhận booking này?')">
+                                 Xác nhận
+            </button>
+             </form>
+                @endif
             </div>
         @endforeach
 
