@@ -24,4 +24,10 @@ public function tour() {
 public function payment() {
     return $this->hasOne(Payment::class);
 }
+public function bookingDetail()
+{
+    return $this->hasOne(BookingDetail::class);
+}
+
+
 }

@@ -6,7 +6,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// tour routes
+// Admin Tours List
 require __DIR__ . '/tour.php';
 
 // booking routes
