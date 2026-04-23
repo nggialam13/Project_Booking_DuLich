@@ -47,4 +47,31 @@ class AuthController extends Controller
         // Chuyển hướng kèm thông báo
         return redirect()->route('home')->with('success', 'Đăng ký thành công!');
     }
+    // Hiển thị form đăng nhập
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
+
+    // Xử lý đăng nhập
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+        $remember = $request->boolean('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/');
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans('auth.failed')],
+        ]);
+    }
+
 }
