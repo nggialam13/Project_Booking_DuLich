@@ -11,6 +11,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//home
+Route::get('/home', function () {
+    return view('home');
+});
 
 // Chưa đăng nhập mới truy cập được
 Route::middleware('guest')->group(function () {
