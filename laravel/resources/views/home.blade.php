@@ -9,15 +9,15 @@
         <p class="lead mb-4">Đặt tour du lịch nhanh chóng – giá tốt – trải nghiệm tuyệt vời</p>
 
         <!-- SEARCH -->
-        <form class="d-flex justify-content-center">
+        <!-- <form class="d-flex justify-content-center">
             <input type="text" class="form-control w-50 me-2" placeholder="Tìm tour, địa điểm...">
             <button class="btn btn-primary px-4">Tìm</button>
         </form>
     </div>
 </div>
 
-<!-- 🔥 CATEGORY -->
-<div class="container my-5">
+<!-\\ 🔥 CATEGORY -->
+<!-- <div class="container my-5">
     <h2 class="text-center mb-5 fw-bold">✨ Loại Hình Du Lịch</h2>
 
     <div class="row g-4">
@@ -51,10 +51,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- 🔥 TOUR NỔI BẬT -->
-<div class="container mb-5">
+<!-- <div class="container mb-5">
     <h2 class="text-center mb-4 fw-bold">🔥 Tour Nổi Bật</h2>
 
     <div class="row g-4">
@@ -88,6 +88,6 @@
         <p class="text-center text-muted">Chưa có tour nào</p>
         @endforelse
     </div>
-</div> -->
+</div>  -->
 
 <!-- @endsection -->

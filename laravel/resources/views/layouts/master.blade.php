@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Travel Booking</title>
@@ -17,50 +18,83 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f4f7fb;
+
+            /* 🎨 NỀN MỚI: XANH PASTEL ĐẬM HƠN + CÓ CHIỀU SÂU */
+            background: linear-gradient(135deg,
+                    #a2bada 0%,
+                    /* xanh pastel đậm hơn */
+                    #6593b1 40%,
+                    /* trắng xanh */
+                    #9fdab4 100%
+                    /* xanh lá nhạt */
+                );
+
+            min-height: 100vh;
         }
 
-        /* gradient header */
+        /* gradient navbar đẹp hơn */
         .bg-main {
             background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* card đẹp */
+        /* card nâng cấp */
         .card-custom {
             border: none;
-            border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: 0.3s;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.95);
+            /* glass effect nhẹ */
+            backdrop-filter: blur(6px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
         }
 
         .card-custom:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
 
-        /* button đẹp */
+        /* button đẹp hơn */
         .btn-main {
-            background: linear-gradient(135deg, #0d6efd, #198754);
+            background: linear-gradient(135deg, #0d6efd, #22c55e);
             color: white;
             border: none;
+            border-radius: 10px;
+            transition: 0.3s;
         }
 
         .btn-main:hover {
-            opacity: 0.9;
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
         }
 
-        /* animation fade */
+        /* animation mượt hơn */
         .fade-in {
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.6s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(10px);}
-            to {opacity: 1; transform: translateY(0);}
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
+        /* container đẹp hơn */
         .main-content {
             min-height: 80vh;
+        }
+
+        /* table đẹp hơn */
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
         }
     </style>
 </head>
@@ -79,4 +113,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
