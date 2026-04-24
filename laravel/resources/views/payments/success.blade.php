@@ -1,3 +1,6 @@
+@extends('layouts.master')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -17,3 +20,4 @@
     <a href="{{ route('payment.index') }}">Xem lịch sử thanh toán</a>
 </body>
 </html>
+@endsection

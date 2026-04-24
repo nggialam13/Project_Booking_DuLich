@@ -1,3 +1,6 @@
+@extends('layouts.master')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -111,3 +114,4 @@
 </body>
 
 </html>
+@endsection
