@@ -63,7 +63,7 @@
                         <button type="submit" class="btn btn-primary">Đăng ký</button>
                         
                         
-                        <a href="/login" class="btn btn-link">Đã có tài khoản? Đăng nhập</a>
+                        <a href="{{ route('register') }}" class="btn btn-link">Chưa có tài khoản? Đăng ký</a>
                     </form>
                 </div>
             </div>

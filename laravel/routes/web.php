@@ -17,6 +17,8 @@ Route::middleware('guest')->group(function () {
 // Đăng nhập
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+// Đăng xuất
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Admin Tours List
 require __DIR__ . '/tour.php';
