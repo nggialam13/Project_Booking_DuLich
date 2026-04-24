@@ -1,8 +1,6 @@
-
 @extends('layouts.master')
 
 @section('content')
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -20,9 +18,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
