@@ -11,3 +11,4 @@ Route::get('/tours/{id}', [TourController::class, 'show'])->name('tours.show');
 Route::get('/admin/tours', [TourController::class, 'index'])->name('tours.index');
 Route::get('/admin/tours/create', [TourController::class, 'create'])->name('tours.create');
 Route::post('/admin/tours', [TourController::class, 'storeNewTour'])->name('tours.storeNewTour');
+
