@@ -42,22 +42,43 @@ class BookingService
         return $booking;
     }
     public function store(Request $request)
-{
-    if (!auth()->check()) {
-        return redirect('/login')->with('error', 'Bạn cần đăng nhập');
+    {
+        if (!auth()->check()) {
+            return redirect('/login')->with('error', 'Bạn cần đăng nhập');
+        }
+
+        $data = $request->validate([
+            'tour_id' => 'required|exists:tours,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $booking = $this->bookingService->create(
+            auth()->id(), // 🔥 chỗ này phải có giá trị
+            $data['tour_id'],
+            $data['quantity']
+        );
+
+        return redirect('/payments')->with('success', 'Đặt tour thành công');
     }
+    public function cancel($bookingId)
+    {
+        $booking = Booking::with('bookingDetail', 'tour')->findOrFail($bookingId);
 
-    $data = $request->validate([
-        'tour_id' => 'required|exists:tours,id',
-        'quantity' => 'required|integer|min:1'
-    ]);
+        // ❗ chỉ cho hủy khi chưa confirm
+        if ($booking->status !== 'pending') {
+            throw new \Exception('Không thể hủy booking này');
+        }
 
-    $booking = $this->bookingService->create(
-        auth()->id(), // 🔥 chỗ này phải có giá trị
-        $data['tour_id'],
-        $data['quantity']
-    );
+        // đổi trạng thái
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
 
-    return redirect('/payments')->with('success', 'Đặt tour thành công');
-}
+        // restore slot
+        $quantity = $booking->bookingDetail->quantity;
+
+        $booking->tour->increment('available_slots', $quantity);
+
+        return true;
+    }
 }
