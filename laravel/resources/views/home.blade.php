@@ -1,9 +1,9 @@
-@extends('layouts.app')
+<!-- @extends('layouts.app')
 
-@section('content')
+@section('content') -->
 
 <!-- 🔥 HERO -->
-<div class="hero-section text-white text-center d-flex align-items-center justify-content-center">
+<!-- <div class="hero-section text-white text-center d-flex align-items-center justify-content-center">
     <div>
         <h1 class="display-3 fw-bold mb-3">🌍 Khám Phá BOOKING TOUR</h1>
         <p class="lead mb-4">Đặt tour du lịch nhanh chóng – giá tốt – trải nghiệm tuyệt vời</p>
@@ -88,6 +88,6 @@
         <p class="text-center text-muted">Chưa có tour nào</p>
         @endforelse
     </div>
-</div>
+</div> -->
 
-@endsection
+<!-- @endsection -->
