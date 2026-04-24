@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 abstract class Controller
 {
-    //
+
     public function index()
 {
     $tours = Tour::all();

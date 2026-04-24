@@ -49,14 +49,14 @@ class BookingController extends Controller
             }
 
             // Tính tổng tiền
-            $totalPrice = $tour->price * $data['quantity'];
+            $total_price = $tour->price * $data['quantity'];
 
             // Tạo booking
             $booking = Booking::create([
                 'user_id' => $userId,
                 'tour_id' => $tour->id,
                 'booking_date' => now(),
-                'total_price' => $totalPrice,
+                'total_price' => $total_price,
                 'status' => 'pending'
             ]);
 
