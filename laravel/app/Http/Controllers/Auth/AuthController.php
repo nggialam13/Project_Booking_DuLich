@@ -45,7 +45,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Chuyển hướng kèm thông báo
-        return redirect()->route('home')->with('success', 'Đăng ký thành công!');
+        return redirect()->route('login')->with('success', 'Đăng ký thành công!');
     }
     // Hiển thị form đăng nhập
     public function showLogin()
@@ -63,7 +63,7 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
         $remember = $request->boolean('remember');
-
+        // đường dẫn tới trang profile
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             return redirect()->intended('/');
@@ -74,4 +74,12 @@ class AuthController extends Controller
         ]);
     }
 
+    // xử lý logout
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/')->with('success', 'Đã đăng xuất.');
+    }
 }
