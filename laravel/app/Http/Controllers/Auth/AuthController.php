@@ -45,7 +45,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Chuyển hướng kèm thông báo
-        return redirect()->route('home')->with('success', 'Đăng ký thành công!');
+        return redirect()->route('login')->with('success', 'Đăng ký thành công!');
     }
     // Hiển thị form đăng nhập
     public function showLogin()
