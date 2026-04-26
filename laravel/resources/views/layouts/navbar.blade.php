@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-main shadow-sm">
     <div class="container">
 
-        <a class="navbar-brand fw-bold fs-4" href="/tours">
+        <!-- Chỉnh chỗ này -->
+        <a class="navbar-brand fw-bold fs-4" href="/">
             🌍 TravelPro
         </a>
 
