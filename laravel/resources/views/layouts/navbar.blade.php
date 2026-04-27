@@ -1,41 +1,59 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-main shadow-sm">
     <div class="container">
-
-        <!-- Chỉnh chỗ này -->
+        <!-- Brand -->
         <a class="navbar-brand fw-bold fs-4" href="/">
             🌍 TravelPro
         </a>
 
-        <div class="d-flex gap-2 align-items-center">
+        <!-- Nút toggle cho mobile (nếu cần) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            @auth
-                <a href="/tours" class="btn btn-light btn-sm">
-                    <i class="fa fa-map"></i> Tours
-                </a>
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('tours.index') ?? '/tours' }}">Tours</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('bookings.index') ?? '/bookings' }}">Booking</a>
+                </li>
+                @auth
+                    @if(auth()->user()->role === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">Admin</a>
+                        </li>
+                    @endif
+                @endauth
+            </ul>
 
-                <a href="/bookings" class="btn btn-outline-light btn-sm">
-                    <i class="fa fa-ticket"></i> Booking
-                </a>
+            <!-- Phần bên phải -->
+            <div class="d-flex gap-2 align-items-center">
+                @auth
+                    <!-- Dropdown profile (giữ từ HEAD) -->
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            {{ Auth::user()->name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}">Hồ sơ của tôi</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                @endauth
 
-                @if(auth()->user()->role === 'admin')
-                    <a href="/admin/dashboard" class="btn btn-warning btn-sm">
-                        <i class="fa fa-chart-bar"></i> Admin
-                    </a>
-                @endif
-
-                <form action="/logout" method="POST">
-                    @csrf
-                    <button class="btn btn-danger btn-sm">
-                        <i class="fa fa-sign-out-alt"></i>
-                    </button>
-                </form>
-            @endauth
-
-            @guest
-                <a href="/login" class="btn btn-light btn-sm">Login</a>
-                <a href="/register" class="btn btn-outline-light btn-sm">Register</a>
-            @endguest
-
+                @guest
+                    <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
+                    <a href="{{ route('register') }}" class="btn btn-outline-light btn-sm">Register</a>
+                @endguest
+            </div>
         </div>
     </div>
 </nav>
