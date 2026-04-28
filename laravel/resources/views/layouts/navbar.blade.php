@@ -17,7 +17,7 @@
                     <a class="nav-link" href="{{ route('tours.index') ?? '/tours' }}">Tours</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('bookings.index') ?? '/bookings' }}">Booking</a>
+                    <a class="nav-link" href="#">Booking</a>
                 </li>
                 @auth
                     @if(auth()->user()->role === 'admin')
