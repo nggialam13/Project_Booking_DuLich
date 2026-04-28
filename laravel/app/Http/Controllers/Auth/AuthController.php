@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -44,8 +45,11 @@ class AuthController extends Controller
         // Đăng nhập ngay sau khi đăng ký
         Auth::login($user);
 
-        // Chuyển hướng kèm thông báo
-        return redirect()->route('login')->with('success', 'Đăng ký thành công!');
+        // Chuyển hướng
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('tours.index');
     }
     // Hiển thị form đăng nhập
     public function showLogin()
@@ -64,9 +68,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         $remember = $request->boolean('remember');
         // đường dẫn tới trang profile
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials, $request->has('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+
+            // Redirect theo role
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+            return redirect()->route('tours.index');
         }
 
         throw ValidationException::withMessages([
@@ -124,5 +133,21 @@ class AuthController extends Controller
         $user->save();
 
         return redirect()->route('profile')->with('success', 'Đổi mật khẩu thành công!');
+    }
+    // hiển thị danh sách user
+    public function listUsers()
+    {
+        $users = User::paginate(10);
+        return view('admin.users.index', compact('users'));
+    }
+    // xóa user
+    public function deleteUser($id)
+    {
+        if ($id == Auth::id()) {
+            return back()->with('error', 'Không thể tự xóa chính mình.');
+        }
+        $user = User::findOrFail($id);
+        $user->delete();
+        return redirect()->route('admin.users')->with('success', 'Xóa người dùng thành công.');
     }
 }
