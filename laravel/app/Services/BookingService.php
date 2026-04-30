@@ -41,7 +41,7 @@ class BookingService
 
         return $booking;
     }
-  
+
     public function cancel($bookingId)
     {
         $booking = Booking::with('bookingDetail', 'tour')->findOrFail($bookingId);
@@ -65,17 +65,22 @@ class BookingService
     }
 
     public function confirm($bookingId)
-{
-   $booking = Booking::with('bookingDetail', 'tour')->findOrFail($bookingId);
-    // chỉ cho confirm khi pending
-    if ($booking->status !== 'pending') {
-        throw new \Exception('Không thể xác nhận booking này');
+    {
+        $booking = Booking::with('bookingDetail', 'tour')->findOrFail($bookingId);
+        // chỉ cho confirm khi pending
+        if ($booking->status !== 'pending') {
+            throw new \Exception('Không thể xác nhận booking này');
+        }
+
+        $booking->update([
+            'status' => 'confirmed'
+        ]);
+
+        return true;
     }
 
-    $booking->update([
-        'status' => 'confirmed'
-    ]);
+   
 
-    return true;
-}
+
+
 }

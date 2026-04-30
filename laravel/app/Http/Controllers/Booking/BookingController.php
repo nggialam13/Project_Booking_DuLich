@@ -82,5 +82,20 @@ class BookingController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+    
+    public function adminCancel($id)
+{
+    try {
+        $this->bookingService->cancel($id);
+
+        return back()->with('success', 'Admin đã hủy booking');
+
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
+    }
+}
+
+
+  
 
 }

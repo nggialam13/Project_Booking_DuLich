@@ -45,5 +45,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/bookings/{id}/confirm', [BookingController::class, 'confirm'])
         ->name('admin.bookings.confirm');
 
-    
+    // admin cancel
+    Route::post('/bookings/{id}/cancel', [BookingController::class, 'adminCancel'])
+        ->name('admin.bookings.cancel');
 });
