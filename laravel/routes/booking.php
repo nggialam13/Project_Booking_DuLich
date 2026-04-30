@@ -26,6 +26,11 @@ Route::middleware('auth')->group(function () {
     // user cancel
     Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])
         ->name('bookings.cancel');
+
+    // list booking
+    Route::get('/bookings', [BookingController::class, 'index'])
+    ->name('bookings.index')
+    ->middleware('auth');
 });
 
 

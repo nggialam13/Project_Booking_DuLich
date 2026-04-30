@@ -96,6 +96,16 @@ class BookingController extends Controller
 }
 
 
+public function index()
+{
+    $bookings = \App\Models\Booking::with('tour')
+        ->where('user_id', auth()->id())
+        ->latest()
+        ->paginate(10);
+
+    return view('bookings.index', compact('bookings'));
+}
+
   
 
 }

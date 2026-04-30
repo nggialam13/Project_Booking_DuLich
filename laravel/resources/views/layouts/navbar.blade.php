@@ -17,7 +17,9 @@
                     <a class="nav-link" href="{{ route('tours.index') ?? '/tours' }}">Tours</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Booking</a>
+                    <a href="{{ route('bookings.index') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fa fa-ticket"></i> Booking
+                    </a>
                 </li>
                 @auth
                     @if(auth()->user()->role === 'admin')
@@ -33,12 +35,15 @@
                 @auth
                     <!-- Dropdown profile (giữ từ HEAD) -->
                     <div class="dropdown">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="userDropdown"
+                            data-bs-toggle="dropdown">
                             {{ Auth::user()->name }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{{ route('profile') }}">Hồ sơ của tôi</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
