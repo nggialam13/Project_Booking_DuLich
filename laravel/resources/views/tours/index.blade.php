@@ -1,3 +1,6 @@
+@extends('layouts.master')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -11,8 +14,11 @@
 <body>
     <div class="container my-5">
         <div class="row mb-4">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <h1>Danh sách Tours</h1>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="{{ route('tours.create') }}" class="btn btn-primary">+ Tạo Tour Mới</a>
             </div>
         </div>
 
@@ -108,3 +114,4 @@
 </body>
 
 </html>
+@endsection

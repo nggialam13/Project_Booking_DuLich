@@ -3,14 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Booking;
 
 class Payment extends Model
 {
-    //
     protected $fillable = [
-    'booking_id',
-    'amount',
-    'payment_method',
-    'status'
-];
+        'booking_id',
+        'amount',
+        'payment_method',
+        'status',
+    ];
+
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class);
+    }
 }
