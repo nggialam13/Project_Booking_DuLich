@@ -42,15 +42,15 @@ class TourController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:255',
             'price' => 'required|numeric|min:0|max:999999999',
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'slots' => 'required|integer|min:1',
+            'slots' => 'required|integer|min:1|max:9999',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
+        
         // Tính lại duration từ start_date & end_date
         $startDate = \Carbon\Carbon::parse($request->start_date);
         $endDate = \Carbon\Carbon::parse($request->end_date);
@@ -103,7 +103,7 @@ class TourController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:255',
             'price' => 'required|numeric|min:0|max:999999999',
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
