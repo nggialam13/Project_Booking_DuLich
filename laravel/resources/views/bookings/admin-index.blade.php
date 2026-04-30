@@ -11,53 +11,72 @@
             <tr>
                 <th>User</th>
                 <th>Tour</th>
+                <th>Người</th>
                 <th>Tiền</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th style="width: 140px; text-align: center;">Action</th>
             </tr>
         </thead>
 
         <tbody>
             @foreach($bookings as $booking)
-            <tr>
+                <tr>
+                    <td>{{ $booking->user->name }}</td>
 
-                <td>{{ $booking->user->name }}</td>
+                    <td>{{ $booking->tour->title }}</td>
 
-                <td>{{ $booking->tour->title }}</td>
+                    <td>
+                        👥 {{ $booking->bookingDetail->quantity }}
+                    </td>
 
-                <td class="text-primary fw-bold">
-                    {{ number_format($booking->total_price) }}
-                </td>
+                    <td class="text-primary fw-bold">
+                        {{ number_format($booking->total_price, 0, ',', '.') }} VNĐ
+                    </td>
 
-                <td>
-                    <span class="badge bg-info">
-                        {{ $booking->status }}
-                    </span>
-                </td>
+                    <td>
+                        @if($booking->status === 'pending')
+                            <span class="badge bg-warning">Pending</span>
+                        @elseif($booking->status === 'confirmed')
+                            <span class="badge bg-success">Confirmed</span>
+                        @else
+                            <span class="badge bg-danger">Cancelled</span>
+                        @endif
+                    </td>
 
-                <td class="d-flex gap-2">
+                    <!-- ✅ FIX LỆCH -->
+                    <td style="width: 140px;">
+                        <div class="d-flex justify-content-center gap-2">
 
-                    <form action="/admin/bookings/confirm/{{ $booking->id }}" method="POST">
-                        @csrf
-                        <button class="btn btn-success btn-sm">
-                            ✔ Confirm
-                        </button>
-                    </form>
+                            @if($booking->status === 'pending')
 
-                    <form action="/admin/bookings/cancel/{{ $booking->id }}" method="POST">
-                        @csrf
-                        <button class="btn btn-danger btn-sm">
-                            ✖ Cancel
-                        </button>
-                    </form>
+                                <!-- CONFIRM -->
+                                <form action="{{ route('admin.bookings.confirm', $booking->id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-success btn-sm">
+                                        ✔
+                                    </button>
+                                </form>
 
-                </td>
+                              
 
-            </tr>
+                            @else
+                                <!-- giữ layout không lệch -->
+                                <span class="text-muted small">—</span>
+                            @endif
+
+                        </div>
+                    </td>
+
+                </tr>
             @endforeach
         </tbody>
 
     </table>
+
+    <!-- PAGINATION -->
+    <div class="d-flex justify-content-center pt-3 border-top">
+        {{ $bookings->links() }}
+    </div>
 
 </div>
 
