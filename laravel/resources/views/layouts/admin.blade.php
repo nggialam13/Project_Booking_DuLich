@@ -380,8 +380,8 @@
                     <i class="fas fa-map-location-dot"></i> Tours
                 </a>
             </li>
-            @if(Route::has('bookings.index'))
-            <li><a href="{{ route('bookings.index') }}" class="@if(request()->routeIs('bookings.*')) active @endif">
+            @if(Route::has('admin.bookings.index'))
+            <li><a href="{{ route('admin.bookings.index') }}" class="@if(request()->routeIs('admin.bookings.*')) active @endif">
                     <i class="fas fa-calendar-check"></i> Bookings
                 </a>
             </li>
