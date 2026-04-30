@@ -118,6 +118,77 @@
         .table-hover tbody tr:hover {
             background: rgba(13, 110, 253, 0.05);
         }
+
+        /* hover row bảng */
+        .table tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(13, 110, 253, 0.05);
+            /* xanh nhẹ */
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* button hover */
+        .btn-main {
+            transition: all 0.25s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        /* nút cancel */
+        .btn-danger {
+            transition: all 0.25s ease;
+        }
+
+        .btn-danger:hover {
+            transform: scale(1.1);
+        }
+
+        .badge {
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .fade-in {
+            animation: fadeSlide 0.4s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-custom {
+            transition: all 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 10px rgba(13, 110, 253, 0.6);
+        }
+
+        .table tbody tr:hover td {
+            color: #0d6efd;
+        }
     </style>
 </head>
 
