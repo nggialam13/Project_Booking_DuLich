@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Booking;
 
-use Illuminate\Http\Request;
-use App\Services\BookingService;
-
 use App\Http\Controllers\Controller;
+use App\Services\BookingService;
+use Illuminate\Http\Request;
+
 
 class BookingController extends Controller
 {
@@ -15,14 +15,21 @@ class BookingController extends Controller
     {
         $this->bookingService = $bookingService;
     }
+    public function adminIndex()
+    {
+        $bookings = \App\Models\Booking::with('tour', 'bookingDetail', 'user')
+            ->latest()
+            ->paginate(10);
+        return view('bookings.admin-index', compact('bookings'));
+    }
 
     public function show($id)
-{
-    $booking = \App\Models\Booking::with(['tour', 'bookingDetail'])
-        ->findOrFail($id);
+    {
+        $booking = \App\Models\Booking::with(['tour', 'bookingDetail'])
+            ->findOrFail($id);
 
-    return view('bookings.show', compact('booking'));
-}
+        return view('bookings.show', compact('booking'));
+    }
 
     public function store(Request $request)
     {
@@ -64,4 +71,16 @@ class BookingController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    public function confirm($id)
+    {
+        try {
+            $this->bookingService->confirm($id);
+
+            return back()->with('success', 'Xác nhận booking thành công');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
 }

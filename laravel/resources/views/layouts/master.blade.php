@@ -96,6 +96,28 @@
             overflow: hidden;
             background: white;
         }
+
+        .pagination {
+            margin-bottom: 0;
+        }
+
+        .pagination .page-link {
+            border-radius: 8px;
+            margin: 0 3px;
+        }
+
+        .pagination .active .page-link {
+            background: #0d6efd;
+            border: none;
+        }
+
+        td {
+            vertical-align: middle !important;
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(13, 110, 253, 0.05);
+        }
     </style>
 </head>
 
