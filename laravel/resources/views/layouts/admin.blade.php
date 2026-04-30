@@ -15,6 +15,9 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
+    <!-- Admin Forms CSS -->
+    <link href="{{ asset('css/admin-forms.css') }}" rel="stylesheet">
+
     <style>
         * {
             font-family: 'Poppins', sans-serif;
@@ -146,6 +149,7 @@
         .admin-content {
             flex: 1;
             padding: 30px;
+            padding-top: 20px;
         }
 
         /* ===== CARD ===== */
@@ -443,6 +447,36 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('show');
         }
+
+        // Auto calculate duration when start_date or end_date changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+            const durationInput = document.getElementById('duration');
+
+            function calculateDuration() {
+                if (!startDateInput.value || !endDateInput.value) return;
+
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // Check date hợp lệ
+                if (isNaN(startDate) || isNaN(endDate)) return;
+
+                if (endDate < startDate) {
+                    durationInput.value = '';
+                    return;
+                }
+
+                const diffTime = endDate - startDate;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24) + 1;
+
+                durationInput.value = diffDays;
+            }
+
+            startDateInput?.addEventListener('change', calculateDuration);
+            endDateInput?.addEventListener('change', calculateDuration);
+        });
     </script>
 </body>
 

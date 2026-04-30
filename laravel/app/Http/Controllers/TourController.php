@@ -25,6 +25,49 @@ class TourController extends Controller
     }
 
     /**
+     * Show the form for editing tour.
+     */
+    public function edit($id)
+    {
+        $tour = Tour::findOrFail($id);
+        return view('tours.edit', compact('tour'));
+    }
+
+    /**
+     * Update tour in database.
+     */
+    public function update(Request $request, $id)
+    {
+        $tour = Tour::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0|max:999999999',
+            'location' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'slots' => 'required|integer|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Tính lại duration từ start_date & end_date
+        $startDate = \Carbon\Carbon::parse($request->start_date);
+        $endDate = \Carbon\Carbon::parse($request->end_date);
+        $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
+
+        if ($request->hasFile('image')) {
+            // Store new image
+            $path = $request->file('image')->store('tours', 'public');
+            $validated['image'] = $path;
+        }
+
+        $tour->update($validated);
+
+        return redirect()->route('tours.index')->with('success', 'Tour updated successfully!');
+    }
+
+    /**
      * Display tours for users (public view)
      */
     public function userIndex()
@@ -61,14 +104,18 @@ class TourController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'duration' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0|max:999999999',
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'slots' => 'required|integer|min:1',
+            'slots' => 'required|integer|min:1|max:9999',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
+        // Tính lại duration từ start_date & end_date
+        $startDate = \Carbon\Carbon::parse($request->start_date);
+        $endDate = \Carbon\Carbon::parse($request->end_date);
+        $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
 
         $validated['status'] = 'active';
         $validated['available_slots'] = 0;
