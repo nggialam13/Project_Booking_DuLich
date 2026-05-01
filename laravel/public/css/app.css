@@ -842,101 +842,25 @@ body {
 .btn-back:hover {
     background: #cbd5f5;
 }
-/* =========================
-   BOOKING CREATE PRO
-========================= */
+.detail-label {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.tour-box {
+    background: linear-gradient(135deg,#0d6efd,#0ea5e9);
+    color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+}
 
-.create-title {
-    font-size: 26px;
+.tour-name {
+    font-size: 20px;
     font-weight: 700;
 }
 
-/* card */
-.booking-create-card {
-    background: #fff;
-    border-radius: 22px;
-    padding: 30px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.08);
-    transition: .3s;
-}
-
-.booking-create-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 60px rgba(0,0,0,.12);
-}
-
-/* input */
-.input-pro {
-    border-radius: 12px;
-    padding: 12px 14px;
-    border: 1px solid #e2e8f0;
-    transition: .3s;
-}
-
-.input-pro:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 3px rgba(13,110,253,.15);
-}
-
-/* form group */
-.form-group label {
+.tour-price {
+    margin-top: 8px;
     font-weight: 600;
-    margin-bottom: 6px;
-}
-
-/* summary */
-.booking-summary {
-    background: linear-gradient(135deg,#0d6efd,#0ea5e9);
-    color: #fff;
-    padding: 20px;
-    border-radius: 16px;
-    transition: .3s;
-}
-
-.booking-summary:hover {
-    transform: scale(1.02);
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-/* buttons */
-.btn-book {
-    background: linear-gradient(135deg,#22c55e,#16a34a);
-    color: #fff;
-    border: none;
-    padding: 10px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: .3s;
-}
-
-.btn-book:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(34,197,94,.3);
-}
-
-.btn-my-booking {
-    background: #e2e8f0;
-    color: #334155;
-    padding: 10px 22px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: .3s;
-}
-
-.btn-my-booking:hover {
-    background: #cbd5f5;
-}
-
-/* responsive */
-@media(max-width:768px){
-    .booking-create-card {
-        padding: 20px;
-    }
 }
