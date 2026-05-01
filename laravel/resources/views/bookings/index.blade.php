@@ -16,14 +16,14 @@
         </a>
     </div>
 
-  
+
 
     <!-- EMPTY -->
     @if($bookings->isEmpty())
-        <div class="empty-box text-center">
-            <h5>📭 Bạn chưa có booking nào</h5>
-            <a href="/tours" class="btn btn-main mt-3">Khám phá tour</a>
-        </div>
+    <div class="empty-box text-center">
+        <h5>📭 Bạn chưa có booking nào</h5>
+        <a href="/tours" class="btn btn-main mt-3">Khám phá tour</a>
+    </div>
     @endif
 
     <!-- LIST -->
@@ -41,6 +41,9 @@
                         <h5 class="tour-name">
                             {{ $booking->tour->title }}
                         </h5>
+                        <div class="text-muted small">
+                            Mã: {{ $booking->booking_code }}
+                        </div>
 
                         <div class="booking-date">
                             📅 {{ \Carbon\Carbon::parse($booking->booking_date)->format('d/m/Y H:i') }}
@@ -49,11 +52,11 @@
 
                     <!-- STATUS -->
                     @if($booking->status == 'pending')
-                        <span class="status-badge pending">Pending</span>
+                    <span class="status-badge pending">Pending</span>
                     @elseif($booking->status == 'confirmed')
-                        <span class="status-badge success">Confirmed</span>
+                    <span class="status-badge success">Confirmed</span>
                     @else
-                        <span class="status-badge cancel">Cancelled</span>
+                    <span class="status-badge cancel">Cancelled</span>
                     @endif
 
                 </div>

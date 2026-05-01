@@ -9,6 +9,7 @@
     <table class="table table-hover align-middle">
         <thead class="table-light">
             <tr>
+                <th>Code</th> {{-- ✅ thêm --}}
                 <th>User</th>
                 <th>Tour</th>
                 <th>Người</th>
@@ -21,12 +22,22 @@
         <tbody>
             @foreach($bookings as $booking)
                 <tr>
-                    <td>{{ $booking->user->name }}</td>
 
-                    <td>{{ $booking->tour->title }}</td>
-
+                    {{-- ✅ BOOKING CODE --}}
                     <td>
-                        👥 {{ $booking->bookingDetail->quantity }}
+                        <span class="badge bg-dark">
+                            {{ $booking->booking_code }}
+                        </span>
+                    </td>
+
+                    {{-- ✅ NULL SAFE --}}
+                    <td>{{ optional($booking->user)->name ?? 'N/A' }}</td>
+
+                    <td>{{ optional($booking->tour)->title ?? 'N/A' }}</td>
+
+                    {{-- ✅ NULL SAFE quantity --}}
+                    <td>
+                        👥 {{ (int) optional($booking->bookingDetail)->quantity }}
                     </td>
 
                     <td class="text-primary fw-bold">
@@ -43,32 +54,29 @@
                         @endif
                     </td>
 
-                    <!-- ✅ FIX LỆCH -->
                     <td style="width: 140px;">
                         <div class="d-flex justify-content-center gap-2">
 
+                            {{-- ✅ CHỈ pending mới action --}}
                             @if($booking->status === 'pending')
 
-                                <!-- CONFIRM -->
+                                {{-- CONFIRM --}}
                                 <form action="{{ route('admin.bookings.confirm', $booking->id) }}" method="POST">
                                     @csrf
                                     <button class="btn btn-success btn-sm">
                                         ✔
                                     </button>
                                 </form>
-                                <!-- CANCEL -->
-                                     <form action="{{ route('admin.bookings.cancel', $booking->id) }}" method="POST">
+
+                                {{-- CANCEL --}}
+                                <form action="{{ route('admin.bookings.cancel', $booking->id) }}" method="POST">
                                     @csrf
                                     <button class="btn btn-danger btn-sm">
                                         ✖
                                     </button>
                                 </form>
-                                
-
-                              
 
                             @else
-                                <!-- giữ layout không lệch -->
                                 <span class="text-muted small">—</span>
                             @endif
 
@@ -81,7 +89,7 @@
 
     </table>
 
-    <!-- PAGINATION -->
+    {{-- PAGINATION --}}
     <div class="d-flex justify-content-center pt-3 border-top">
         {{ $bookings->links() }}
     </div>

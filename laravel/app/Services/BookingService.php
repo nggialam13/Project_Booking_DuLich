@@ -22,6 +22,7 @@ class BookingService
 
         // tạo booking
         $booking = Booking::create([
+              'booking_code' => 'BK' . strtoupper(uniqid()),
             'user_id' => $userId,
             'tour_id' => $tourId,
             'booking_date' => now(),

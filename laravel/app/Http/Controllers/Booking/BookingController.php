@@ -32,9 +32,10 @@ class BookingController extends Controller
         // - Nếu đã đăng nhập: dùng Auth::id()
         // - Nếu chưa có chức năng đăng nhập (đang test local): dùng BOOKING_TEST_USER_ID trong .env
         // LƯU Ý: chỉ dùng để test, khi merge auth của người 1 thì nên bỏ fallback này.
-        $userId = $this->getUserIdForBookingTest();
+        $userId = Auth::id();
+
         if (!$userId) {
-            return back()->with('error', 'Vui lòng đăng nhập để đặt tour');
+            return redirect('/login')->with('error', 'Vui lòng đăng nhập');
         }
 
         // 3. Transaction (QUAN TRỌNG NHẤT)
@@ -83,9 +84,10 @@ class BookingController extends Controller
 
     public function index()
     {
-        $userId = $this->getUserIdForBookingTest();
+        $userId = Auth::id();
+
         if (!$userId) {
-            return redirect('/')->with('error', 'Vui lòng đăng nhập để xem booking');
+            return redirect('/login');
         }
 
         $bookings = Booking::with('tour')
@@ -97,9 +99,10 @@ class BookingController extends Controller
     }
     public function show($id)
     {
-        $userId = $this->getUserIdForBookingTest();
+        $userId = Auth::id();
+
         if (!$userId) {
-            return redirect('/')->with('error', 'Vui lòng đăng nhập để xem booking');
+            return redirect('/login');
         }
 
         $booking = Booking::with(['tour', 'bookingDetail'])
@@ -113,7 +116,11 @@ class BookingController extends Controller
     // Hủy booking
     public function cancel($id)
     {
-        $userId = $this->getUserIdForBookingTest();
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return redirect('/login');
+        }
         $booking = Booking::with(['bookingDetail', 'tour'])
             ->where('user_id', $userId)
             ->findOrFail($id);
@@ -122,20 +129,21 @@ class BookingController extends Controller
     }
     // Admin xem tất cả booking
 
-   public function adminIndex(Request $request)
-{
-    $query = Booking::with(['tour', 'user'])->latest();
+    public function adminIndex(Request $request)
+    {
+          $query = Booking::with(['tour', 'user', 'bookingDetail'])->latest();
+    
 
-    $status = $request->query('status');
+        $status = $request->query('status');
 
-    if (in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
-        $query->where('status', $status);
+        if (in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
+            $query->where('status', $status);
+        }
+
+        $bookings = $query->paginate(10)->withQueryString();
+
+        return view('bookings.admin-index', compact('bookings', 'status'));
     }
-
-    $bookings = $query->paginate(10)->withQueryString();
-
-    return view('bookings.admin.index', compact('bookings', 'status'));
-}
 
 
     // Admin xác nhận booking
@@ -156,11 +164,11 @@ class BookingController extends Controller
     }
 
     // Admin hủy booking
-  public function adminCancel($id)
-{
-  $booking = Booking::with(['bookingDetail', 'tour'])->findOrFail($id);
-    return $this->cancelBooking($booking, 'Admin đã hủy booking');
-}
+    public function adminCancel($id)
+    {
+        $booking = Booking::with(['bookingDetail', 'tour'])->findOrFail($id);
+        return $this->cancelBooking($booking, 'Admin đã hủy booking');
+    }
 
     /**
      * Cancel chuẩn:
@@ -182,8 +190,8 @@ class BookingController extends Controller
             }
 
             // Lấy quantity an toàn
-          $booking->load('bookingDetail');
-$quantity = (int) optional($booking->bookingDetail)->quantity;
+            $booking->load('bookingDetail');
+            $quantity = (int) optional($booking->bookingDetail)->quantity;
 
             // Update status
             $booking->update(['status' => 'cancelled']);
@@ -198,17 +206,5 @@ $quantity = (int) optional($booking->bookingDetail)->quantity;
         });
 
         return back()->with('success', $successMessage);
-    }
-
-    // Helper lấy user_id để test nhanh bằng .env (không cần login UI)
-    private function getUserIdForBookingTest(): ?int
-    {
-        $authId = Auth::id();
-        if ($authId) {
-            return (int) $authId;
-        }
-
-        $testId = (int) env('BOOKING_TEST_USER_ID', 0);
-        return $testId > 0 ? $testId : null;
     }
 }
