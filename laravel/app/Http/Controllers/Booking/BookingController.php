@@ -91,7 +91,7 @@ class BookingController extends Controller
         $bookings = Booking::with('tour')
             ->where('user_id', $userId)
             ->latest()
-            ->get();
+            ->paginate(6)->withQueryString();
 
         return view('bookings.index', compact('bookings'));
     }
