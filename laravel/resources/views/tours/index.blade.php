@@ -46,7 +46,7 @@
                 </thead>
                 <tbody>
                     @forelse($tours as $tour)
-                    <tr @if($tour->slots === $tour->available_slots) class="table-danger" @endif>
+                    <tr @if($tour->available_slots===0) class="table-danger" @endif>
                         <td>{{ $tour->id }}</td>
                         <td>{{ $tour->title }}</td>
                         <td>{{ $tour->location }}</td>
@@ -60,7 +60,11 @@
                             </small>
                         </td>
                         <td>
-                            <span class="badge @if($tour->slots === $tour->available_slots) bg-danger @elseif(($tour->available_slots / $tour->slots) * 100 >= 50) bg-warning @else bg-info @endif">{{ $tour->available_slots }}/{{ $tour->slots }}</span>
+                            <span class="badge 
+                            @if($tour->available_slots===0) bg-danger 
+                            @elseif(($tour->slots-$tour->available_slots) * 100 >= 20) bg-warning 
+                            @else bg-info @endif">{{ $tour->slots - $tour->available_slots }}/{{ $tour->slots }}
+                            </span>
                         </td>
                         <td>
                             @if($tour->status === 'active')
