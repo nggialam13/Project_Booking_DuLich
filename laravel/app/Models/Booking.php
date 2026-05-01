@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,17 +22,15 @@ class Booking extends Model
     parent::boot();
 
     static::creating(function ($booking) {
-
         if ($booking->booking_code) return;
+        // Generate code with retry loop to avoid duplicate key under concurrency.
+        // Format example: BK-260501-83F1A2
+        do {
+            $bookingCode = 'BK-' . now()->format('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(6)), 0, 6));
+            $exists = DB::table('bookings')->where('booking_code', $bookingCode)->exists();
+        } while ($exists);
 
-        $date = now()->format('ymd'); 
-
-        $count = DB::table('bookings')
-            ->whereDate('created_at', now())
-            ->count() + 1;
-
-        $booking->booking_code =
-            'BK-' . $date . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+        $booking->booking_code = $bookingCode;
     });
 }
     public function user()
