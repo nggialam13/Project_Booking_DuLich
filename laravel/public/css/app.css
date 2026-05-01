@@ -837,6 +837,9 @@ body {
     text-decoration: none;
     font-weight: 600;
     transition: .3s;
+
+    display: inline-block;   /* FIX */
+    width: auto;             /* FIX */
 }
 
 .btn-back:hover {
