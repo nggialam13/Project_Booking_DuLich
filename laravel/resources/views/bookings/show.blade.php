@@ -1,11 +1,21 @@
 @extends('layouts.master')
 
 @section('content')
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Booking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div class="container main-content my-5">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container my-5">
 
     @if(session('error'))
-        <div class="alert alert-danger shadow-sm">{{ session('error') }}</div>
+        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
     <div class="booking-detail-card">
@@ -62,33 +72,29 @@
                             {{ number_format($booking->total_price) }} VNĐ
                         </strong>
                     </div>
-
                 </div>
             </div>
 
-        </div>
-
-        <!-- ACTION -->
-        <div class="action-box mt-4">
-
+            {{-- Cancel chuẩn: chỉ hiện khi pending/confirmed --}}
             @if(in_array($booking->status, ['pending', 'confirmed']))
                 <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
                     @csrf
-                    <button class="btn btn-cancel"
+                    <button class="btn btn-outline-danger mt-4"
                         onclick="return confirm('Bạn chắc chắn muốn hủy?')">
-                        ❌ Hủy booking
+                        Hủy booking
                     </button>
                 </form>
             @endif
 
-            <a href="{{ route('bookings.index') }}" class="btn btn-back">
-                ← Quay lại
+            <a href="{{ route('bookings.index') }}" class="btn btn-secondary mt-3">
+                Quay lại
             </a>
 
         </div>
-
     </div>
 
 </div>
 
+</body>
+</html>
 @endsection
