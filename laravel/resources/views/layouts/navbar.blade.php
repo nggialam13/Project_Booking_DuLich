@@ -1,40 +1,62 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-main shadow-sm">
     <div class="container">
 
-        <!-- Chỉnh chỗ này -->
-        <a class="navbar-brand fw-bold fs-4" href="/">
+        <!-- LOGO -->
+        <a class="navbar-brand brand-pro" href="/">
             🌍 TravelPro
         </a>
 
-        <div class="d-flex gap-2 align-items-center">
+        <div class="collapse navbar-collapse">
 
-            @auth
-                <a href="/tours" class="btn btn-light btn-sm">
-                    <i class="fa fa-map"></i> Tours
-                </a>
+            <!-- MENU -->
+            <ul class="navbar-nav me-auto menu-pro">
 
-                <a href="/bookings" class="btn btn-outline-light btn-sm">
-                    <i class="fa fa-ticket"></i> Booking
-                </a>
-
-                @if(auth()->user()->role === 'admin')
-                    <a href="/admin/dashboard" class="btn btn-warning btn-sm">
-                        <i class="fa fa-chart-bar"></i> Admin
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('tours*') ? 'active' : '' }}" href="/tours">
+                        Tours
                     </a>
-                @endif
+                </li>
 
-                <form action="/logout" method="POST">
-                    @csrf
-                    <button class="btn btn-danger btn-sm">
-                        <i class="fa fa-sign-out-alt"></i>
-                    </button>
-                </form>
-            @endauth
+                @auth
+                    @if(auth()->user()->role === 'user')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('bookings*') ? 'active' : '' }}" href="/bookings">
+                            Booking
+                        </a>
+                    </li>
 
-            @guest
-                <a href="/login" class="btn btn-light btn-sm">Login</a>
-                <a href="/register" class="btn btn-outline-light btn-sm">Register</a>
-            @endguest
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('payments*') ? 'active' : '' }}" href="/payments">
+                            Payment
+                        </a>
+                    </li>
+                    @endif
+                @endauth
+
+            </ul>
+
+            <!-- USER -->
+            <div class="d-flex align-items-center gap-3 user-box">
+
+                @auth
+                    <span class="user-name">
+                        👤 {{ auth()->user()->name }}
+                    </span>
+
+                    <form method="POST" action="/logout">
+                        @csrf
+                        <button class="btn btn-logout">
+                            Logout
+                        </button>
+                    </form>
+                @endauth
+
+                @guest
+                    <a href="/login" class="btn btn-light btn-sm">Login</a>
+                    <a href="/register" class="btn btn-outline-light btn-sm">Register</a>
+                @endguest
+
+            </div>
 
         </div>
     </div>
