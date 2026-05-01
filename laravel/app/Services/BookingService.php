@@ -19,7 +19,7 @@ class BookingService
             ->paginate($perPage)
             ->withQueryString();
     }
-
+    
     public function getUserBookingDetail(int $userId, int $bookingId): Booking
     {
         return Booking::with(['tour', 'bookingDetail'])
@@ -107,6 +107,7 @@ class BookingService
 
         $booking->update(['status' => 'confirmed']);
     }
+    
 
     private function cancelBooking(int $bookingId): void
     {

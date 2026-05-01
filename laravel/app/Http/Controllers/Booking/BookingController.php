@@ -10,9 +10,7 @@ use App\Models\Tour;
 
 class BookingController extends Controller
 {
-    public function __construct(private BookingService $bookingService)
-    {
-    }
+    public function __construct(private BookingService $bookingService) {}
 
 
     public function create($tourId)
@@ -48,7 +46,7 @@ class BookingController extends Controller
             ->with('success', 'Đặt tour thành công');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $userId = Auth::id();
 
@@ -56,11 +54,15 @@ class BookingController extends Controller
             return redirect('/login');
         }
 
-        // Read/list query is delegated to service for cleaner controller.
-        $bookings = $this->bookingService->getUserBookingsPaginated($userId);
+        $status = $request->query('status');
 
-        return view('bookings.index', compact('bookings'));
+        $bookings = $this->bookingService
+            ->getUserBookingsPaginated($userId, $status);
+
+        return view('bookings.index', compact('bookings', 'status'));
     }
+
+
     public function show($id)
     {
         $userId = Auth::id();
@@ -94,16 +96,16 @@ class BookingController extends Controller
     }
     // Admin xem tất cả booking
 
-  public function adminIndex(Request $request)
-{
-    $status = $request->query('status');
-    $keyword = $request->query('keyword');
+    public function adminIndex(Request $request)
+    {
+        $status = $request->query('status');
+        $keyword = $request->query('keyword');
 
-    $bookings = $this->bookingService
-        ->getAdminBookingsPaginated($status, $keyword);
+        $bookings = $this->bookingService
+            ->getAdminBookingsPaginated($status, $keyword);
 
-    return view('bookings.admin-index', compact('bookings', 'status', 'keyword'));
-}
+        return view('bookings.admin-index', compact('bookings', 'status', 'keyword'));
+    }
 
 
     // Admin xác nhận booking
