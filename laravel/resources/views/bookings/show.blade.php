@@ -36,8 +36,8 @@
 
             <!-- TOUR -->
             <div class="col-md-8">
-                <div class="detail-box tour-box">
-                    <div class="label">Tour</div>
+               <div class="detail-box tour-box">
+                  <div class="detail-label">Tour</div>
                     <div class="tour-name">{{ $booking->tour->title }}</div>
                     <div class="tour-price">
                         💰 {{ number_format($booking->tour->price) }} VNĐ
