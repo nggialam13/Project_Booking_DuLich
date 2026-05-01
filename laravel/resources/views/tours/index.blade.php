@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.admin')
 
 @section('content')
 <!DOCTYPE html>
@@ -41,6 +41,7 @@
                         <th>Lịch trình</th>
                         <th>Chỗ trống</th>
                         <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,6 +68,11 @@
                             @else
                             <span class="badge bg-danger">Không hoạt động</span>
                             @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('tours.edit', $tour->id) }}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
                         </td>
                     </tr>
                     @empty

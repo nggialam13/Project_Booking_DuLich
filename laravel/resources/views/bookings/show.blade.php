@@ -2,54 +2,93 @@
 
 @section('content')
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
+<div class="container main-content my-5">
 
-        <div class="card card-custom p-4">
+    @if(session('error'))
+        <div class="alert alert-danger shadow-sm">{{ session('error') }}</div>
+    @endif
 
-            <h4 class="mb-4 section-title">
-                📑 Chi tiết Booking
-            </h4>
+    <div class="booking-detail-card">
 
-            <div class="mb-3">
-                <strong>Tour:</strong>
-                <div>{{ $booking->tour->title }}</div>
-            </div>
+        <!-- HEADER -->
+        <div class="booking-detail-header d-flex justify-content-between align-items-start">
 
-            <div class="mb-3">
-                <strong>Số lượng:</strong>
-                <div>{{ $booking->bookingDetail->quantity }}</div>
-            </div>
-
-            <div class="mb-3">
-                <strong>Giá:</strong>
-                <div class="text-primary">
-                    {{ number_format($booking->bookingDetail->price) }} VNĐ
+            <div>
+                <h3 class="title">📄 Chi tiết booking</h3>
+                <div class="date">
+                    📅 {{ \Carbon\Carbon::parse($booking->booking_date)->format('d/m/Y H:i') }}
                 </div>
             </div>
 
-            <div class="mb-3">
-                <strong>Tổng tiền:</strong>
-                <div class="fs-5 fw-bold text-success">
-                    {{ number_format($booking->total_price) }} VNĐ
+            <!-- STATUS -->
+            @if($booking->status == 'pending')
+                <span class="status-badge pending">Pending</span>
+            @elseif($booking->status == 'confirmed')
+                <span class="status-badge success">Confirmed</span>
+            @else
+                <span class="status-badge cancel">Cancelled</span>
+            @endif
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="row g-4 mt-2">
+
+            <!-- TOUR -->
+            <div class="col-md-8">
+                <div class="detail-box tour-box">
+                    <div class="label">Tour</div>
+                    <div class="tour-name">{{ $booking->tour->title }}</div>
+                    <div class="tour-price">
+                        💰 {{ number_format($booking->tour->price) }} VNĐ
+                    </div>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <strong>Trạng thái:</strong><br>
+            <!-- INFO -->
+            <div class="col-md-4">
+                <div class="detail-box info-box">
 
-                @if($booking->status == 'pending')
-                    <span class="badge bg-warning">Pending</span>
-                @elseif($booking->status == 'confirmed')
-                    <span class="badge bg-success">Confirmed</span>
-                @else
-                    <span class="badge bg-danger">Cancelled</span>
-                @endif
+                    <div class="info-item">
+                        <span>Số người</span>
+                        <strong>{{ (int) optional($booking->bookingDetail)->quantity }}</strong>
+                    </div>
+
+                    <hr>
+
+                    <div class="info-item">
+                        <span>Tổng tiền</span>
+                        <strong class="total">
+                            {{ number_format($booking->total_price) }} VNĐ
+                        </strong>
+                    </div>
+
+                </div>
             </div>
 
         </div>
 
+        <!-- ACTION -->
+        <div class="action-box mt-4">
+
+            @if(in_array($booking->status, ['pending', 'confirmed']))
+                <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
+                    @csrf
+                    <button class="btn btn-cancel"
+                        onclick="return confirm('Bạn chắc chắn muốn hủy?')">
+                        ❌ Hủy booking
+                    </button>
+                </form>
+            @endif
+
+            <a href="{{ route('bookings.index') }}" class="btn btn-back">
+                ← Quay lại
+            </a>
+
+        </div>
+
     </div>
+
 </div>
 
 @endsection
