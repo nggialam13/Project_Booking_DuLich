@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Booking;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Tour;
 use App\Models\Booking;
 use App\Models\BookingDetail;
@@ -20,58 +22,88 @@ class BookingController extends Controller
     }
     public function store(Request $request)
     {
-        // 1. Validate
+        // 1. Validate (bắt buộc theo quy ước team)
         $data = $request->validate([
             'tour_id' => 'required|exists:tours,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
-        // 2. Lấy tour
-        $tour = Tour::findOrFail($data['tour_id']);
-
-        // 3. Check slot
-        if ($data['quantity'] > $tour->available_slots) {
-            return back()->with('error', 'Không đủ chỗ');
+        // 2. user_id hợp lý:
+        // - Nếu đã đăng nhập: dùng Auth::id()
+        // - Nếu chưa có chức năng đăng nhập (đang test local): dùng BOOKING_TEST_USER_ID trong .env
+        // LƯU Ý: chỉ dùng để test, khi merge auth của người 1 thì nên bỏ fallback này.
+        $userId = $this->getUserIdForBookingTest();
+        if (!$userId) {
+            return back()->with('error', 'Vui lòng đăng nhập để đặt tour');
         }
 
-        // 4. Tính tổng tiền
-        $total_price = $tour->price * $data['quantity'];
+        // 3. Transaction (QUAN TRỌNG NHẤT)
+        // Mục tiêu: chống overbooking khi nhiều người đặt cùng lúc
+        $result = DB::transaction(function () use ($data, $userId) {
+            // Lock tour để đảm bảo slot không bị trừ sai khi concurrent
+            $tour = Tour::where('id', $data['tour_id'])->lockForUpdate()->firstOrFail();
 
-        // 5. Tạo booking
-        $booking = Booking::create([
-            'user_id' => 1, // tạm fix (sau dùng auth)
-            'tour_id' => $tour->id,
-            'booking_date' => now(),
-            'total_price' => $total_price,
-            'status' => 'pending'
-        ]);
+            // Check slot sau khi lock
+            if ($data['quantity'] > $tour->available_slots) {
+                return ['ok' => false, 'message' => 'Không đủ chỗ'];
+            }
 
-        // 6. Tạo booking_detail
-        BookingDetail::create([
-            'booking_id' => $booking->id,
-            'quantity' => $data['quantity'],
-            'price' => $tour->price
-        ]);
+            // Tính tổng tiền
+            $total_price = $tour->price * $data['quantity'];
 
-        // 7. Trừ slot
-        $tour->decrement('available_slots', $data['quantity']);
+            // Tạo booking
+            $booking = Booking::create([
+                'user_id' => $userId,
+                'tour_id' => $tour->id,
+                'booking_date' => now(),
+                'total_price' => $total_price,
+                'status' => 'pending'
+            ]);
 
-        return redirect()->back()->with('success', 'Đặt tour thành công');
+            // Tạo booking_detail
+            BookingDetail::create([
+                'booking_id' => $booking->id,
+                'quantity' => $data['quantity'],
+                'price' => $tour->price
+            ]);
+
+            // Trừ slot (đã lock nên an toàn)
+            $tour->decrement('available_slots', $data['quantity']);
+
+            return ['ok' => true, 'booking_id' => $booking->id];
+        });
+
+        if (!$result['ok']) {
+            return back()->with('error', $result['message']);
+        }
+
+        return redirect()->route('bookings.show', $result['booking_id'])
+            ->with('success', 'Đặt tour thành công');
     }
 
     public function index()
     {
+        $userId = $this->getUserIdForBookingTest();
+        if (!$userId) {
+            return redirect('/')->with('error', 'Vui lòng đăng nhập để xem booking');
+        }
+
         $bookings = Booking::with('tour')
-            ->where('user_id', 1) // tạm
+            ->where('user_id', $userId)
             ->latest()
-            ->get();
+            ->paginate(6)->withQueryString();
 
         return view('bookings.index', compact('bookings'));
     }
     public function show($id)
     {
+        $userId = $this->getUserIdForBookingTest();
+        if (!$userId) {
+            return redirect('/')->with('error', 'Vui lòng đăng nhập để xem booking');
+        }
+
         $booking = Booking::with(['tour', 'bookingDetail'])
-            ->where('user_id', 1) // tạm
+            ->where('user_id', $userId)
             ->findOrFail($id);
 
         return view('bookings.show', compact('booking'));
@@ -81,40 +113,29 @@ class BookingController extends Controller
     // Hủy booking
     public function cancel($id)
     {
-        $booking = Booking::with('bookingDetail')
-            ->where('user_id', 1) // tạm
+        $userId = $this->getUserIdForBookingTest();
+        $booking = Booking::with(['bookingDetail', 'tour'])
+            ->where('user_id', $userId)
             ->findOrFail($id);
 
-        // Không cho hủy nếu đã hủy rồi
-        if ($booking->status == 'cancelled') {
-            return back()->with('error', 'Booking đã bị hủy');
-        }
-
-        // 1. Đổi trạng thái
-        $booking->update([
-            'status' => 'cancelled'
-        ]);
-
-        // 2. Cộng lại slot
-        $tour = Tour::find($booking->tour_id);
-
-        $tour->increment(
-            'available_slots',
-            $booking->bookingDetail->quantity
-        );
-
-        return back()->with('success', 'Hủy booking thành công');
+        return $this->cancelBooking($booking, 'Hủy booking thành công');
     }
     // Admin xem tất cả booking
 
-    public function adminIndex()
-    {
-        $bookings = Booking::with(['tour', 'user'])
-            ->latest()
-            ->get();
+   public function adminIndex(Request $request)
+{
+    $query = Booking::with(['tour', 'user'])->latest();
 
-        return view('bookings.admin.index', compact('bookings'));
+    $status = $request->query('status');
+
+    if (in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
+        $query->where('status', $status);
     }
+
+    $bookings = $query->paginate(10)->withQueryString();
+
+    return view('bookings.admin.index', compact('bookings', 'status'));
+}
 
 
     // Admin xác nhận booking
@@ -137,27 +158,57 @@ class BookingController extends Controller
     // Admin hủy booking
   public function adminCancel($id)
 {
-    $booking = Booking::with('bookingDetail')->findOrFail($id);
-
-    if ($booking->status == 'cancelled') {
-        return back()->with('error', 'Booking đã bị hủy');
-    }
-
-    // LẤY quantity AN TOÀN
-    $quantity = $booking->bookingDetail?->quantity ?? 0;
-
-    // update status
-    $booking->update([
-        'status' => 'cancelled'
-    ]);
-
-    // cộng lại slot
-    $tour = Tour::find($booking->tour_id);
-
-    if ($tour) {
-        $tour->increment('available_slots', $quantity);
-    }
-
-    return back()->with('success', 'Admin đã hủy booking');
+  $booking = Booking::with(['bookingDetail', 'tour'])->findOrFail($id);
+    return $this->cancelBooking($booking, 'Admin đã hủy booking');
 }
+
+    /**
+     * Cancel chuẩn:
+     * - Chỉ hủy khi chưa cancelled
+     * - Restore slot đúng quantity (null-safe)
+     * - Transaction + lock tour để không lệch slot
+     */
+    private function cancelBooking(Booking $booking, string $successMessage)
+    {
+        if ($booking->status === 'cancelled') {
+            return back()->with('error', 'Booking đã bị hủy');
+        }
+
+        DB::transaction(function () use ($booking) {
+            // lock booking row để tránh 2 request cancel cùng lúc
+            $booking = Booking::where('id', $booking->id)->lockForUpdate()->firstOrFail();
+            if ($booking->status === 'cancelled') {
+                return;
+            }
+
+            // Lấy quantity an toàn
+          $booking->load('bookingDetail');
+$quantity = (int) optional($booking->bookingDetail)->quantity;
+
+            // Update status
+            $booking->update(['status' => 'cancelled']);
+
+            // Restore slot
+            if ($quantity > 0) {
+                $tour = Tour::where('id', $booking->tour_id)->lockForUpdate()->first();
+                if ($tour) {
+                    $tour->increment('available_slots', $quantity);
+                }
+            }
+        });
+
+        return back()->with('success', $successMessage);
+    }
+
+    // Helper lấy user_id để test nhanh bằng .env (không cần login UI)
+    private function getUserIdForBookingTest(): ?int
+    {
+        $authId = Auth::id();
+        if ($authId) {
+            return (int) $authId;
+        }
+
+        $testId = (int) env('BOOKING_TEST_USER_ID', 0);
+        return $testId > 0 ? $testId : null;
+    }
 }
