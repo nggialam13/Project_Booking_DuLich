@@ -16,14 +16,7 @@
         </a>
     </div>
 
-    <!-- ALERT -->
-    @if(session('error'))
-        <div class="alert alert-danger shadow-sm">{{ session('error') }}</div>
-    @endif
-
-    @if(session('success'))
-        <div class="alert alert-success shadow-sm">{{ session('success') }}</div>
-    @endif
+  
 
     <!-- EMPTY -->
     @if($bookings->isEmpty())
