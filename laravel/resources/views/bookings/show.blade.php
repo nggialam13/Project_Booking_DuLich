@@ -81,9 +81,9 @@
                 </form>
             @endif
 
-            <a href="{{ route('bookings.index') }}" class="btn btn-back">
-                ← Quay lại
-            </a>
+          <a href="{{ route('bookings.index') }}" class="btn btn-back d-inline-block">
+    ← Quay lại
+</a>
 
         </div>
 
