@@ -27,16 +27,33 @@ class BookingService
             ->findOrFail($bookingId);
     }
 
-    public function getAdminBookingsPaginated(?string $status, int $perPage = 10): LengthAwarePaginator
-    {
-        $query = Booking::with(['tour', 'user', 'bookingDetail'])->latest();
+   public function getAdminBookingsPaginated($status = null, $keyword = null)
+{
+    return Booking::with(['user', 'tour', 'bookingDetail'])
 
-        if (in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
+        // 🔍 SEARCH
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+
+                $q->whereHas('user', function ($q2) use ($keyword) {
+                    $q2->where('name', 'like', "%$keyword%");
+                })
+
+                ->orWhereHas('tour', function ($q2) use ($keyword) {
+                    $q2->where('title', 'like', "%$keyword%");
+                });
+
+            });
+        })
+
+        // 🎯 FILTER STATUS
+        ->when(in_array($status, ['pending', 'confirmed', 'cancelled']), function ($query) use ($status) {
             $query->where('status', $status);
-        }
+        })
 
-        return $query->paginate($perPage)->withQueryString();
-    }
+        ->latest()
+        ->paginate(10);
+}
 
     public function createBooking(int $userId, int $tourId, int $quantity): Booking
     {

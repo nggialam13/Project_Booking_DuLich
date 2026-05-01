@@ -94,14 +94,16 @@ class BookingController extends Controller
     }
     // Admin xem tất cả booking
 
-    public function adminIndex(Request $request)
-    {
-        $status = $request->query('status');
-        // Admin list/filter query is delegated to service for cleaner controller.
-        $bookings = $this->bookingService->getAdminBookingsPaginated($status);
+  public function adminIndex(Request $request)
+{
+    $status = $request->query('status');
+    $keyword = $request->query('keyword');
 
-        return view('bookings.admin-index', compact('bookings', 'status'));
-    }
+    $bookings = $this->bookingService
+        ->getAdminBookingsPaginated($status, $keyword);
+
+    return view('bookings.admin-index', compact('bookings', 'status', 'keyword'));
+}
 
 
     // Admin xác nhận booking
