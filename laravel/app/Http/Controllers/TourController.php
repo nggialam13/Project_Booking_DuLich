@@ -118,7 +118,7 @@ class TourController extends Controller
         $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
 
         $validated['status'] = 'active';
-        $validated['available_slots'] = 0;
+        $validated['available_slots'] = $validated['slots'];
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('tours', 'public');
