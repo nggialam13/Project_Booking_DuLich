@@ -33,6 +33,13 @@ return new class extends Migration
     {
         // Remove unique(booking_id) from payments so Payment owner can decide business rules.
         if ($this->indexExists('payments', 'payments_booking_id_unique')) {
+            // MySQL may bind the FK to this unique index; keep a normal index before drop.
+            if (!$this->indexExists('payments', 'payments_booking_id_idx')) {
+                Schema::table('payments', function (Blueprint $table): void {
+                    $table->index('booking_id', 'payments_booking_id_idx');
+                });
+            }
+
             Schema::table('payments', function (Blueprint $table): void {
                 $table->dropUnique('payments_booking_id_unique');
             });
