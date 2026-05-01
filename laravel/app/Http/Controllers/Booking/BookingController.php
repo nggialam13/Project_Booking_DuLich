@@ -46,21 +46,18 @@ class BookingController extends Controller
             ->with('success', 'Đặt tour thành công');
     }
 
-    public function index(Request $request)
-    {
-        $userId = Auth::id();
+   public function index()
+{
+    $userId = Auth::id();
 
-        if (!$userId) {
-            return redirect('/login');
-        }
-
-        $status = $request->query('status');
-
-        $bookings = $this->bookingService
-            ->getUserBookingsPaginated($userId, $status);
-
-        return view('bookings.index', compact('bookings', 'status'));
+    if (!$userId) {
+        return redirect('/login');
     }
+
+    $bookings = $this->bookingService->getUserBookingsPaginated($userId);
+
+    return view('bookings.index', compact('bookings'));
+}
 
 
     public function show($id)
