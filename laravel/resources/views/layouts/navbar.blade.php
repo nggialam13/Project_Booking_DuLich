@@ -1,64 +1,63 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-main shadow-sm">
     <div class="container">
-        <!-- Brand -->
-        <a class="navbar-brand fw-bold fs-4" href="/">
+
+        <!-- LOGO -->
+        <a class="navbar-brand brand-pro" href="/">
             🌍 TravelPro
         </a>
 
-        <!-- Nút toggle cho mobile (nếu cần) -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="collapse navbar-collapse">
 
-        <!-- Collapsible content -->
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- MENU -->
+            <ul class="navbar-nav me-auto menu-pro">
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('tours.index') ?? '/tours' }}">Tours</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('bookings.index') }}" class="btn btn-outline-light btn-sm">
-                        <i class="fa fa-ticket"></i> Booking
+                    <a class="nav-link {{ request()->is('tours*') ? 'active' : '' }}" href="/tours">
+                        Tours
                     </a>
                 </li>
+
                 @auth
-                    @if(auth()->user()->role === 'admin')
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/dashboard">Admin</a>
-                        </li>
+                    @if(auth()->user()->role === 'user')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('bookings*') ? 'active' : '' }}" href="/bookings">
+                            Booking
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('payments*') ? 'active' : '' }}" href="/payments">
+                            Payment
+                        </a>
+                    </li>
                     @endif
                 @endauth
+
             </ul>
 
-            <!-- Phần bên phải -->
-            <div class="d-flex gap-2 align-items-center">
+            <!-- USER -->
+            <div class="d-flex align-items-center gap-3 user-box">
+
                 @auth
-                    <!-- Dropdown profile (giữ từ HEAD) -->
-                    <div class="dropdown">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="userDropdown"
-                            data-bs-toggle="dropdown">
-                            {{ Auth::user()->name }}
+                    <span class="user-name">
+                        👤 {{ auth()->user()->name }}
+                    </span>
+
+                    <form method="POST" action="/logout">
+                        @csrf
+                        <button class="btn btn-logout">
+                            Logout
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('profile') }}">Hồ sơ của tôi</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">Đăng xuất</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+                    </form>
                 @endauth
 
                 @guest
-                    <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-light btn-sm">Register</a>
+                    <a href="/login" class="btn btn-light btn-sm">Login</a>
+                    <a href="/register" class="btn btn-outline-light btn-sm">Register</a>
                 @endguest
+
             </div>
+
         </div>
     </div>
 </nav>
