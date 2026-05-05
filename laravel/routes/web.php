@@ -49,9 +49,3 @@ require __DIR__ . '/booking.php';
 
 //payment
 require __DIR__ . '/payment.php';
-require __DIR__ . '/booking.php';
-require __DIR__ . '/tour.php';
-
-Route::get('/', function () {
-    return view('welcome');
-});

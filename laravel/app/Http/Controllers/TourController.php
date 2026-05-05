@@ -50,7 +50,7 @@ class TourController extends Controller
             'slots' => 'required|integer|min:1|max:9999',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-        
+
         // Tính lại duration từ start_date & end_date
         $startDate = \Carbon\Carbon::parse($request->start_date);
         $endDate = \Carbon\Carbon::parse($request->end_date);
@@ -64,7 +64,7 @@ class TourController extends Controller
 
         $tour->update($validated);
 
-        return redirect()->route('tours.index')->with('success', 'Tour updated successfully!');
+        return redirect()->route('tours.index')->with('success', 'Chỉnh sửa tour thành công!');
     }
 
     /**
@@ -76,10 +76,10 @@ class TourController extends Controller
         $query = Tour::where('status', 'active');
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('location', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -118,7 +118,7 @@ class TourController extends Controller
         $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
 
         $validated['status'] = 'active';
-        $validated['available_slots'] = 0;
+        $validated['available_slots'] = $validated['slots'];
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('tours', 'public');
@@ -127,6 +127,21 @@ class TourController extends Controller
 
         Tour::create($validated);
 
-        return redirect()->route('tours.index')->with('success', 'Tour created successfully!');
+        return redirect()->route('tours.index')->with('success', 'Tạo tour thành công!');
+    }
+
+    public function destroyTour($id)
+    {
+        $tour = Tour::findOrFail($id);
+        $tour->delete();
+        return redirect()->route('tours.index')->with('success', 'Tour đã được xóa thành công!');
+    }
+
+    public function toggleStatus($id)
+    {
+        $tour = Tour::findOrFail($id);
+        $tour->status = $tour->status === 'active' ? 'inactive' : 'active';
+        $tour->save();
+        return redirect()->route('tours.index')->with('success', 'Cập nhật thành công!');
     }
 }
