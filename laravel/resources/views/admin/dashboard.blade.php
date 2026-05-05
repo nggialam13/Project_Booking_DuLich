@@ -1,7 +1,7 @@
-@extends('layouts.master')
+@extends('layouts.admin')
 
 @section('content')
-
+ 
 @section('content')
-<h1>Trang tạm thời</h1>
+
 @endsection
