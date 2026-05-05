@@ -32,9 +32,9 @@
             </option>
         </select>
 
-        <!-- <button class="btn btn-primary">
+        <button class="btn btn-primary">
             Tìm
-        </button> -->
+        </button>
 
         <a href="{{ route('admin.bookings.index') }}" class="btn btn-secondary">
             Reset
