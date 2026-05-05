@@ -65,3 +65,9 @@ Route::get('/payments', function () {
 Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
+//Hải
+use App\Http\Controllers\ReportController;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/report', [ReportController::class, 'index']);
+});
