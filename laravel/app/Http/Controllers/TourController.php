@@ -57,6 +57,10 @@ class TourController extends Controller
         $endDate = \Carbon\Carbon::parse($request->end_date);
         $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
 
+        // Cập nhật available_slots khi slots thay đổi
+        $booked = $tour->slots - $tour->available_slots;
+        $validated['available_slots'] = $validated['slots'] - $booked;
+
         if ($request->hasFile('image')) {
             // Store new image
             $path = $request->file('image')->store('tours', 'public');
