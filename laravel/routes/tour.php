@@ -14,5 +14,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/tours', [TourController::class, 'storeNewTour'])->name('tours.storeNewTour');
     Route::get('/admin/tours/{id}/edit', [TourController::class, 'edit'])->name('tours.edit');
     Route::put('/admin/tours/{id}', [TourController::class, 'update'])->name('tours.update');
+    Route::patch('/admin/tours/{id}/toggleStatus', [TourController::class, 'toggleStatus'])->name('tours.toggle-status');
     Route::delete('/admin/tours/{id}', [TourController::class, 'destroyTour'])->name('tours.destroy');
 });
