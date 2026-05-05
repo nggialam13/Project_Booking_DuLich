@@ -39,6 +39,7 @@ class TourController extends Controller
     public function update(Request $request, $id)
     {
         $tour = Tour::findOrFail($id);
+        $booked = $tour->slots - $tour->available_slots;
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -47,7 +48,7 @@ class TourController extends Controller
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'slots' => 'required|integer|min:1|max:9999',
+            'slots' => 'required|integer|min:' . $booked . '|max:9999',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
