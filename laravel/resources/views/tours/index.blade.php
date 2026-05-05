@@ -55,7 +55,7 @@
                         <td>
                             <span class="badge 
                             @if($tour->available_slots===0) bg-danger 
-                            @elseif(($tour->slots-$tour->available_slots) * 100 >= 20) bg-warning 
+                            @elseif((($tour->slots-$tour->available_slots) / $tour->slots) * 100 >= 80) bg-warning 
                             @else bg-info @endif">{{ $tour->slots - $tour->available_slots }}/{{ $tour->slots }}
                             </span>
                         </td>
