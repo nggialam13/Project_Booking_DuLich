@@ -59,12 +59,14 @@
                             @else bg-info @endif">{{ $tour->slots - $tour->available_slots }}/{{ $tour->slots }}
                             </span>
                         </td>
-                        <td>
-                            @if($tour->status === 'active')
-                            <span class="badge bg-success">Hoạt động</span>
-                            @else
-                            <span class="badge bg-danger">Không hoạt động</span>
-                            @endif
+                        <td style="white-space: nowrap;">
+                            <form method="POST" action="{{ route('tours.toggle-status', $tour->id) }}" style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-sm  {{$tour->status==="active"?'btn-success':'btn-danger'}}" onclick="return confirm('Bạn chắc chắn sửa tour này?')">
+                                    <i class="fas fa-exchange-alt"></i> {{ $tour->status==="active"?'Hoạt động':'Không hoạt động' }}
+                                </button>
+                            </form>
                         </td>
                         <td style="white-space: nowrap;">
                             <a href="{{ route('tours.edit', $tour->id) }}" class="btn btn-sm btn-warning">
@@ -77,6 +79,7 @@
                                     <i class="fas fa-trash"></i> Xóa
                                 </button>
                             </form>
+
                         </td>
                     </tr>
                     @empty

@@ -134,6 +134,14 @@ class TourController extends Controller
     {
         $tour = Tour::findOrFail($id);
         $tour->delete();
-        return redirect()->route('tours.index')->with('success','Tour đã được xóa thành công!');
+        return redirect()->route('tours.index')->with('success', 'Tour đã được xóa thành công!');
+    }
+
+    public function toggleStatus($id)
+    {
+        $tour = Tour::findOrFail($id);
+        $tour->status = $tour->status === 'active' ? 'inactive' : 'active';
+        $tour->save();
+        return redirect()->route('tours.index')->with('success', 'Cập nhật thành công!');
     }
 }
