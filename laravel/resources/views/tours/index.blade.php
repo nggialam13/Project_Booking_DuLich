@@ -22,13 +22,6 @@
             </div>
         </div>
 
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
@@ -54,7 +47,7 @@
                         <td>
                             <span>{{ $tour->duration }} ngày</span>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <small class="text-muted">
                                 {{ \Carbon\Carbon::parse($tour->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($tour->end_date)->format('d/m/Y') }}
                             </small>
@@ -73,10 +66,17 @@
                             <span class="badge bg-danger">Không hoạt động</span>
                             @endif
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <a href="{{ route('tours.edit', $tour->id) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
+                            <form method="POST" action="{{ route('tours.destroy', $tour->id) }}" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa tour này?')">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty
