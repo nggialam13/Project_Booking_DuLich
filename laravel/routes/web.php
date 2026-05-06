@@ -16,12 +16,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//home
-Route::get('/home', function () {
-    return view('home');
-});
-
-// Chưa đăng nhập mới truy cập được
+// Guest routes (chưa đăng nhập)
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
@@ -70,7 +65,8 @@ Route::get('/payments', function () {
 Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
-
+//Hải
+use App\Http\Controllers\ReportController;
 
 Route::prefix('admin')->group(function () {
     Route::get('/report', [ReportController::class, 'index']);
