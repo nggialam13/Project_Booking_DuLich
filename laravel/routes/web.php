@@ -6,6 +6,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Models\Tour;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Http\Controllers\TourController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,8 +70,7 @@ Route::get('/payments', function () {
 Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
-//Hải
-use App\Http\Controllers\ReportController;
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/report', [ReportController::class, 'index']);
