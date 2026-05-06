@@ -3,6 +3,14 @@
 use Illuminate\Support\Facades\Route;
 // hạnh
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\Tour;
+use App\Models\Booking;
+use App\Models\Payment;
+use App\Http\Controllers\TourController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,7 +31,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 require __DIR__ . '/tour.php';
 
 // booking routes
-require __DIR__ . '/booking.php';
+require __DIR__.'/booking.php';
 
 //payment
 require __DIR__.'/payment.php';
