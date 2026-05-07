@@ -6,7 +6,12 @@
 
     <!-- 🧠 TITLE -->
     <h2 class="mb-4">📊 Report & Thống kê</h2>
+    <!-- 📊 DASHBOARD -->
+    <div class="row mb-4">
 
+
+
+    </div>
     <!-- 🔎 FILTER -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
@@ -64,7 +69,7 @@
                         <th>ID</th>
                         <th>Khách hàng</th>
                         <th>Tour</th>
-                        <th>Tổng tiền</th>
+                        <th>Chi phí</th>
                         <th>Trạng thái</th>
                         <th>Ngày đặt</th>
                     </tr>
@@ -111,6 +116,24 @@
                 </small>
 
                 {{ $bookings->links() }}
+            </div>
+        </div>
+        <!-- 📊 Tổng doanh thu -->
+        <div class="col-md-3">
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Tổng doanh thu
+                    </h6>
+
+                    <h3 class="fw-bold text-success">
+                        {{ number_format($totalRevenue, 0, ',', '.') }} đ
+                    </h3>
+
+                </div>
+
             </div>
         </div>
     </div>
