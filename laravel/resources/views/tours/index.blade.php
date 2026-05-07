@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.admin')
 
 @section('content')
 <!DOCTYPE html>
@@ -22,13 +22,6 @@
             </div>
         </div>
 
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
@@ -41,11 +34,12 @@
                         <th>Lịch trình</th>
                         <th>Chỗ trống</th>
                         <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($tours as $tour)
-                    <tr @if($tour->slots === $tour->available_slots) class="table-danger" @endif>
+                    <tr @if($tour->available_slots===0) class="table-danger" @endif>
                         <td>{{ $tour->id }}</td>
                         <td>{{ $tour->title }}</td>
                         <td>{{ $tour->location }}</td>
@@ -53,20 +47,39 @@
                         <td>
                             <span>{{ $tour->duration }} ngày</span>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <small class="text-muted">
                                 {{ \Carbon\Carbon::parse($tour->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($tour->end_date)->format('d/m/Y') }}
                             </small>
                         </td>
                         <td>
-                            <span class="badge @if($tour->slots === $tour->available_slots) bg-danger @elseif(($tour->available_slots / $tour->slots) * 100 >= 50) bg-warning @else bg-info @endif">{{ $tour->available_slots }}/{{ $tour->slots }}</span>
+                            <span class="badge 
+                            @if($tour->available_slots===0) bg-danger 
+                            @elseif((($tour->slots-$tour->available_slots) / $tour->slots) * 100 >= 80) bg-warning 
+                            @else bg-info @endif">{{ $tour->slots - $tour->available_slots }}/{{ $tour->slots }}
+                            </span>
                         </td>
-                        <td>
-                            @if($tour->status === 'active')
-                            <span class="badge bg-success">Hoạt động</span>
-                            @else
-                            <span class="badge bg-danger">Không hoạt động</span>
-                            @endif
+                        <td style="white-space: nowrap;">
+                            <form method="POST" action="{{ route('tours.toggle-status', $tour->id) }}" style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-sm  {{$tour->status==="active"?'btn-success':'btn-danger'}}" onclick="return confirm('Bạn chắc chắn sửa tour này?')">
+                                    <i class="fas fa-exchange-alt"></i> {{ $tour->status==="active"?'Hoạt động':'Không hoạt động' }}
+                                </button>
+                            </form>
+                        </td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ route('tours.edit', $tour->id) }}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <form method="POST" action="{{ route('tours.destroy', $tour->id) }}" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa tour này?')">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </form>
+
                         </td>
                     </tr>
                     @empty

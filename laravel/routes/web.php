@@ -6,17 +6,17 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Models\Tour;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Http\Controllers\TourController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-//home
-Route::get('/home', function () {
-    return view('home');
-});
-
-// Chưa đăng nhập mới truy cập được
+// Guest routes (chưa đăng nhập)
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
@@ -35,8 +35,6 @@ require __DIR__.'/booking.php';
 
 //payment
 require __DIR__.'/payment.php';
-require __DIR__.'/booking.php';
-require __DIR__.'/tour.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,7 +43,7 @@ Route::get('/', function () {
 
 Route::get('/tours', function () {
     $tours = \App\Models\Tour::paginate(6);
-    return view('tours.index', compact('tours'));
+    return view('tours.user-tours', compact('tours'));
 });
 
 Route::get('/tours/{id}', function ($id) {
@@ -65,3 +63,13 @@ Route::get('/payments', function () {
 Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
+
+
+//admin dashboard
+Route::middleware(['auth'])->get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
+//admin report
+Route::get('/admin/report', [ReportController::class, 'index']);
+Route::get('/admin/report', [ReportController::class, 'index'])->name('admin.report');
