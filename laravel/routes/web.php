@@ -65,6 +65,11 @@ Route::get('/test-alert', function () {
 });
 
 
+//admin dashboard
+Route::middleware(['auth'])->get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
 //admin report
 Route::get('/admin/report', [ReportController::class, 'index']);
 Route::get('/admin/report', [ReportController::class, 'index'])->name('admin.report');
