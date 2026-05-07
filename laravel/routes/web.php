@@ -35,8 +35,6 @@ require __DIR__.'/booking.php';
 
 //payment
 require __DIR__.'/payment.php';
-require __DIR__.'/booking.php';
-require __DIR__.'/tour.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,7 +43,7 @@ Route::get('/', function () {
 
 Route::get('/tours', function () {
     $tours = \App\Models\Tour::paginate(6);
-    return view('tours.index', compact('tours'));
+    return view('tours.user-tours', compact('tours'));
 });
 
 Route::get('/tours/{id}', function ($id) {
