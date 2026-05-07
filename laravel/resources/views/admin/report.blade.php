@@ -139,7 +139,24 @@
                 </div>
             </div>
 
-            
+            <!-- TOTAL TOUR ACTIVE -->
+            <div class="col-md-3">
+                <div class="card shadow border-0 h-100">
+
+                    <div class="card-body text-center">
+
+                        <h6 class="text-muted">
+                            Tour Active
+                        </h6>
+
+                        <h3 class="fw-bold text-warning">
+                            {{ $totalTourActive }}
+                        </h3>
+
+                    </div>
+
+                </div>
+            </div>
             <!-- TOTAL BOOKING -->
             <div class="col-md-3">
                 <div class="card shadow border-0 h-100">
