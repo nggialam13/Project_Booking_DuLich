@@ -7,7 +7,7 @@
     <!-- 🧠 TITLE -->
     <h2 class="mb-4">📊 Report & Thống kê</h2>
     <!-- 📊 DASHBOARD -->
-    <div class="row mb-4">
+    <div class="row mb-4 ">
 
 
 
@@ -118,23 +118,47 @@
                 {{ $bookings->links() }}
             </div>
         </div>
-        <!-- 📊 Tổng doanh thu -->
-        <div class="col-md-3">
-            <div class="card shadow border-0">
+        <!-- 📊 DASHBOARD -->
+        <div class="row mb-4 justify-content-end">
 
-                <div class="card-body text-center">
+            <!-- TOTAL BOOKING -->
+            <div class="col-md-3">
+                <div class="card shadow border-0 h-100">
 
-                    <h6 class="text-muted">
-                        Tổng doanh thu
-                    </h6>
+                    <div class="card-body text-center">
 
-                    <h3 class="fw-bold text-success">
-                        {{ number_format($totalRevenue, 0, ',', '.') }} đ
-                    </h3>
+                        <h6 class="text-muted">
+                            Tổng Booking
+                        </h6>
+
+                        <h3 class="fw-bold text-primary">
+                            {{ $totalBooking }}
+                        </h3>
+
+                    </div>
 
                 </div>
-
             </div>
+
+            <!-- TOTAL REVENUE -->
+            <div class="col-md-3">
+                <div class="card shadow border-0 h-100">
+
+                    <div class="card-body text-center">
+
+                        <h6 class="text-muted">
+                            Tổng doanh thu
+                        </h6>
+
+                        <h3 class="fw-bold text-success">
+                            {{ number_format($totalRevenue, 0, ',', '.') }} đ
+                        </h3>
+
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
 
