@@ -120,7 +120,26 @@
         </div>
         <!-- 📊 DASHBOARD -->
         <div class="row mb-4 justify-content-end">
+            <!-- TOTAL USER -->
+            <div class="col-md-3">
+                <div class="card shadow border-0 h-100">
 
+                    <div class="card-body text-center">
+
+                        <h6 class="text-muted">
+                            Tổng User
+                        </h6>
+
+                        <h3 class="fw-bold text-info">
+                            {{ $totalUser }}
+                        </h3>
+
+                    </div>
+
+                </div>
+            </div>
+
+            
             <!-- TOTAL BOOKING -->
             <div class="col-md-3">
                 <div class="card shadow border-0 h-100">
@@ -158,6 +177,8 @@
 
                 </div>
             </div>
+
+
 
         </div>
     </div>
