@@ -49,7 +49,8 @@ class AuthController extends Controller
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('tours.index');
+        return redirect('/tours');
+        //return redirect()->route('tours.user-index');
     }
     // Hiển thị form đăng nhập
     public function showLogin()
@@ -75,7 +76,8 @@ class AuthController extends Controller
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
-            return redirect()->route('tours.index');
+            return redirect('/tours');
+            //return redirect()->route('tours.user-index');
         }
 
         throw ValidationException::withMessages([
