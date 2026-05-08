@@ -14,89 +14,10 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-
-            /* 🎨 NỀN MỚI: XANH PASTEL ĐẬM HƠN + CÓ CHIỀU SÂU */
-            background: linear-gradient(135deg,
-                    #a2bada 0%,
-                    /* xanh pastel đậm hơn */
-                    #6593b1 40%,
-                    /* trắng xanh */
-                    #9fdab4 100%
-                    /* xanh lá nhạt */
-                );
-
-            min-height: 100vh;
-        }
-
-        /* gradient navbar đẹp hơn */
-        .bg-main {
-            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* card nâng cấp */
-        .card-custom {
-            border: none;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.95);
-            /* glass effect nhẹ */
-            backdrop-filter: blur(6px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .card-custom:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        /* button đẹp hơn */
-        .btn-main {
-            background: linear-gradient(135deg, #0d6efd, #22c55e);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            transition: 0.3s;
-        }
-
-        .btn-main:hover {
-            transform: scale(1.03);
-            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
-        }
-
-        /* animation mượt hơn */
-        .fade-in {
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* container đẹp hơn */
-        .main-content {
-            min-height: 80vh;
-        }
-
-        /* table đẹp hơn */
-        .table {
-            border-radius: 12px;
-            overflow: hidden;
-            background: white;
-        }
-    </style>
+  
 </head>
 
 <body>

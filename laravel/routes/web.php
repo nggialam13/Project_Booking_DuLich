@@ -3,6 +3,14 @@
 use Illuminate\Support\Facades\Route;
 // hạnh
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\Tour;
+use App\Models\Booking;
+use App\Models\Payment;
+use App\Http\Controllers\TourController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,46 +20,56 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
 });
-
-// Auth routes (đã đăng nhập)
-Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
-    Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('changePassword');
-});
-
-// Route tạm cho tours.index
-Route::middleware('auth')->get('/tours', function () {
-    return view('tours.index');
-})->name('tours.index');
-
-// Route tạm cho admin.dashboard
-Route::middleware(['auth'])->get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    // Các route quản lý user
-    Route::get('/users', [AuthController::class, 'listUsers'])->name('admin.users');
-    Route::delete('/users/{id}', [AuthController::class, 'deleteUser'])->name('admin.deleteUser');
-    // Các route khác
-});
+// Đăng nhập
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+// Đăng xuất
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Admin Tours List
 require __DIR__ . '/tour.php';
 
 // booking routes
-require __DIR__ . '/booking.php';
+require __DIR__.'/booking.php';
 
 //payment
-require __DIR__ . '/payment.php';
-require __DIR__ . '/booking.php';
-require __DIR__ . '/tour.php';
+require __DIR__.'/payment.php';
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/tours', function () {
+    $tours = \App\Models\Tour::paginate(6);
+    return view('tours.user-tours', compact('tours'));
+});
+
+Route::get('/tours/{id}', function ($id) {
+    $tour = Tour::findOrFail($id);
+    return view('tours.show', compact('tour'));
+});
+
+Route::get('/bookings/create', function () {
+    $tour = \App\Models\Tour::first();
+    return view('bookings.create', compact('tour'));
+});
+
+Route::get('/payments', function () {
+    $payments = Payment::paginate(5); // hoặc all()
+    return view('payments.index', compact('payments'));
+});
+Route::get('/test-alert', function () {
+    return redirect('/tours')->with('success', 'Thành công!');
+});
+
+
+//admin dashboard
+Route::middleware(['auth'])->get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
+//admin report
+Route::get('/admin/report', [ReportController::class, 'index']);
+Route::get('/admin/report', [ReportController::class, 'index'])->name('admin.report');
