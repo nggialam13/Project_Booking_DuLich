@@ -38,7 +38,7 @@ class ReportService
             ->where('status', 'confirmed')
             ->sum('total_price');
 
-        $totalUser = User::count();
+        $totalUser = User::where('role', 'user')->count();
 
         $totalTourActive = Tour::where('status', 'active')->count();
 
