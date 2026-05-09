@@ -27,7 +27,7 @@
                 <!-- Image -->
                 <div style="position: relative; height: 220px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden;">
                     @if($tour->image)
-                    <img src="{{ asset('storage/' . $tour->image) }}" alt="{{ $tour->title }}"
+                    <img src="{{ asset('storage/demo/' . $tour->image) }}" alt="{{ $tour->title }}"
                         class="card-img-top" style="height: 100%; object-fit: cover;">
                     @else
                     <div class="d-flex align-items-center justify-content-center h-100 text-white">

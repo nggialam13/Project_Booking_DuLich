@@ -19,17 +19,17 @@
 
                 @auth
                     @if(auth()->user()->role === 'user')
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('bookings*') ? 'active' : '' }}" href="/bookings">
-                            Booking
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('bookings*') ? 'active' : '' }}" href="/bookings">
+                                Booking
+                            </a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('payments*') ? 'active' : '' }}" href="/payments">
-                            Payment
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('payments*') ? 'active' : '' }}" href="/payments">
+                                Payment
+                            </a>
+                        </li>
                     @endif
                 @endauth
 
@@ -37,25 +37,25 @@
 
             <!-- USER -->
             <div class="d-flex align-items-center gap-3 user-box">
-
                 @auth
-                    <span class="user-name">
-                        👤 {{ auth()->user()->name }}
-                    </span>
+                    <!-- Link profile bao gồm logo/avatar và tên user -->
+                    <a href="{{ route('profile') }}"
+                        class="d-flex align-items-center gap-2 text-decoration-none text-light">
+                        <!-- logo -->
+                        👤
+                        <span>{{ auth()->user()->name }}</span>
+                    </a>
 
-                    <form method="POST" action="/logout">
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
                         @csrf
-                        <button class="btn btn-logout">
-                            Logout
-                        </button>
+                        <button type="submit" class="btn btn-logout">Đăng xuất</button>
                     </form>
                 @endauth
 
                 @guest
-                    <a href="/login" class="btn btn-light btn-sm">Login</a>
-                    <a href="/register" class="btn btn-outline-light btn-sm">Register</a>
+                    <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
+                    <a href="{{ route('register') }}" class="btn btn-outline-light btn-sm">Register</a>
                 @endguest
-
             </div>
 
         </div>

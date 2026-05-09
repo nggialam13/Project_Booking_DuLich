@@ -5,7 +5,7 @@
 <div class="container main-content my-5">
 
     @if(session('error'))
-        <div class="alert alert-danger shadow-sm">{{ session('error') }}</div>
+    <div class="alert alert-danger shadow-sm">{{ session('error') }}</div>
     @endif
 
     <div class="booking-detail-card">
@@ -15,6 +15,9 @@
 
             <div>
                 <h3 class="title">📄 Chi tiết booking</h3>
+                <div class="mt-1 text-muted">
+                    Mã booking: <strong>{{ $booking->booking_code }}</strong>
+                </div>
                 <div class="date">
                     📅 {{ \Carbon\Carbon::parse($booking->booking_date)->format('d/m/Y H:i') }}
                 </div>
@@ -22,11 +25,11 @@
 
             <!-- STATUS -->
             @if($booking->status == 'pending')
-                <span class="status-badge pending">Pending</span>
+            <span class="status-badge pending">Pending</span>
             @elseif($booking->status == 'confirmed')
-                <span class="status-badge success">Confirmed</span>
+            <span class="status-badge success">Confirmed</span>
             @else
-                <span class="status-badge cancel">Cancelled</span>
+            <span class="status-badge cancel">Cancelled</span>
             @endif
 
         </div>
@@ -36,8 +39,8 @@
 
             <!-- TOUR -->
             <div class="col-md-8">
-               <div class="detail-box tour-box">
-                  <div class="detail-label">Tour</div>
+                <div class="detail-box tour-box">
+                    <div class="detail-label">Tour</div>
                     <div class="tour-name">{{ $booking->tour->title }}</div>
                     <div class="tour-price">
                         💰 {{ number_format($booking->tour->price) }} VNĐ
@@ -72,18 +75,18 @@
         <div class="action-box mt-4">
 
             @if(in_array($booking->status, ['pending', 'confirmed']))
-                <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
-                    @csrf
-                    <button class="btn btn-cancel"
-                        onclick="return confirm('Bạn chắc chắn muốn hủy?')">
-                        ❌ Hủy booking
-                    </button>
-                </form>
+            <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
+                @csrf
+                <button class="btn btn-cancel"
+                    onclick="return confirm('Bạn chắc chắn muốn hủy?')">
+                    ❌ Hủy booking
+                </button>
+            </form>
             @endif
 
-          <a href="{{ route('bookings.index') }}" class="btn btn-back d-inline-block">
-    ← Quay lại
-</a>
+            <a href="{{ route('bookings.index') }}" class="btn btn-back d-inline-block">
+                ← Quay lại
+            </a>
 
         </div>
 
