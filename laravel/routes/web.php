@@ -49,7 +49,7 @@ Route::get('/', function () {
 
 
 Route::get('/tours', function () {
-    $tours = \App\Models\Tour::paginate(6);
+    $tours = \App\Models\Tour::where('status', 'active')->paginate(9);
     return view('tours.user-tours', compact('tours'));
 });
 
