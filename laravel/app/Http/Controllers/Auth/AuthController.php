@@ -136,13 +136,13 @@ class AuthController extends Controller
 
         return redirect()->route('profile')->with('success', 'Đổi mật khẩu thành công!');
     }
-    // hiển thị danh sách user
+    // hiển thị danh sách users
     public function listUsers()
     {
         $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
-    // xóa user
+    // xóa user (admin không thể xóa chính mình)
     public function deleteUser($id)
     {
         if ($id == Auth::id()) {
