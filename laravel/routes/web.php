@@ -33,6 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('changePassword');
     
 });
+// Admin - Quản lý người dùng
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [App\Http\Controllers\Auth\AuthController::class, 'listUsers'])->name('admin.users');
+    Route::delete('/users/{id}', [App\Http\Controllers\Auth\AuthController::class, 'deleteUser'])->name('admin.deleteUser');
+});
 
 // Admin Tours List
 require __DIR__ . '/tour.php';
