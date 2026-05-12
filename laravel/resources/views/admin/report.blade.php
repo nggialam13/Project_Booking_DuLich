@@ -9,8 +9,6 @@
     <!-- 📊 DASHBOARD -->
     <div class="row mb-4 ">
 
-
-
     </div>
     <!-- 🔎 FILTER -->
     <div class="card shadow-sm mb-4">
@@ -81,10 +79,11 @@
         </div>
     </div>
 
+
     <!-- 📄 TABLE BOOKING -->
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
-             Danh sách Booking
+            Danh sách Booking
         </div>
 
         <div class="table-responsive">
@@ -223,9 +222,62 @@
 
 
 
+
         </div>
+    </div>
+    <!-- 📈 DOANH THU THEO THÁNG -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-success text-white">
+            Doanh thu theo tháng
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Tháng</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse($revenueByMonth as $item)
+
+                    <tr>
+
+                        <td>
+                            Tháng {{ $item->month }}
+                        </td>
+
+                        <td class="text-success fw-bold">
+                            {{ number_format($item->revenue, 0, ',', '.') }} đ
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
 
 </div>
+
 
 @endsection
