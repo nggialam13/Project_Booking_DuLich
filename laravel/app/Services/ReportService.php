@@ -42,7 +42,7 @@ class ReportService
 
         // BOOKING LIST (PAGINATION)
         $bookings = (clone $query)
-            ->latest()
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
