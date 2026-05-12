@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,7 +12,8 @@ class ReportController extends Controller
         $filters = $request->validate([
             'from' => 'nullable|date',
             'to'   => 'nullable|date',
-            'sort' => 'nullable|in:asc,desc'
+            'status' => 'nullable',
+            'keyword' => 'nullable'
         ]);
 
         $reportService = app(ReportService::class);
