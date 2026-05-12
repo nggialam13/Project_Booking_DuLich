@@ -5,7 +5,7 @@
 <div class="container py-4">
 
     <!-- 🧠 TITLE -->
-    <h2 class="mb-4">📊 Report & Thống kê</h2>
+    <h2 class="mb-4"> Report & Thống kê</h2>
     <!-- 📊 DASHBOARD -->
     <div class="row mb-4 ">
 
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">🔍 Lọc dữ liệu</button>
+                    <button class="btn btn-primary w-100"> Lọc dữ liệu</button>
                 </div>
 
                 <div class="col-md-3 d-flex align-items-end">
@@ -84,7 +84,7 @@
     <!-- 📄 TABLE BOOKING -->
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
-            📋 Danh sách Booking
+             Danh sách Booking
         </div>
 
         <div class="table-responsive">
