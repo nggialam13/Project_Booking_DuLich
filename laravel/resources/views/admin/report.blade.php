@@ -276,6 +276,57 @@
         </div>
 
     </div>
+    <!-- 📅 BOOKING THEO NGÀY -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-primary text-white">
+            Booking theo ngày
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Số booking</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse($bookingByDay as $item)
+
+                    <tr>
+
+                        <td>
+                            {{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}
+                        </td>
+
+                        <td class="fw-bold text-primary">
+                            {{ $item->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
