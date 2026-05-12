@@ -436,7 +436,59 @@
         </div>
 
     </div>
+    <!-- 💳 TỈ LỆ PAYMENT THEO STATUS -->
+    <div class="card shadow-sm mb-4">
 
+        <div class="card-header bg-secondary text-white">
+            Tỉ lệ payment theo status
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Trạng thái</th>
+                        <th>Số lượng</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($paymentStatus as $item)
+
+                    <tr>
+
+                        <td>
+                            {{ ucfirst($item->status) }}
+                        </td>
+
+                        <td class="fw-bold text-secondary">
+                            {{ $item->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 </div>
 
 

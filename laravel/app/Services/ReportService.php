@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\User;
 use App\Models\Tour;
 use Illuminate\Support\Facades\DB;
+use App\Models\Payment;
 
 class ReportService
 {
@@ -89,6 +90,13 @@ class ReportService
         )
             ->groupBy('status')
             ->get();
+        // PAYMENT STATUS
+        $paymentStatus = Payment::select(
+            'status',
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy('status')
+            ->get();
 
         return [
             'bookings' => $bookings,
@@ -100,6 +108,7 @@ class ReportService
             'bookingByDay' => $bookingByDay,
             'topTours' => $topTours,
             'bookingStatus' => $bookingStatus,
+            'paymentStatus' => $paymentStatus,
         ];
     }
 }
