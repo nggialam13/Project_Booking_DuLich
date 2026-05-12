@@ -46,6 +46,8 @@
                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
                     <td>
                         @if($user->id !== auth()->id())
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                            
                             <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa người dùng {{ $user->name }}?')">
                                 @csrf
                                 @method('DELETE')
