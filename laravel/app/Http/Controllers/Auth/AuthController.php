@@ -49,7 +49,8 @@ class AuthController extends Controller
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('tours.index');
+        return redirect('/tours');
+        //return redirect()->route('tours.user-index');
     }
     // Hiển thị form đăng nhập
     public function showLogin()
@@ -75,7 +76,8 @@ class AuthController extends Controller
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
-            return redirect()->route('tours.index');
+            return redirect('/tours');
+            //return redirect()->route('tours.user-index');
         }
 
         throw ValidationException::withMessages([
@@ -134,13 +136,13 @@ class AuthController extends Controller
 
         return redirect()->route('profile')->with('success', 'Đổi mật khẩu thành công!');
     }
-    // hiển thị danh sách user
+    // hiển thị danh sách users
     public function listUsers()
     {
         $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
-    // xóa user
+    // xóa user (admin không thể xóa chính mình)
     public function deleteUser($id)
     {
         if ($id == Auth::id()) {

@@ -26,6 +26,18 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 // Đăng xuất
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+//profile
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('changePassword');
+    
+});
+// Admin - Quản lý người dùng
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [App\Http\Controllers\Auth\AuthController::class, 'listUsers'])->name('admin.users');
+    Route::delete('/users/{id}', [App\Http\Controllers\Auth\AuthController::class, 'deleteUser'])->name('admin.deleteUser');
+});
 
 // Admin Tours List
 require __DIR__ . '/tour.php';
@@ -35,8 +47,6 @@ require __DIR__.'/booking.php';
 
 //payment
 require __DIR__.'/payment.php';
-require __DIR__.'/booking.php';
-require __DIR__.'/tour.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,7 +55,7 @@ Route::get('/', function () {
 
 Route::get('/tours', function () {
     $tours = \App\Models\Tour::paginate(6);
-    return view('tours.index', compact('tours'));
+    return view('tours.user-tours', compact('tours'));
 });
 
 Route::get('/tours/{id}', function ($id) {
@@ -66,6 +76,11 @@ Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
 
+
+//admin dashboard
+Route::middleware(['auth'])->get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
 
 //admin report
 Route::get('/admin/report', [ReportController::class, 'index']);
