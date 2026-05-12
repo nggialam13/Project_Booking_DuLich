@@ -327,6 +327,64 @@
         </div>
 
     </div>
+    <!-- 🏆 TOP TOUR ĐƯỢC ĐẶT NHIỀU -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-warning text-dark">
+            Top tour được đặt nhiều
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Top</th>
+                        <th>Tên tour</th>
+                        <th>Số booking</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($topTours as $index => $tour)
+
+                    <tr>
+
+                        <td>
+                            #{{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ $tour->tour->title ?? 'N/A' }}
+                        </td>
+
+                        <td class="fw-bold text-danger">
+                            {{ $tour->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
