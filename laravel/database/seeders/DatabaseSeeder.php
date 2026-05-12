@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(TourSeeder::class);
         $this->call([
-    BookingSeeder::class,
-]);
+            BookingSeeder::class,
+        ]);
     }
 }

@@ -31,16 +31,42 @@
                         class="form-control">
                 </div>
 
+                <!-- STATUS -->
                 <div class="col-md-3">
-                    <label class="form-label">Sắp xếp</label>
-                    <select name="sort" class="form-control">
-                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>
-                            Mới → Cũ
+                    <label class="form-label">Trạng thái</label>
+
+                    <select name="status" class="form-control">
+
+                        <option value="">-- Tất cả --</option>
+
+                        <option value="pending"
+                            {{ request('status') == 'pending' ? 'selected' : '' }}>
+                            Pending
                         </option>
-                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>
-                            Cũ → Mới
+
+                        <option value="confirmed"
+                            {{ request('status') == 'confirmed' ? 'selected' : '' }}>
+                            Confirmed
                         </option>
+
+                        <option value="cancelled"
+                            {{ request('status') == 'cancelled' ? 'selected' : '' }}>
+                            Cancelled
+                        </option>
+
                     </select>
+                </div>
+
+                <!-- SEARCH -->
+                <div class="col-md-3">
+                    <label class="form-label">Tên khách hàng</label>
+
+                    <input
+                        type="text"
+                        name="keyword"
+                        value="{{ request('keyword') }}"
+                        class="form-control"
+                        placeholder="Nhập tên khách hàng">
                 </div>
 
                 <div class="col-md-3 d-flex align-items-end">
