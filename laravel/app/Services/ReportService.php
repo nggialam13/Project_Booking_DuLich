@@ -82,6 +82,13 @@ class ReportService
             ->with('tour')
             ->limit(5)
             ->get();
+        // BOOKING STATUS
+        $bookingStatus = Booking::select(
+            'status',
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy('status')
+            ->get();
 
         return [
             'bookings' => $bookings,
@@ -92,6 +99,7 @@ class ReportService
             'revenueByMonth' => $revenueByMonth,
             'bookingByDay' => $bookingByDay,
             'topTours' => $topTours,
+            'bookingStatus' => $bookingStatus,
         ];
     }
 }
