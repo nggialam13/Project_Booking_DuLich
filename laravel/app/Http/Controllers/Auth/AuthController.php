@@ -152,4 +152,33 @@ class AuthController extends Controller
         $user->delete();
         return redirect()->route('admin.users')->with('success', 'Xóa người dùng thành công.');
     }
+    // Hiển thị form edit user
+    public function editUser($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
+    // Xử lý cập nhật user
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Validate dữ liệu
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'nullable|string|max:20',
+            'role' => 'required|in:user,admin',
+        ]);
+
+        // Không cho admin tự hạ cấp role của chính mình
+        if ($id == Auth::id() && $request->role != Auth::user()->role) {
+            return back()->withErrors(['role' => 'Bạn không thể thay đổi vai trò của chính mình.']);
+        }
+
+        $user->update($request->only('name', 'email', 'phone', 'role'));
+
+        return redirect()->route('admin.users')->with('success', 'Cập nhật người dùng thành công.');
+    }
 }

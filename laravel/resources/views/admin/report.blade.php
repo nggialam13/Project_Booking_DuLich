@@ -5,18 +5,16 @@
 <div class="container py-4">
 
     <!-- 🧠 TITLE -->
-    <h2 class="mb-4">📊 Report & Thống kê</h2>
+    <h2 class="mb-4"> Report & Thống kê</h2>
     <!-- 📊 DASHBOARD -->
     <div class="row mb-4 ">
-
-
 
     </div>
     <!-- 🔎 FILTER -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <form method="GET" class="row g-3">
-
+                <!--filter theo ngày-->
                 <div class="col-md-3">
                     <label class="form-label">Từ ngày</label>
                     <input type="date" name="from"
@@ -31,20 +29,46 @@
                         class="form-control">
                 </div>
 
+                <!-- STATUS -->
                 <div class="col-md-3">
-                    <label class="form-label">Sắp xếp</label>
-                    <select name="sort" class="form-control">
-                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>
-                            Mới → Cũ
+                    <label class="form-label">Trạng thái</label>
+
+                    <select name="status" class="form-control">
+
+                        <option value="">-- Tất cả --</option>
+
+                        <option value="pending"
+                            {{ request('status') == 'pending' ? 'selected' : '' }}>
+                            Pending
                         </option>
-                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>
-                            Cũ → Mới
+
+                        <option value="confirmed"
+                            {{ request('status') == 'confirmed' ? 'selected' : '' }}>
+                            Confirmed
                         </option>
+
+                        <option value="cancelled"
+                            {{ request('status') == 'cancelled' ? 'selected' : '' }}>
+                            Cancelled
+                        </option>
+
                     </select>
                 </div>
 
+                <!-- SEARCH -->
+                <div class="col-md-3">
+                    <label class="form-label">Tên khách hàng</label>
+
+                    <input
+                        type="text"
+                        name="keyword"
+                        value="{{ request('keyword') }}"
+                        class="form-control"
+                        placeholder="Nhập tên khách hàng">
+                </div>
+
                 <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">🔍 Lọc dữ liệu</button>
+                    <button class="btn btn-primary w-100"> Lọc dữ liệu</button>
                 </div>
 
                 <div class="col-md-3 d-flex align-items-end">
@@ -55,10 +79,11 @@
         </div>
     </div>
 
+
     <!-- 📄 TABLE BOOKING -->
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
-            📋 Danh sách Booking
+            Danh sách Booking
         </div>
 
         <div class="table-responsive">
@@ -197,9 +222,274 @@
 
 
 
+
         </div>
     </div>
+    <!-- 📈 DOANH THU THEO THÁNG -->
+    <div class="card shadow-sm mb-4">
 
+        <div class="card-header bg-success text-white">
+            Doanh thu theo tháng
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Tháng</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse($revenueByMonth as $item)
+
+                    <tr>
+
+                        <td>
+                            Tháng {{ $item->month }}
+                        </td>
+
+                        <td class="text-success fw-bold">
+                            {{ number_format($item->revenue, 0, ',', '.') }} đ
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+    <!-- 📅 BOOKING THEO NGÀY -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-primary text-white">
+            Booking theo ngày
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Số booking</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse($bookingByDay as $item)
+
+                    <tr>
+
+                        <td>
+                            {{ \Carbon\Carbon::parse($item->date)->format('d/m/Y') }}
+                        </td>
+
+                        <td class="fw-bold text-primary">
+                            {{ $item->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+    <!-- 🏆 TOP TOUR ĐƯỢC ĐẶT NHIỀU -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-warning text-dark">
+            Top tour được đặt nhiều
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Top</th>
+                        <th>Tên tour</th>
+                        <th>Số booking</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($topTours as $index => $tour)
+
+                    <tr>
+
+                        <td>
+                            #{{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ $tour->tour->title ?? 'N/A' }}
+                        </td>
+
+                        <td class="fw-bold text-danger">
+                            {{ $tour->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+    <!-- 📊 TỈ LỆ BOOKING THEO STATUS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-info text-white">
+            Tỉ lệ booking theo status
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Trạng thái</th>
+                        <th>Số lượng</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @forelse($bookingStatus as $item)
+
+                    <tr>
+
+                        <td>
+                            {{ ucfirst($item->status) }}
+                        </td>
+
+                        <td class="fw-bold text-info">
+                            {{ $item->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+    <!-- 💳 TỈ LỆ PAYMENT THEO STATUS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-secondary text-white">
+            Tỉ lệ payment theo status
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Trạng thái</th>
+                        <th>Số lượng</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($paymentStatus as $item)
+
+                    <tr>
+
+                        <td>
+                            {{ ucfirst($item->status) }}
+                        </td>
+
+                        <td class="fw-bold text-secondary">
+                            {{ $item->total }}
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Không có dữ liệu
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 </div>
+
 
 @endsection

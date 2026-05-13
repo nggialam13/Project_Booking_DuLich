@@ -35,7 +35,12 @@ Route::middleware('auth')->group(function () {
 });
 // Admin - Quản lý người dùng
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    //list users
     Route::get('/users', [App\Http\Controllers\Auth\AuthController::class, 'listUsers'])->name('admin.users');
+    // update
+    Route::get('/users/{id}/edit', [AuthController::class, 'editUser'])->name('admin.users.edit');
+    Route::put('/users/{id}', [AuthController::class, 'updateUser'])->name('admin.users.update');
+
     Route::delete('/users/{id}', [App\Http\Controllers\Auth\AuthController::class, 'deleteUser'])->name('admin.deleteUser');
 });
 
