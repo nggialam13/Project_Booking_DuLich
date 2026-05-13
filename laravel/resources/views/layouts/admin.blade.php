@@ -376,29 +376,36 @@
         </div>
 
         <ul class="sidebar-nav">
+            //đường dẫn quản lý người dùng
+            <li>
+                <a href="{{ route('admin.users') }}" class="@if(request()->routeIs('admin.users*')) active @endif">
+                    <i class="fas fa-users"></i> Quản lý người dùng
+                </a>
+            </li>
             <li><a href="{{ route('tours.index') }}" class="@if(request()->routeIs('tours.*')) active @endif">
                     <i class="fas fa-map-location-dot"></i> Tours
                 </a>
             </li>
             @if(Route::has('admin.bookings.index'))
-            <li><a href="{{ route('admin.bookings.index') }}" class="@if(request()->routeIs('admin.bookings.*')) active @endif">
-                    <i class="fas fa-calendar-check"></i> Bookings
-                </a>
-            </li>
+                <li><a href="{{ route('admin.bookings.index') }}"
+                        class="@if(request()->routeIs('admin.bookings.*')) active @endif">
+                        <i class="fas fa-calendar-check"></i> Bookings
+                    </a>
+                </li>
             @endif
             @if(Route::has('payment.index'))
-            <li><a href="{{ route('payment.index') }}" class="@if(request()->routeIs('payment.*')) active @endif">
-                    <i class="fas fa-credit-card"></i> Payments
-                </a>
-            </li>
+                <li><a href="{{ route('payment.index') }}" class="@if(request()->routeIs('payment.*')) active @endif">
+                        <i class="fas fa-credit-card"></i> Payments
+                    </a>
+                </li>
             @endif
+
             @if(Route::has('admin.report'))
-            <li>
-                <a href="{{ route('admin.report') }}"
-                    class="@if(request()->routeIs('admin.report')) active @endif">
-                    <i class="fas fa-chart-bar"></i> Report
-                </a>
-            </li>
+                <li>
+                    <a href="{{ route('admin.report') }}" class="@if(request()->routeIs('admin.report')) active @endif">
+                        <i class="fas fa-chart-bar"></i> Report
+                    </a>
+                </li>
             @endif
             <li>
                 <hr style="border-color: #0f3460; margin: 10px 0;">
@@ -407,7 +414,9 @@
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </li>
+            
         </ul>
+
     </div>
 
     <!-- MAIN WRAPPER -->
@@ -457,7 +466,7 @@
         }
 
         // Auto calculate duration when start_date or end_date changes
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const startDateInput = document.getElementById('start_date');
             const endDateInput = document.getElementById('end_date');
             const durationInput = document.getElementById('duration');
