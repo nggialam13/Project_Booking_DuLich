@@ -51,6 +51,14 @@
     <div class="card card-admin">
         <div class="card-admin-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i>Danh sách thanh toán</h5>
+            <form method="get" action="{{ route('admin.payments.index') }}" class="d-flex align-items-center gap-2 flex-wrap">
+                <label for="filter-payment-status" class="small text-muted mb-0 text-nowrap">Trạng thái</label>
+                <select name="status" id="filter-payment-status" class="form-select form-select-sm" style="min-width: 11rem;" onchange="this.form.submit()">
+                    <option value="" @selected($statusFilter === null)>Tất cả</option>
+                    <option value="pending" @selected($statusFilter === 'pending')>Đang chờ</option>
+                    <option value="paid" @selected($statusFilter === 'paid')>Đã thanh toán</option>
+                </select>
+            </form>
         </div>
         <div class="card-admin-body p-0">
             <div class="table-responsive">

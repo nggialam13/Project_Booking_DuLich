@@ -10,11 +10,25 @@ use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    public function payments(): View
+    public function payments(Request $request): View
     {
-        $payments = Payment::with(['booking.tour', 'booking.user'])
-            ->latest()
-            ->paginate(15);
+        $statusFilter = null;
+        if ($request->filled('status')) {
+            $s = $request->string('status')->toString();
+            if (in_array($s, ['pending', 'paid'], true)) {
+                $statusFilter = $s;
+            }
+        }
+
+        $query = Payment::with(['booking.tour', 'booking.user'])->latest();
+        if ($statusFilter !== null) {
+            $query->where('status', $statusFilter);
+        }
+
+        $payments = $query->paginate(15);
+        if ($statusFilter !== null) {
+            $payments->appends(['status' => $statusFilter]);
+        }
 
         $stats = [
             'total' => Payment::count(),
@@ -22,7 +36,7 @@ class AdminController extends Controller
             'revenue' => (int) Payment::where('status', 'paid')->sum('amount'),
         ];
 
-        return view('admin.payments.index', compact('payments', 'stats'));
+        return view('admin.payments.index', compact('payments', 'stats', 'statusFilter'));
     }
 
     public function createPayment(): View
