@@ -124,7 +124,7 @@
                 <label for="image" class="form-label fw-600">Hình ảnh</label>
                 <input type="file" class="form-control @error('image') is-invalid @enderror" 
                        id="image" name="image" accept="image/*">
-                <small class="text-muted d-block mt-2">Định dạng: JPEG, PNG, JPG, GIF | Kích thước tối đa: 2MB</small>
+                <small class="text-muted d-block mt-2">Định dạng: JPEG, PNG, JPG | Kích thước tối đa: 2MB</small>
                 @error('image')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
