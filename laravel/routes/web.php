@@ -4,12 +4,8 @@ use Illuminate\Support\Facades\Route;
 // hạnh
 use App\Http\Controllers\Auth\AuthController;
 use App\Models\Tour;
-use App\Models\Booking;
-use App\Models\Payment;
-use App\Http\Controllers\TourController;
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AdminController;
 
 
 Route::get('/', function () {
@@ -42,6 +38,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/users/{id}', [AuthController::class, 'updateUser'])->name('admin.users.update');
 
     Route::delete('/users/{id}', [App\Http\Controllers\Auth\AuthController::class, 'deleteUser'])->name('admin.deleteUser');
+
+    Route::get('/payments', [AdminController::class, 'payments'])->name('admin.payments.index');
+    Route::get('/payments/create', [AdminController::class, 'createPayment'])->name('admin.payments.create');
+    Route::post('/payments', [AdminController::class, 'storePayment'])->name('admin.payments.store');
+    Route::get('/payments/{payment}', [AdminController::class, 'showPayment'])->name('admin.payments.show');
+    Route::patch('/payments/{payment}/status', [AdminController::class, 'updatePaymentStatus'])->name('admin.payments.update-status');
 });
 
 // Admin Tours List
@@ -73,10 +75,6 @@ Route::get('/bookings/create', function () {
     return view('bookings.create', compact('tour'));
 });
 
-Route::get('/payments', function () {
-    $payments = Payment::paginate(5); // hoặc all()
-    return view('payments.index', compact('payments'));
-});
 Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
