@@ -29,7 +29,12 @@
                 <ul class="footer-links">
                     <li><a href="/">Trang chủ</a></li>
                     <li><a href="/tours">Tours</a></li>
-                    <li><a href="/bookings">Booking</a></li>
+                    @auth
+                        @if(auth()->user()->role === 'user')
+                            <li><a href="{{ route('bookings.index') }}">Booking</a></li>
+                            <li><a href="{{ route('payment.index') }}">Thanh toán</a></li>
+                        @endif
+                    @endauth
                     <li><a href="/login">Đăng nhập</a></li>
                 </ul>
             </div>

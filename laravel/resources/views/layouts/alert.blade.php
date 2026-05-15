@@ -10,6 +10,12 @@
 </div>
 @endif
 
+@if(session('info'))
+<div class="alert alert-info alert-dismissible fade show">
+    {{ session('info') }}
+</div>
+@endif
+
 <script>
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(el => el.remove());

@@ -20,14 +20,14 @@
                 @auth
                     @if(auth()->user()->role === 'user')
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('bookings*') ? 'active' : '' }}" href="/bookings">
+                            <a class="nav-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}" href="{{ route('bookings.index') }}">
                                 Booking
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('payments*') ? 'active' : '' }}" href="/payments">
-                                Payment
+                            <a class="nav-link {{ request()->routeIs('payment.*') ? 'active' : '' }}" href="{{ route('payment.index') }}">
+                                Thanh toán
                             </a>
                         </li>
                     @endif

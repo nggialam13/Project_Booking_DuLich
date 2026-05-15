@@ -43,9 +43,14 @@ class Booking extends Model
         return $this->belongsTo(Tour::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function payment()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class)->latestOfMany();
     }
     public function bookingDetail()
     {
