@@ -40,8 +40,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/users/{id}', [App\Http\Controllers\Auth\AuthController::class, 'deleteUser'])->name('admin.deleteUser');
 
     Route::get('/payments', [AdminController::class, 'payments'])->name('admin.payments.index');
-    Route::get('/payments/create', [AdminController::class, 'createPayment'])->name('admin.payments.create');
-    Route::post('/payments', [AdminController::class, 'storePayment'])->name('admin.payments.store');
     Route::get('/payments/{payment}', [AdminController::class, 'showPayment'])->name('admin.payments.show');
     Route::patch('/payments/{payment}/status', [AdminController::class, 'updatePaymentStatus'])->name('admin.payments.update-status');
 });
