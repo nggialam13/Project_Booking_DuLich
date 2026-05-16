@@ -2,28 +2,23 @@
 
 namespace App\Http\Controllers\Booking;
 
-use Illuminate\Http\Request;
-use App\Services\BookingService;
-
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Services\BookingService;
+use App\Models\Tour;
 
 class BookingController extends Controller
 {
-    protected $bookingService;
+    public function __construct(private BookingService $bookingService) {}
 
-    public function __construct(BookingService $bookingService)
+
+    public function create($tourId)
     {
-        $this->bookingService = $bookingService;
+        $tour = Tour::findOrFail($tourId);
+
+        return view('bookings.create', compact('tour'));
     }
-
-    public function show($id)
-{
-    $booking = \App\Models\Booking::with(['tour', 'bookingDetail'])
-        ->findOrFail($id);
-
-    return view('bookings.show', compact('booking'));
-}
-
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -31,37 +26,106 @@ class BookingController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return redirect('/login')->with('error', 'Vui lòng đăng nhập');
+        }
+
         try {
-            $booking = $this->bookingService->create(
-                auth()->id(),
-                $data['tour_id'],
-                $data['quantity']
+            $booking = $this->bookingService->createBooking(
+                $userId,
+                (int) $data['tour_id'],
+                (int) $data['quantity']
             );
-
-            return redirect('/payments')
-                ->with('success', 'Đặt tour thành công');
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->with('error', $e->getMessage());
         }
-    }
-    // Hiển thị form đặt tour
-    public function create($tourId)
-    {
-        $tour = \App\Models\Tour::findOrFail($tourId);
 
-        return view('bookings.create', compact('tour'));
+        return redirect()->route('bookings.show', $booking->id)
+            ->with('success', 'Đặt tour thành công');
     }
+
+   public function index()
+{
+    $userId = Auth::id();
+
+    if (!$userId) {
+        return redirect('/login');
+    }
+
+    $bookings = $this->bookingService->getUserBookingsPaginated($userId);
+
+    return view('bookings.index', compact('bookings'));
+}
+
+
+    public function show($id)
+    {
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return redirect('/login');
+        }
+
+        // Detail query is delegated to service for cleaner controller.
+        $booking = $this->bookingService->getUserBookingDetail($userId, (int) $id);
+
+        return view('bookings.show', compact('booking'));
+    }
+
+
     // Hủy booking
     public function cancel($id)
     {
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return redirect('/login');
+        }
         try {
-            $this->bookingService->cancel($id);
-
-            return back()->with('success', 'Hủy booking thành công');
-
-        } catch (\Exception $e) {
+            $this->bookingService->cancelByUser((int) $id, $userId);
+        } catch (\Throwable $e) {
             return back()->with('error', $e->getMessage());
         }
+
+        return back()->with('success', 'Hủy booking thành công');
+    }
+    // Admin xem tất cả booking
+
+    public function adminIndex(Request $request)
+    {
+        $status = $request->query('status');
+        $keyword = $request->query('keyword');
+
+        $bookings = $this->bookingService
+            ->getAdminBookingsPaginated($status, $keyword);
+
+        return view('bookings.admin-index', compact('bookings', 'status', 'keyword'));
+    }
+
+
+    // Admin xác nhận booking
+    public function confirm($id)
+    {
+        try {
+            $this->bookingService->confirm((int) $id);
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', 'Xác nhận booking thành công');
+    }
+
+    // Admin hủy booking
+    public function adminCancel($id)
+    {
+        try {
+            $this->bookingService->cancelByAdmin((int) $id);
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', 'Admin đã hủy booking');
     }
 }
