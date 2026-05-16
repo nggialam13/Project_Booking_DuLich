@@ -116,7 +116,11 @@ class AuthController extends Controller
 
         return redirect()->route('profile')->with('success', 'Cập nhật thông tin thành công!');
     }
-
+    // Hiển thị form đổi mật khẩu riêng
+    public function showChangePasswordForm()
+    {
+        return view('auth.change-password');
+    }
     // Đổi mật khẩu
     public function changePassword(Request $request)
     {
@@ -134,7 +138,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('profile')->with('success', 'Đổi mật khẩu thành công!');
+        return redirect()->route('change-password.form')->with('success', 'Đổi mật khẩu thành công!');
     }
     // hiển thị danh sách users
     public function listUsers()
