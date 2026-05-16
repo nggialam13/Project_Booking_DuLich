@@ -30,8 +30,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
-    Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('changePassword');
-    
+    // Hiển thị form đổi mật khẩu
+    Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('change-password.form');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password.update');
+
 });
 // Admin - Quản lý người dùng
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -48,10 +50,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 require __DIR__ . '/tour.php';
 
 // booking routes
-require __DIR__.'/booking.php';
+require __DIR__ . '/booking.php';
 
 //payment
-require __DIR__.'/payment.php';
+require __DIR__ . '/payment.php';
 
 Route::get('/', function () {
     return view('welcome');
