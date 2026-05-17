@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -110,9 +111,24 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'bio' => 'nullable|string|max:500',
+            'interests' => 'nullable|string|max:255',
+            'gender' => 'nullable|in:male,female,other',
+            'dob' => 'nullable|date|before:today',
         ]);
 
-        $user->update($request->only('name', 'email', 'phone'));
+        // Upload avatar
+        if ($request->hasFile('avatar')) {
+            // Xóa avatar cũ nếu có
+            if ($user->avatar && Storage::exists($user->avatar)) {
+                Storage::delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
+
+        $user->update($request->only('name', 'email', 'phone', 'bio', 'interests', 'gender', 'dob'));
 
         return redirect()->route('profile')->with('success', 'Cập nhật thông tin thành công!');
     }
@@ -172,8 +188,13 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:11',
             'role' => 'required|in:user,admin',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'avatar.image' => 'File phải là ảnh.',
+            'avatar.mimes' => 'Chỉ chấp nhận định dạng: jpeg, png, jpg, gif, webp.',
+            'avatar.max' => 'Dung lượng ảnh không được vượt quá 2MB.',
         ]);
 
         // Không cho admin tự hạ cấp role của chính mình
