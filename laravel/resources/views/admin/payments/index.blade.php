@@ -7,12 +7,9 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
         <div>
             <h2 class="mb-1"><i class="fas fa-credit-card me-2"></i>Quản lý thanh toán</h2>
-            <p class="text-muted mb-0">Theo dõi giao dịch, ghi nhận thanh toán và cập nhật trạng thái</p>
+            <p class="text-muted mb-0">Theo dõi giao dịch do người dùng tạo và cập nhật trạng thái</p>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            <a href="{{ route('admin.payments.create') }}" class="btn btn-admin btn-admin-primary px-4">
-                <i class="fas fa-plus me-1"></i> Tạo thanh toán
-            </a>
             <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Dashboard
             </a>

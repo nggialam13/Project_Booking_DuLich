@@ -1,6 +1,34 @@
 @extends('layouts.master')
 
 @section('content')
+@auth
+    @if(auth()->user()->role === 'user')
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <a href="{{ route('bookings.index') }}" class="card text-decoration-none h-100 shadow-sm border-0">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="fs-2">📋</span>
+                    <div>
+                        <h6 class="mb-1 text-dark">Booking của tôi</h6>
+                        <small class="text-muted">Xem và quản lý tour đã đặt</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ route('payment.index') }}" class="card text-decoration-none h-100 shadow-sm border-0">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="fs-2">💳</span>
+                    <div>
+                        <h6 class="mb-1 text-dark">Thanh toán</h6>
+                        <small class="text-muted">Lịch sử và trạng thái giao dịch</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    @endif
+@endauth
 <div class="row">
     <div class="col-md-6">
         <div class="card">

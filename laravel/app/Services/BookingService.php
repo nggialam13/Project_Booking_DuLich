@@ -13,7 +13,7 @@ class BookingService
     // Query service methods: keep read/list logic out of controller.
     public function getUserBookingsPaginated(int $userId, int $perPage = 6): LengthAwarePaginator
     {
-        return Booking::with('tour')
+        return Booking::with(['tour', 'payments'])
             ->where('user_id', $userId)
             ->latest()
             ->paginate($perPage)
@@ -22,7 +22,7 @@ class BookingService
 
     public function getUserBookingDetail(int $userId, int $bookingId): Booking
     {
-        return Booking::with(['tour', 'bookingDetail'])
+        return Booking::with(['tour', 'bookingDetail', 'payments'])
             ->where('user_id', $userId)
             ->findOrFail($bookingId);
     }
