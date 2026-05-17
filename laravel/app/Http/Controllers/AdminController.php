@@ -44,10 +44,18 @@ class AdminController extends Controller
             $payments->appends($filterQuery);
         }
 
+        $statsQuery = Payment::query();
+        if ($statusFilter !== null) {
+            $statsQuery->where('status', $statusFilter);
+        }
+        if ($methodFilter !== null) {
+            $statsQuery->where('payment_method', $methodFilter);
+        }
+
         $stats = [
-            'total' => Payment::count(),
-            'paid_count' => Payment::where('status', 'paid')->count(),
-            'revenue' => (int) Payment::where('status', 'paid')->sum('amount'),
+            'total' => (clone $statsQuery)->count(),
+            'paid_count' => (clone $statsQuery)->where('status', 'paid')->count(),
+            'revenue' => (int) (clone $statsQuery)->where('status', 'paid')->sum('amount'),
         ];
 
         return view('admin.payments.index', compact('payments', 'stats', 'statusFilter', 'methodFilter'));

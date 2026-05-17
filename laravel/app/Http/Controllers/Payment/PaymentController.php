@@ -14,6 +14,7 @@ class PaymentController extends Controller
     private function paymentForCurrentUser(int $id): Payment
     {
         return Payment::query()
+            ->with('booking')
             ->whereHas('booking', function ($q) {
                 $q->where('user_id', auth()->id());
             })
@@ -24,8 +25,62 @@ class PaymentController extends Controller
     {
         return Booking::query()
             ->where('user_id', auth()->id())
-            ->with(['tour'])
-            ->findOrFail($booking_id);
+            ->with(['tour', 'payments'])
+            ->findOrFail($bookingId);
+    }
+
+    private function redirectIfCannotPay(Booking $booking): ?RedirectResponse
+    {
+        if ($booking->status === 'cancelled') {
+            return redirect()
+                ->route('bookings.show', $booking->id)
+                ->with('error', 'Booking đã hủy, không thể thanh toán.');
+        }
+
+        $paid = $booking->payments->firstWhere('status', 'paid');
+        if ($paid) {
+            return redirect()
+                ->route('payment.show', $paid->id)
+                ->with('info', 'Booking này đã được thanh toán.');
+        }
+
+        return null;
+    }
+
+    private function redirectPendingPayment(Payment $pending): RedirectResponse
+    {
+        if ($pending->payment_method === 'momo') {
+            return redirect()->route('payment.momo', $pending->id);
+        }
+        if ($pending->payment_method === 'vnpay') {
+            return redirect()->route('payment.vnpay', $pending->id);
+        }
+
+        return redirect()
+            ->route('payment.show', $pending->id)
+            ->with('info', 'Bạn đã có giao dịch đang chờ xử lý.');
+    }
+
+    private function confirmBookingIfPaid(Payment $payment): void
+    {
+        $booking = $payment->booking ?? Booking::find($payment->booking_id);
+        if ($booking && $booking->status !== 'cancelled') {
+            $booking->update(['status' => 'confirmed']);
+        }
+    }
+
+    public function create($booking_id): View|RedirectResponse
+    {
+        $booking = $this->bookingForCurrentUser((int) $booking_id);
+
+        if ($redirect = $this->redirectIfCannotPay($booking)) {
+            return $redirect;
+        }
+
+        $pending = $booking->payments->where('status', 'pending')->sortByDesc('id')->first();
+        if ($pending) {
+            return $this->redirectPendingPayment($pending);
+        }
 
         $amount = (int) $booking->total_price;
 
@@ -40,9 +95,16 @@ class PaymentController extends Controller
             'method' => 'required|in:cash,momo,vnpay',
         ]);
 
-        $booking = Booking::query()
-            ->where('user_id', auth()->id())
-            ->findOrFail($validated['booking_id']);
+        $booking = $this->bookingForCurrentUser((int) $validated['booking_id']);
+
+        if ($redirect = $this->redirectIfCannotPay($booking)) {
+            return $redirect;
+        }
+
+        $pending = $booking->payments->where('status', 'pending')->sortByDesc('id')->first();
+        if ($pending) {
+            return $this->redirectPendingPayment($pending);
+        }
 
         $payment = Payment::create([
             'booking_id' => $booking->id,
@@ -72,15 +134,17 @@ class PaymentController extends Controller
             return redirect()->route('payment.success', $id);
         }
 
-        $payment->update([
-            'status' => 'paid',
-        ]);
-
-        $booking = Booking::find($payment->booking_id);
-        if ($booking) {
-            $booking->status = 'confirmed';
-            $booking->save();
+        if ($payment->payment_method !== 'momo') {
+            return redirect()->route('payment.show', $payment->id)->with('error', 'Giao dịch không dùng phương thức MoMo.');
         }
+
+        $booking = $payment->booking;
+        if ($booking && $booking->status === 'cancelled') {
+            return redirect()->route('bookings.show', $booking->id)->with('error', 'Booking đã hủy, không thể thanh toán.');
+        }
+
+        $payment->update(['status' => 'paid']);
+        $this->confirmBookingIfPaid($payment);
 
         return redirect()->route('payment.success', $id);
     }
@@ -93,38 +157,75 @@ class PaymentController extends Controller
             return redirect()->route('payment.success', $id);
         }
 
-        $payment->update([
-            'status' => 'paid',
-        ]);
-
-        $booking = Booking::find($payment->booking_id);
-        if ($booking) {
-            $booking->status = 'confirmed';
-            $booking->save();
+        if ($payment->payment_method !== 'vnpay') {
+            return redirect()->route('payment.show', $payment->id)->with('error', 'Giao dịch không dùng phương thức VNPay.');
         }
+
+        $booking = $payment->booking;
+        if ($booking && $booking->status === 'cancelled') {
+            return redirect()->route('bookings.show', $booking->id)->with('error', 'Booking đã hủy, không thể thanh toán.');
+        }
+
+        $payment->update(['status' => 'paid']);
+        $this->confirmBookingIfPaid($payment);
 
         return redirect()->route('payment.success', $id);
     }
 
-    public function success($id): View
+    public function success($id): View|RedirectResponse
     {
         $payment = $this->paymentForCurrentUser((int) $id);
         $payment->load(['booking.tour']);
+
+        if ($payment->status !== 'paid') {
+            return redirect()->route('payment.show', $payment->id);
+        }
 
         return view('payments.success', compact('payment'));
     }
 
     public function index(Request $request): View
     {
-        $payments = Payment::query()
+        $statusFilter = null;
+        if ($request->filled('status')) {
+            $s = $request->string('status')->toString();
+            if (in_array($s, ['pending', 'paid'], true)) {
+                $statusFilter = $s;
+            }
+        }
+
+        $methodFilter = null;
+        if ($request->filled('method')) {
+            $m = $request->string('method')->toString();
+            if (in_array($m, ['cash', 'momo', 'vnpay'], true)) {
+                $methodFilter = $m;
+            }
+        }
+
+        $query = Payment::query()
             ->whereHas('booking', function ($q) {
                 $q->where('user_id', auth()->id());
             })
             ->with(['booking.tour'])
-            ->latest()
-            ->paginate(12);
+            ->latest();
 
-        return view('payments.index', compact('payments'));
+        if ($statusFilter !== null) {
+            $query->where('status', $statusFilter);
+        }
+        if ($methodFilter !== null) {
+            $query->where('payment_method', $methodFilter);
+        }
+
+        $payments = $query->paginate(12);
+        $filterQuery = array_filter([
+            'status' => $statusFilter,
+            'method' => $methodFilter,
+        ], fn ($v) => $v !== null);
+        if ($filterQuery !== []) {
+            $payments->appends($filterQuery);
+        }
+
+        return view('payments.index', compact('payments', 'statusFilter', 'methodFilter'));
     }
 
     public function show($id): View
