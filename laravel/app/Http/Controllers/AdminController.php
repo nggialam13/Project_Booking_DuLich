@@ -20,14 +20,29 @@ class AdminController extends Controller
             }
         }
 
+        $methodFilter = null;
+        if ($request->filled('method')) {
+            $m = $request->string('method')->toString();
+            if (in_array($m, ['cash', 'momo', 'vnpay'], true)) {
+                $methodFilter = $m;
+            }
+        }
+
         $query = Payment::with(['booking.tour', 'booking.user'])->latest();
         if ($statusFilter !== null) {
             $query->where('status', $statusFilter);
         }
+        if ($methodFilter !== null) {
+            $query->where('payment_method', $methodFilter);
+        }
 
         $payments = $query->paginate(15);
-        if ($statusFilter !== null) {
-            $payments->appends(['status' => $statusFilter]);
+        $filterQuery = array_filter([
+            'status' => $statusFilter,
+            'method' => $methodFilter,
+        ], fn ($v) => $v !== null);
+        if ($filterQuery !== []) {
+            $payments->appends($filterQuery);
         }
 
         $stats = [
@@ -36,7 +51,7 @@ class AdminController extends Controller
             'revenue' => (int) Payment::where('status', 'paid')->sum('amount'),
         ];
 
-        return view('admin.payments.index', compact('payments', 'stats', 'statusFilter'));
+        return view('admin.payments.index', compact('payments', 'stats', 'statusFilter', 'methodFilter'));
     }
 
     public function createPayment(): View

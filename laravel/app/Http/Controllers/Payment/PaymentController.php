@@ -100,17 +100,48 @@ class PaymentController extends Controller
         return view('payments.success', compact('payment'));
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $payments = Payment::query()
+        $statusFilter = null;
+        if ($request->filled('status')) {
+            $s = $request->string('status')->toString();
+            if (in_array($s, ['pending', 'paid'], true)) {
+                $statusFilter = $s;
+            }
+        }
+
+        $methodFilter = null;
+        if ($request->filled('method')) {
+            $m = $request->string('method')->toString();
+            if (in_array($m, ['cash', 'momo', 'vnpay'], true)) {
+                $methodFilter = $m;
+            }
+        }
+
+        $query = Payment::query()
             ->whereHas('booking', function ($q) {
                 $q->where('user_id', auth()->id());
             })
             ->with(['booking.tour'])
-            ->latest()
-            ->paginate(12);
+            ->latest();
 
-        return view('payments.index', compact('payments'));
+        if ($statusFilter !== null) {
+            $query->where('status', $statusFilter);
+        }
+        if ($methodFilter !== null) {
+            $query->where('payment_method', $methodFilter);
+        }
+
+        $payments = $query->paginate(12);
+        $filterQuery = array_filter([
+            'status' => $statusFilter,
+            'method' => $methodFilter,
+        ], fn ($v) => $v !== null);
+        if ($filterQuery !== []) {
+            $payments->appends($filterQuery);
+        }
+
+        return view('payments.index', compact('payments', 'statusFilter', 'methodFilter'));
     }
 
     public function show($id): View
