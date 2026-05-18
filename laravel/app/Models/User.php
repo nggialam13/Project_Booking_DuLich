@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'role',
+        'avatar', 'bio', 'interests', 'gender', 'dob',
     ];
     /**
      * Get the attributes that should be cast.
@@ -35,6 +36,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'dob' => 'date',
         ];
     }
 }

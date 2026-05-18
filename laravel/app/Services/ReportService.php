@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Tour;
 use Illuminate\Support\Facades\DB;
+use App\Models\Payment;
 
 class ReportService
 {
@@ -12,7 +14,7 @@ class ReportService
     {
         $from = $filters['from'] ?? null;
         $to   = $filters['to'] ?? null;
-        $sort = $filters['sort'] ?? 'desc';
+
 
         // BASE QUERY
         $query = Booking::with(['user', 'tour']);
@@ -24,10 +26,23 @@ class ReportService
         if ($to) {
             $query->whereDate('created_at', '<=', $to);
         }
+        // FILTER STATUS
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        // SEARCH CUSTOMER NAME
+        if (!empty($filters['keyword'])) {
+
+            $query->whereHas('user', function ($q) use ($filters) {
+
+                $q->where('name', 'LIKE', '%' . $filters['keyword'] . '%');
+            });
+        }
 
         // BOOKING LIST (PAGINATION)
         $bookings = (clone $query)
-            ->orderBy('created_at', $sort)
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
@@ -44,9 +59,9 @@ class ReportService
 
         // REVENUE BY MONTH
         $revenueByMonth = Booking::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('SUM(total_price) as revenue')
-            )
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('SUM(total_price) as revenue')
+        )
             ->where('status', 'confirmed')
             ->groupBy('month')
             ->orderBy('month')
@@ -54,9 +69,9 @@ class ReportService
 
         // BOOKING BY DAY
         $bookingByDay = Booking::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total')
+        )
             ->groupBy('date')
             ->orderBy('date')
             ->get();
@@ -68,6 +83,20 @@ class ReportService
             ->with('tour')
             ->limit(5)
             ->get();
+        // BOOKING STATUS
+        $bookingStatus = Booking::select(
+            'status',
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy('status')
+            ->get();
+        // PAYMENT STATUS
+        $paymentStatus = Payment::select(
+            'status',
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy('status')
+            ->get();
 
         return [
             'bookings' => $bookings,
@@ -78,6 +107,8 @@ class ReportService
             'revenueByMonth' => $revenueByMonth,
             'bookingByDay' => $bookingByDay,
             'topTours' => $topTours,
+            'bookingStatus' => $bookingStatus,
+            'paymentStatus' => $paymentStatus,
         ];
     }
 }

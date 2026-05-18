@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -110,13 +111,32 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'bio' => 'nullable|string|max:500',
+            'interests' => 'nullable|string|max:255',
+            'gender' => 'nullable|in:male,female,other',
+            'dob' => 'nullable|date|before:today',
         ]);
 
-        $user->update($request->only('name', 'email', 'phone'));
+        // Upload avatar
+        if ($request->hasFile('avatar')) {
+            // Xóa avatar cũ nếu có
+            if ($user->avatar && Storage::exists($user->avatar)) {
+                Storage::delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
+
+        $user->update($request->only('name', 'email', 'phone', 'bio', 'interests', 'gender', 'dob'));
 
         return redirect()->route('profile')->with('success', 'Cập nhật thông tin thành công!');
     }
-
+    // Hiển thị form đổi mật khẩu riêng
+    public function showChangePasswordForm()
+    {
+        return view('auth.change-password');
+    }
     // Đổi mật khẩu
     public function changePassword(Request $request)
     {
@@ -134,15 +154,15 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('profile')->with('success', 'Đổi mật khẩu thành công!');
+        return redirect()->route('change-password.form')->with('success', 'Đổi mật khẩu thành công!');
     }
-    // hiển thị danh sách user
+    // hiển thị danh sách users
     public function listUsers()
     {
         $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
-    // xóa user
+    // xóa user (admin không thể xóa chính mình)
     public function deleteUser($id)
     {
         if ($id == Auth::id()) {
@@ -151,5 +171,39 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return redirect()->route('admin.users')->with('success', 'Xóa người dùng thành công.');
+    }
+    // Hiển thị form edit user
+    public function editUser($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
+    // Xử lý cập nhật user
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Validate dữ liệu
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'nullable|string|max:11',
+            'role' => 'required|in:user,admin',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'avatar.image' => 'File phải là ảnh.',
+            'avatar.mimes' => 'Chỉ chấp nhận định dạng: jpeg, png, jpg, gif, webp.',
+            'avatar.max' => 'Dung lượng ảnh không được vượt quá 2MB.',
+        ]);
+
+        // Không cho admin tự hạ cấp role của chính mình
+        if ($id == Auth::id() && $request->role != Auth::user()->role) {
+            return back()->withErrors(['role' => 'Bạn không thể thay đổi vai trò của chính mình.']);
+        }
+
+        $user->update($request->only('name', 'email', 'phone', 'role'));
+
+        return redirect()->route('admin.users')->with('success', 'Cập nhật người dùng thành công.');
     }
 }
