@@ -6,18 +6,48 @@
  <div class="container mb-5">
      <!-- Search Section -->
      @if($tours->count() > 0)
-     <div class="card mb-4">
-         <div class="card-body">
-             <h5 class="card-title mb-3"><i class="fas fa-filter"></i> Tìm Tour</h5>
-             <form method="GET" class="d-flex gap-2">
-                 <input type="text" name="search" class="form-control" placeholder="Tìm theo tên tour hoặc địa điểm..."
-                     value="{{ request('search') }}">
-                 <button type="submit" class="btn btn-primary">
-                     <i class="fas fa-search"></i> Tìm
-                 </button>
-             </form>
-         </div>
-     </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-filter"></i> Tìm Tour</h5>
+            <form method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted mb-1">Tiêu đề</label>
+                    <input type="text" name="title" class="form-control"
+                        placeholder="Nhập tên tour" value="{{ request('title') }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1">Giá từ</label>
+                    <input type="number" name="price_min" class="form-control" min="0" step="1"
+                        placeholder="Giá từ" value="{{ request('price_min') }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1">Giá đến</label>
+                    <input type="number" name="price_max" class="form-control" min="0" step="1"
+                        placeholder="Giá đến" value="{{ request('price_max') }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1">Ngày từ</label>
+                    <input type="number" name="days_min" class="form-control" min="1" step="1"
+                        placeholder="Ngày từ" value="{{ request('days_min') }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1">Ngày đến</label>
+                    <input type="number" name="days_max" class="form-control" min="1" step="1"
+                        placeholder="Ngày đến" value="{{ request('days_max') }}">
+                </div>
+                <div class="col-6 col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Tìm
+                    </button>
+                </div>
+                <div class="col-6 col-md-2 d-grid">
+                    <a href="{{ route('tours.user-index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-rotate-right"></i> Làm mới
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 
      <!-- Tour Grid -->
      <div class="row g-4 mb-5">
@@ -195,6 +225,14 @@
          <i class="fas fa-inbox" style="font-size: 60px; color: #999;"></i>
          <h3 class="mt-3">Không Có Tours Nào</h3>
          <p class="text-muted">Vui lòng quay lại sau để xem các tours mới!</p>
+         <div class="d-flex justify-content-center gap-2">
+             <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+                 <i class="fas fa-arrow-left"></i> Quay lại
+             </a>
+             <a href="{{ route('tours.user-index') }}" class="btn btn-primary">
+                 <i class="fas fa-rotate-right"></i> Làm mới
+             </a>
+         </div>
      </div>
      @endif
  </div>
