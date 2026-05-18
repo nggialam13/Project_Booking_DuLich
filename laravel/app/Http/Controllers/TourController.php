@@ -66,10 +66,10 @@ class TourController extends Controller
         if ($request->hasFile('image')) {
             $uploadedFile = $request->file('image');
             $uploadedHash = md5_file($uploadedFile->getRealPath());
-            
+
             // Check if image with same hash already exists
             $existingImage = $this->findImageByHash($uploadedHash);
-            
+
             if ($existingImage) {
                 // Reuse existing image
                 $validated['image'] = $existingImage;
@@ -93,18 +93,34 @@ class TourController extends Controller
      */
     public function userIndex()
     {
-        $search = request('search');
+        $title = request('title');
+        $priceMin = request('price_min');
+        $priceMax = request('price_max');
+        $daysMin = request('days_min');
+        $daysMax = request('days_max');
         $query = Tour::where('status', 'active');
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('location', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
+        if ($title) {
+            $query->where('title', 'like', "%{$title}%");
         }
 
-        $tours = $query->paginate(12);
+        if ($priceMin !== null && $priceMin !== '' && is_numeric($priceMin)) {
+            $query->where('price', '>=', $priceMin);
+        }
+
+        if ($priceMax !== null && $priceMax !== '' && is_numeric($priceMax)) {
+            $query->where('price', '<=', $priceMax);
+        }
+
+        if ($daysMin !== null && $daysMin !== '' && is_numeric($daysMin)) {
+            $query->where('duration', '>=', $daysMin);
+        }
+
+        if ($daysMax !== null && $daysMax !== '' && is_numeric($daysMax)) {
+            $query->where('duration', '<=', $daysMax);
+        }
+
+        $tours = $query->paginate(12)->withQueryString();
         return view('tours.user-tours', compact('tours'));
     }
 
@@ -144,10 +160,10 @@ class TourController extends Controller
         if ($request->hasFile('image')) {
             $uploadedFile = $request->file('image');
             $uploadedHash = md5_file($uploadedFile->getRealPath());
-            
+
             // Check if image with same hash already exists
             $existingImage = $this->findImageByHash($uploadedHash);
-            
+
             if ($existingImage) {
                 // Reuse existing image
                 $validated['image'] = $existingImage;
@@ -184,13 +200,13 @@ class TourController extends Controller
     private function findImageByHash($uploadedHash)
     {
         $toursPath = storage_path('app/public/tours');
-        
+
         if (!is_dir($toursPath)) {
             return null;
         }
-        
+
         $files = array_diff(scandir($toursPath), ['.', '..']);
-        
+
         foreach ($files as $file) {
             $filePath = $toursPath . '/' . $file;
             if (is_file($filePath)) {
@@ -200,7 +216,7 @@ class TourController extends Controller
                 }
             }
         }
-        
+
         return null;
     }
 }
