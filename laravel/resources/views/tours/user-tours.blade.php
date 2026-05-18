@@ -37,7 +37,6 @@
                          <i class="fas fa-image" style="font-size: 60px;"></i>
                      </div>
                      @endif
-                     <span class="badge bg-success position-absolute top-0 end-0 m-2">Còn Chỗ</span>
                  </div>
 
                  <!-- Content -->
