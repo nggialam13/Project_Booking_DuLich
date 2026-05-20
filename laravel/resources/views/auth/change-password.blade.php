@@ -39,7 +39,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-                        <a href="{{ route('profile') }}" class="btn btn-secondary">Quay lại hồ sơ</a>
+                        <a href="{{ route('profile.show') }}" class="btn btn-secondary">Quay lại hồ sơ</a>
                     </form>
                 </div>
             </div>
