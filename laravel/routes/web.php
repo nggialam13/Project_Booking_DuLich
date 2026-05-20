@@ -28,8 +28,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 //profile
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
+    //Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    //Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
+    // hiện trang profile
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile.show');
+    Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
     // Hiển thị form đổi mật khẩu
     Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('change-password.form');
     Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password.update');

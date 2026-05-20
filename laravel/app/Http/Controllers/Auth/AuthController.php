@@ -95,14 +95,21 @@ class AuthController extends Controller
         return redirect('login')->with('success', 'Đã đăng xuất.');
     }
 
-    // Hiển thị trang profile
-    public function profile()
+    // Hiển thị trang profile (chỉ xem)
+    public function showProfile()
     {
         $user = Auth::user();
-        return view('auth.profile', compact('user'));
+        return view('auth.profile.show', compact('user'));
     }
 
-    // Cập nhật thông tin cá nhân
+    // Hiển thị form chỉnh sửa profile
+    public function editProfile()
+    {
+        $user = Auth::user();
+        return view('auth.profile.edit', compact('user'));
+    }
+
+    // Xử lý cập nhật profile (dùng PUT)
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -111,26 +118,23 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'bio' => 'nullable|string|max:500',
-            'interests' => 'nullable|string|max:255',
             'gender' => 'nullable|in:male,female,other',
             'dob' => 'nullable|date|before:today',
         ]);
 
-        // Upload avatar
         if ($request->hasFile('avatar')) {
-            // Xóa avatar cũ nếu có
-            if ($user->avatar && Storage::exists($user->avatar)) {
-                Storage::delete($user->avatar);
+            if ($user->avatar) {
+                Storage::delete('public/' . $user->avatar);
             }
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = $path;
         }
 
-        $user->update($request->only('name', 'email', 'phone', 'bio', 'interests', 'gender', 'dob'));
+        $user->update($request->only('name', 'email', 'phone', 'bio', 'gender', 'dob'));
 
-        return redirect()->route('profile')->with('success', 'Cập nhật thông tin thành công!');
+        return redirect()->route('profile.show')->with('success', 'Cập nhật thông tin thành công.');
     }
     // Hiển thị form đổi mật khẩu riêng
     public function showChangePasswordForm()
@@ -154,7 +158,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('change-password.form')->with('success', 'Đổi mật khẩu thành công!');
+        return redirect()->route('profile.show')->with('success', 'Đổi mật khẩu thành công!');
     }
     // hiển thị danh sách users
     public function listUsers()

@@ -39,7 +39,7 @@
             <div class="d-flex align-items-center gap-3 user-box">
                 @auth
                     <!-- Link profile bao gồm logo/avatar và tên user -->
-                    <a href="{{ route('profile') }}"
+                    <a href="{{ route('profile.show') }}"
                         class="d-flex align-items-center gap-2 text-decoration-none text-light">
                         <!-- logo -->
                         👤
