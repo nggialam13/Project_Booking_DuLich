@@ -7,6 +7,10 @@ body {
     min-height: 100vh;
 }
 
+body.admin-tour-page {
+    background: #f5f5f5;
+}
+
 /* Layout chuẩn - KHÔNG override container */
 .main-content {
     max-width: 1200px;
@@ -57,6 +61,72 @@ body {
 .tour-card:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
+/* =========================
+   ADMIN TOUR PREVIEW
+========================= */
+.tour-preview-wrapper {
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.tour-preview-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    padding: 16px;
+}
+
+.tour-preview-image {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.tour-preview-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tour-preview-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.tour-preview-meta {
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.tour-preview-desc {
+    font-size: 13px;
+    color: #374151;
+    margin-top: 10px;
+}
+
+.tour-preview-label {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+@media (max-width: 991px) {
+    .tour-preview-wrapper {
+        position: static;
+        transform: none;
+    }
 }
 
 /* =========================
