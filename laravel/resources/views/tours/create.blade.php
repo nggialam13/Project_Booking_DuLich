@@ -29,7 +29,7 @@
         <h5><i class="fas fa-file-alt"></i> Thông tin Tour</h5>
     </div>
     <div class="card-admin-body">
-        <form action="{{ route('tours.storeNewTour') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('tours.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- Tiêu đề -->

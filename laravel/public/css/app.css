@@ -49,6 +49,16 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
 }
 
+.tour-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    will-change: transform;
+}
+
+.tour-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
 /* =========================
    BUTTON
 ========================= */
