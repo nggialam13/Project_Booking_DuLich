@@ -9,35 +9,23 @@ use Psy\Readline\Hoa\Console;
 
 class TourController extends Controller
 {
-    /**
-     * Display a listing of tours.
-     */
     public function index()
     {
-        $tours = Tour::paginate(10);
+        $tours = Tour::paginate(20);
         return view('tours.index', compact('tours'));
     }
 
-    /**
-     * Show the form for creating a new tour.
-     */
     public function create()
     {
         return view('tours.create');
     }
 
-    /**
-     * Show the form for editing tour.
-     */
     public function edit($id)
     {
         $tour = Tour::findOrFail($id);
         return view('tours.edit', compact('tour'));
     }
 
-    /**
-     * Update tour in database.
-     */
     public function update(Request $request, $id)
     {
         $tour = Tour::findOrFail($id);
@@ -57,7 +45,7 @@ class TourController extends Controller
         // Tính lại duration từ start_date & end_date
         $startDate = \Carbon\Carbon::parse($request->start_date);
         $endDate = \Carbon\Carbon::parse($request->end_date);
-        $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
+        $validated['duration'] = $endDate->diffInDays($startDate) + 1;
 
         // Cập nhật available_slots khi slots thay đổi
         $booked = $tour->slots - $tour->available_slots;
@@ -124,19 +112,13 @@ class TourController extends Controller
         return view('tours.user-tours', compact('tours'));
     }
 
-    /**
-     * Show single tour for user
-     */
     public function show($id)
     {
         $tour = Tour::findOrFail($id);
         return view('tours.show', compact('tour'));
     }
 
-    /**
-     * Store a newly created tour in database.
-     */
-    public function storeNewTour(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -152,7 +134,7 @@ class TourController extends Controller
         // Tính lại duration từ start_date & end_date
         $startDate = \Carbon\Carbon::parse($request->start_date);
         $endDate = \Carbon\Carbon::parse($request->end_date);
-        $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
+        $validated['duration'] = $endDate->diffInDays($startDate) + 1;
 
         $validated['status'] = 'active';
         $validated['available_slots'] = $validated['slots'];

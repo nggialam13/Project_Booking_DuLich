@@ -39,7 +39,7 @@
                 </thead>
                 <tbody>
                     @forelse($tours as $tour)
-                    <tr @if($tour->available_slots===0) class="table-danger" @endif>
+                    <tr @if($tour->status==='inactive') class="table-danger" @endif>
                         <td>{{ $tour->id }}</td>
                         <td>{{ $tour->title }}</td>
                         <td>{{ $tour->location }}</td>
@@ -60,28 +60,67 @@
                             </span>
                         </td>
                         <td style="white-space: nowrap;">
-                            <form method="POST" action="{{ route('tours.toggle-status', $tour->id) }}" style="display:inline;">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm  {{$tour->status==="active"?'btn-success':'btn-danger'}}" onclick="return confirm('Bạn chắc chắn sửa tour này?')">
-                                    <i class="fas fa-exchange-alt"></i> {{ $tour->status==="active"?'Hoạt động':'Không hoạt động' }}
-                                </button>
-                            </form>
+                            <button type="button"
+                                class="btn btn-sm {{$tour->status==="active"?'btn-success':'btn-danger'}}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#toggleStatusModal{{ $tour->id }}">
+                                <i class="fas fa-exchange-alt"></i> {{ $tour->status==="active"?'Hoạt động':'Không hoạt động' }}
+                            </button>
                         </td>
                         <td style="white-space: nowrap;">
                             <a href="{{ route('tours.edit', $tour->id) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
-                            <form method="POST" action="{{ route('tours.destroy', $tour->id) }}" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa tour này?')">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                            </form>
-
+                            <button type="button"
+                                class="btn btn-sm btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteTourModal{{ $tour->id }}">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
                         </td>
                     </tr>
+                    <div class="modal fade" id="toggleStatusModal{{ $tour->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Đổi trạng thái tour</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Bạn muốn chuyển trạng thái tour <strong>{{ $tour->title }}</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <form method="POST" action="{{ route('tours.toggle-status', $tour->id) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="deleteTourModal{{ $tour->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Xóa tour</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Bạn chắc chắn muốn xóa tour <strong>{{ $tour->title }}</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <form method="POST" action="{{ route('tours.destroy', $tour->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Xóa</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     @empty
                     <tr>
                         <td colspan="8" class="text-center py-4">
