@@ -407,6 +407,13 @@
                     </a>
                 </li>
             @endif
+             @if(Route::has('admin.chart'))
+                <li>
+                    <a href="{{ route('admin.chart') }}" class="@if(request()->routeIs('admin.chart')) active @endif">
+                        <i class="fas fa-chart-bar"></i> Chart
+                    </a>
+                </li>
+            @endif
             <li>
                 <hr style="border-color: #0f3460; margin: 10px 0;">
             </li>

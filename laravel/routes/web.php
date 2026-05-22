@@ -31,7 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
     Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('changePassword');
-    
 });
 // Admin - Quản lý người dùng
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -48,10 +47,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 require __DIR__ . '/tour.php';
 
 // booking routes
-require __DIR__.'/booking.php';
+require __DIR__ . '/booking.php';
 
 //payment
-require __DIR__.'/payment.php';
+require __DIR__ . '/payment.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -88,5 +87,8 @@ Route::middleware(['auth'])->get('/admin/dashboard', function () {
 })->name('admin.dashboard');
 
 //admin report
-Route::get('/admin/report', [ReportController::class, 'index']);
+//Route::get('/admin/report', [ReportController::class, 'index']);
 Route::get('/admin/report', [ReportController::class, 'index'])->name('admin.report');
+//admin chart
+Route::get('/admin/chart', [ReportController::class, 'chart'])
+    ->name('admin.chart');
