@@ -393,8 +393,8 @@
                     </a>
                 </li>
             @endif
-            @if(Route::has('payment.index'))
-                <li><a href="{{ route('payment.index') }}" class="@if(request()->routeIs('payment.*')) active @endif">
+            @if(Route::has('admin.payments.index'))
+                <li><a href="{{ route('admin.payments.index') }}" class="@if(request()->routeIs('admin.payments.*')) active @endif">
                         <i class="fas fa-credit-card"></i> Payments
                     </a>
                 </li>

@@ -39,7 +39,7 @@ textarea.form-control {
     color: #721c24;
 }
 
-/* ===== BUTTON STYLES ===== */
+/* ===== BUTTON STYLES (form pages; layout may override) ===== */
 .btn-admin-primary {
     background: linear-gradient(135deg, #0d6efd, #0dcaf0);
     color: white;

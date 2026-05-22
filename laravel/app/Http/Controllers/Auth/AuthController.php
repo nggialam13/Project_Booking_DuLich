@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -94,14 +95,21 @@ class AuthController extends Controller
         return redirect('login')->with('success', 'Đã đăng xuất.');
     }
 
-    // Hiển thị trang profile
-    public function profile()
+    // Hiển thị trang profile (chỉ xem)
+    public function showProfile()
     {
         $user = Auth::user();
-        return view('auth.profile', compact('user'));
+        return view('auth.profile.show', compact('user'));
     }
 
-    // Cập nhật thông tin cá nhân
+    // Hiển thị form chỉnh sửa profile
+    public function editProfile()
+    {
+        $user = Auth::user();
+        return view('auth.profile.edit', compact('user'));
+    }
+
+    // Xử lý cập nhật profile (dùng PUT)
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -110,13 +118,29 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'bio' => 'nullable|string|max:500',
+            'gender' => 'nullable|in:male,female,other',
+            'dob' => 'nullable|date|before:today',
         ]);
 
-        $user->update($request->only('name', 'email', 'phone'));
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::delete('public/' . $user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
 
-        return redirect()->route('profile')->with('success', 'Cập nhật thông tin thành công!');
+        $user->update($request->only('name', 'email', 'phone', 'bio', 'gender', 'dob'));
+
+        return redirect()->route('profile.show')->with('success', 'Cập nhật thông tin thành công.');
     }
-
+    // Hiển thị form đổi mật khẩu riêng
+    public function showChangePasswordForm()
+    {
+        return view('auth.change-password');
+    }
     // Đổi mật khẩu
     public function changePassword(Request $request)
     {
@@ -134,7 +158,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('profile')->with('success', 'Đổi mật khẩu thành công!');
+        return redirect()->route('profile.show')->with('success', 'Đổi mật khẩu thành công!');
     }
     // hiển thị danh sách users
     public function listUsers()
@@ -168,8 +192,13 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:11',
             'role' => 'required|in:user,admin',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'avatar.image' => 'File phải là ảnh.',
+            'avatar.mimes' => 'Chỉ chấp nhận định dạng: jpeg, png, jpg, gif, webp.',
+            'avatar.max' => 'Dung lượng ảnh không được vượt quá 2MB.',
         ]);
 
         // Không cho admin tự hạ cấp role của chính mình
