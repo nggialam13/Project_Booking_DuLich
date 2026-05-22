@@ -22,4 +22,13 @@ class ReportController extends Controller
 
         return view('admin.report', $data);
     }
+    public function chart()
+    {
+        $reportService = app(ReportService::class);
+
+        $data = $reportService->getReportData();
+
+        return view('admin.chart', $data);
+    }
+    
 }

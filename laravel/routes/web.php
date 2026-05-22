@@ -80,5 +80,8 @@ Route::middleware(['auth'])->get('/admin/dashboard', function () {
 })->name('admin.dashboard');
 
 //admin report
-Route::get('/admin/report', [ReportController::class, 'index']);
+//Route::get('/admin/report', [ReportController::class, 'index']);
 Route::get('/admin/report', [ReportController::class, 'index'])->name('admin.report');
+//admin chart
+Route::get('/admin/chart', [ReportController::class, 'chart'])
+    ->name('admin.chart');
