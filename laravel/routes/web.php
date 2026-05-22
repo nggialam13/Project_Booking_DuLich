@@ -28,10 +28,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 //profile
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
-    Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('changePassword');
-    
+    //Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    //Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
+    // hiện trang profile
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile.show');
+    Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
+    // Hiển thị form đổi mật khẩu
+    Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('change-password.form');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password.update');
 });
 // Admin - Quản lý người dùng
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -48,24 +53,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 require __DIR__ . '/tour.php';
 
 // booking routes
-require __DIR__.'/booking.php';
+require __DIR__ . '/booking.php';
 
 //payment
-require __DIR__.'/payment.php';
+require __DIR__ . '/payment.php';
 
 Route::get('/', function () {
     return view('welcome');
-});
-
-
-Route::get('/tours', function () {
-    $tours = \App\Models\Tour::paginate(6);
-    return view('tours.user-tours', compact('tours'));
-});
-
-Route::get('/tours/{id}', function ($id) {
-    $tour = Tour::findOrFail($id);
-    return view('tours.show', compact('tour'));
 });
 
 Route::get('/bookings/create', function () {
