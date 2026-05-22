@@ -9,35 +9,23 @@ use Psy\Readline\Hoa\Console;
 
 class TourController extends Controller
 {
-    /**
-     * Display a listing of tours.
-     */
     public function index()
     {
-        $tours = Tour::paginate(10);
+        $tours = Tour::paginate(30);
         return view('tours.index', compact('tours'));
     }
 
-    /**
-     * Show the form for creating a new tour.
-     */
     public function create()
     {
         return view('tours.create');
     }
 
-    /**
-     * Show the form for editing tour.
-     */
     public function edit($id)
     {
         $tour = Tour::findOrFail($id);
         return view('tours.edit', compact('tour'));
     }
 
-    /**
-     * Update tour in database.
-     */
     public function update(Request $request, $id)
     {
         $tour = Tour::findOrFail($id);
@@ -48,7 +36,7 @@ class TourController extends Controller
             'description' => 'required|string|max:255',
             'price' => 'required|numeric|min:0|max:999999999',
             'location' => 'required|string|max:255',
-            'start_date' => 'required|date',
+            'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:' . $booked . '|max:9999',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
@@ -124,26 +112,20 @@ class TourController extends Controller
         return view('tours.user-tours', compact('tours'));
     }
 
-    /**
-     * Show single tour for user
-     */
     public function show($id)
     {
         $tour = Tour::findOrFail($id);
         return view('tours.show', compact('tour'));
     }
 
-    /**
-     * Store a newly created tour in database.
-     */
-    public function storeNewTour(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric|min:0|max:999999999',
             'location' => 'required|string|max:255',
-            'start_date' => 'required|date',
+            'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:1|max:9999',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'

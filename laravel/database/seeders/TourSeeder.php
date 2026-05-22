@@ -14,7 +14,7 @@ class TourSeeder extends Seeder
     {
         $tours = [
             [
-                'title' => 'Tour Quy Nhơn - Kỳ Co Eo Gió',
+                'title' => 'Quy Nhơn - Kỳ Co Eo Gió',
                 'description' => 'Khám phá bãi biển Kỳ Co trong vắt và ngắm hoàng hôn tuyệt đẹp tại Eo Gió.',
                 'price' => 2400000,
                 'duration' => 3,
@@ -27,7 +27,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Tuy Hòa - Tháp Nghinh Phong',
+                'title' => 'Tuy Hòa - Tháp Nghinh Phong',
                 'description' => 'Check-in tháp Nghinh Phong biểu tượng và ngắm kiến trúc độc đáo xứ hoa vàng cỏ xanh.',
                 'price' => 1950000,
                 'duration' => 2,
@@ -40,7 +40,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Cần Thơ - Chợ Nổi Cái Răng',
+                'title' => 'Cần Thơ - Chợ Nổi Cái Răng',
                 'description' => 'Trải nghiệm nét văn hóa sông nước đặc sắc tại chợ nổi lớn nhất miền Tây.',
                 'price' => 1350000,
                 'duration' => 2,
@@ -53,7 +53,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Mù Cang Chải - Ruộng Bậc Thang',
+                'title' => 'Mù Cang Chải - Ruộng Bậc Thang',
                 'description' => 'Ngắm mùa vàng rực rỡ trên những thửa ruộng bậc thang hùng vĩ vùng Tây Bắc.',
                 'price' => 2200000,
                 'duration' => 3,
@@ -66,7 +66,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Phan Thiết - Mũi Né',
+                'title' => 'Phan Thiết - Mũi Né',
                 'description' => 'Trải nghiệm trượt cát vui nhộn và nghỉ dưỡng tại thiên đường resort biển.',
                 'price' => 1650000,
                 'duration' => 2,
@@ -79,7 +79,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bảo Lộc - Thác Đambri',
+                'title' => 'Bảo Lộc - Thác Đambri',
                 'description' => 'Hòa mình vào thiên nhiên cao nguyên tươi mát và dòng thác đổ kỳ vĩ.',
                 'price' => 1450000,
                 'duration' => 2,
@@ -92,7 +92,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đảo Nam Du - Biển Đảo Hoang Sơ',
+                'title' => 'Đảo Nam Du - Biển Đảo Hoang Sơ',
                 'description' => 'Lặn ngắm san hô tại hòn đảo xinh đẹp hoang sơ giữa trùng khơi mây nước.',
                 'price' => 2600000,
                 'duration' => 3,
@@ -105,7 +105,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Quảng Trị - Thành Cổ Lịch Sử',
+                'title' => 'Quảng Trị - Thành Cổ Lịch Sử',
                 'description' => 'Hành trình tâm linh về lại vĩ tuyến 17 và Thành cổ Quảng Trị oai hùng.',
                 'price' => 1500000,
                 'duration' => 2,
@@ -118,7 +118,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Đảo Cô Tô - Biển Xanh Cát Trắng',
+                'title' => 'Đảo Cô Tô - Biển Xanh Cát Trắng',
                 'description' => 'Khám phá thiên đường biển đảo miền Bắc với dòng nước trong xanh như ngọc.',
                 'price' => 2350000,
                 'duration' => 3,
@@ -131,7 +131,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đồng Văn - Mã Pí Lèng',
+                'title' => 'Đồng Văn - Mã Pí Lèng',
                 'description' => 'Chinh phục một trong tứ đại đỉnh đèo và ngắm nhìn dòng sông Nho Quế xanh mướt.',
                 'price' => 3200000,
                 'duration' => 4,
@@ -144,7 +144,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Lý Sơn - Vương Quốc Tỏi',
+                'title' => 'Lý Sơn - Vương Quốc Tỏi',
                 'description' => 'Hành trình khám phá miệng núi lửa cổ đại và biển đảo Lý Sơn tuyệt mỹ.',
                 'price' => 2700000,
                 'duration' => 3,
@@ -157,7 +157,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Vũng Tàu - Biển Xanh Nắng Vàng',
+                'title' => 'Vũng Tàu - Biển Xanh Nắng Vàng',
                 'description' => 'Nghỉ dưỡng cuối tuần tại thành phố biển Vũng Tàu sôi động và đầy nắng.',
                 'price' => 1200000,
                 'duration' => 2,
@@ -170,7 +170,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Trà Cổ - Móng Cái',
+                'title' => 'Trà Cổ - Móng Cái',
                 'description' => 'Ghé thăm bãi biển Trà Cổ - nơi đặt nét bút đầu tiên trên bản đồ hình chữ S.',
                 'price' => 1800000,
                 'duration' => 2,
@@ -183,7 +183,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bắc Hà - Chợ Phiên Vùng Cao',
+                'title' => 'Bắc Hà - Chợ Phiên Vùng Cao',
                 'description' => 'Khám phá sắc màu văn hóa rực rỡ tại phiên chợ vùng cao vùng Tây Bắc.',
                 'price' => 1900000,
                 'duration' => 2,
@@ -196,7 +196,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Cao Bằng - Động Ngườm Ngao',
+                'title' => 'Cao Bằng - Động Ngườm Ngao',
                 'description' => 'Chiêm ngưỡng kiệt tác thạch nhũ huyền ảo bên trong hang động kỳ vĩ.',
                 'price' => 2300000,
                 'duration' => 3,
@@ -209,7 +209,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Tam Cốc - Bích Động',
+                'title' => 'Tam Cốc - Bích Động',
                 'description' => 'Du thuyền trên dòng sông Ngô Đồng ngắm đồng lúa chín vàng thơ mộng.',
                 'price' => 1400000,
                 'duration' => 2,
@@ -222,7 +222,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Du Thuyền Vịnh Hạ Long',
+                'title' => 'Du Thuyền Vịnh Hạ Long',
                 'description' => 'Trải nghiệm ngủ đêm đẳng cấp trên du thuyền sang trọng giữa lòng di sản.',
                 'price' => 3800000,
                 'duration' => 2,
@@ -235,7 +235,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Hang Én - Khám Phá Kỳ Quan',
+                'title' => 'Hang Én - Khám Phá Kỳ Quan',
                 'description' => 'Hành trình trekking mạo hiểm vào sâu bên trong hang én lớn thứ ba thế giới.',
                 'price' => 4500000,
                 'duration' => 3,
@@ -248,7 +248,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Lạng Sơn - Mẫu Sơn Tuyết Phủ',
+                'title' => 'Lạng Sơn - Mẫu Sơn Tuyết Phủ',
                 'description' => 'Săn mây mây gió ngút ngàn và trải nghiệm nét văn hóa Dao đặc sắc trên đỉnh Mẫu Sơn.',
                 'price' => 1700000,
                 'duration' => 2,
@@ -261,7 +261,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bắc Kạn - Hồ Ba Bể',
+                'title' => 'Bắc Kạn - Hồ Ba Bể',
                 'description' => 'Thư giãn bên hồ nước ngọt tự nhiên trên núi lớn nhất Việt Nam.',
                 'price' => 1950000,
                 'duration' => 2,
@@ -274,7 +274,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Hà Nội - Khám Phá 36 Phố Phường',
+                'title' => 'Hà Nội - Khám Phá 36 Phố Phường',
                 'description' => 'Tìm hiểu nét văn hóa cổ kính ẩm thực ngõ ngách thủ đô nghìn năm văn hiến.',
                 'price' => 950000,
                 'duration' => 1,
@@ -287,7 +287,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bà Nà Hills - Đường Lên Tiên Cảnh',
+                'title' => 'Bà Nà Hills - Đường Lên Tiên Cảnh',
                 'description' => 'Check-in Cầu Vàng nổi tiếng thế giới và khu làng Pháp lãng mạn trên đỉnh núi.',
                 'price' => 1550000,
                 'duration' => 1,
@@ -300,7 +300,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bến Tre - Miệt Vườn Trái Cây',
+                'title' => 'Bến Tre - Miệt Vườn Trái Cây',
                 'description' => 'Thưởng thức trái cây ngọt lành ngay tại vườn và chèo xuồng ba lá lạch dừa.',
                 'price' => 1100000,
                 'duration' => 1,
@@ -313,7 +313,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Sapa - Săn Mây Đỉnh O Quy Hồ',
+                'title' => 'Sapa - Săn Mây Đỉnh O Quy Hồ',
                 'description' => 'Ngắm cảnh mây trời cuồn cuộn đổ vách núi tại con đèo hùng vĩ nhất miền Bắc.',
                 'price' => 2150000,
                 'duration' => 2,
@@ -326,7 +326,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Đảo Điệp Sơn - Con Đường Dưới Biển',
+                'title' => 'Đảo Điệp Sơn - Con Đường Dưới Biển',
                 'description' => 'Trải nghiệm đi bộ độc đáo trên con đường cát xuyên biển độc nhất vô nhị.',
                 'price' => 1850000,
                 'duration' => 2,
@@ -339,7 +339,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đà Lạt - Săn Mây Trại Mát',
+                'title' => 'Đà Lạt - Săn Mây Trại Mát',
                 'description' => 'Thức dậy từ sớm đón bình minh lên giữa biển sương mù bồng bềnh cao nguyên.',
                 'price' => 1600000,
                 'duration' => 2,
@@ -352,7 +352,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Phú Quốc - Ngắm Hoàng Hôn Sunset Sanato',
+                'title' => 'Phú Quốc - Ngắm Hoàng Hôn Sunset Sanato',
                 'description' => 'Check-in địa điểm ngắm hoàng hôn buông xuống biển đẹp lãng mạn bậc nhất.',
                 'price' => 2900000,
                 'duration' => 3,
@@ -365,7 +365,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Cố Đô Huế - Ca Trù Sông Hương',
+                'title' => 'Cố Đô Huế - Ca Trù Sông Hương',
                 'description' => 'Thưởng thức nhã nhạc cung đình và thả đèn hoa đăng trên dòng sông Hương thơ mộng.',
                 'price' => 1350000,
                 'duration' => 2,
@@ -378,7 +378,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Hải Phòng - Đảo Hòn Dấu',
+                'title' => 'Hải Phòng - Đảo Hòn Dấu',
                 'description' => 'Khám phá ngọn hải đăng cổ kính và đảo hoang sơ vùng đất cảng.',
                 'price' => 1250000,
                 'duration' => 2,
@@ -391,7 +391,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Hoàng Su Phì - Ruộng Bậc Thang Mùa Nước Đổ',
+                'title' => 'Hoàng Su Phì - Ruộng Bậc Thang Mùa Nước Đổ',
                 'description' => 'Ngắm nhìn những ô ruộng lấp lánh như chiếc gương khổng lồ giữa núi rừng.',
                 'price' => 3100000,
                 'duration' => 4,
@@ -404,7 +404,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Cù Lao Chàm - Lặn Biển San Hô',
+                'title' => 'Cù Lao Chàm - Lặn Biển San Hô',
                 'description' => 'Tận hưởng bầu không khí trong lành biển đảo và lặn ngắm san hô tự nhiên.',
                 'price' => 1650000,
                 'duration' => 2,
@@ -417,7 +417,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Côn Đảo - Viếng Nghĩa Trang Hàng Dương',
+                'title' => 'Côn Đảo - Viếng Nghĩa Trang Hàng Dương',
                 'description' => 'Hành trình lịch sử tâm linh tri ân các anh hùng liệt sĩ vùng đất thiêng.',
                 'price' => 3400000,
                 'duration' => 3,
@@ -430,7 +430,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Yên Tử - Đất Tổ Phật Giáo',
+                'title' => 'Yên Tử - Đất Tổ Phật Giáo',
                 'description' => 'Hành hương về vùng đất thiêng Yên Tử cầu bình an may mắn đầu năm.',
                 'price' => 1350000,
                 'duration' => 1,
@@ -443,7 +443,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Thung Lũng Mai Châu - Đêm Nhạc Bản Lác',
+                'title' => 'Thung Lũng Mai Châu - Đêm Nhạc Bản Lác',
                 'description' => 'Hòa mình cùng điệu múa xòe hoa uống rượu cần ấm áp vùng thung lũng xanh.',
                 'price' => 1850000,
                 'duration' => 2,
@@ -456,7 +456,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Hồ Thác Bà - Khám Phá Thủy Điện',
+                'title' => 'Hồ Thác Bà - Khám Phá Thủy Điện',
                 'description' => 'Du thuyền trên hồ nhân tạo ngắm nhìn các hòn đảo lớn nhỏ xanh tươi.',
                 'price' => 1900000,
                 'duration' => 2,
@@ -469,7 +469,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Tuyệt Tình Cốc Ninh Bình',
+                'title' => 'Tuyệt Tình Cốc Ninh Bình',
                 'description' => 'Ngắm tiên cảnh hồ nước xanh ngọc bích nằm ẩn mình giữa lòng núi đá vôi.',
                 'price' => 1500000,
                 'duration' => 2,
@@ -482,7 +482,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đảo Bình Ba - Vương Quốc Tôm Hùm',
+                'title' => 'Đảo Bình Ba - Vương Quốc Tôm Hùm',
                 'description' => 'Thưởng thức hải sản tươi ngon đặc sản biển đảo Cam Ranh thơ mộng.',
                 'price' => 2250000,
                 'duration' => 2,
@@ -495,7 +495,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đồng Hới - Bãi Biển Nhật Lệ',
+                'title' => 'Đồng Hới - Bãi Biển Nhật Lệ',
                 'description' => 'Tự do tắm biển ngắm cảnh thành phố thanh bình bên dòng sông Nhật Lệ.',
                 'price' => 1650000,
                 'duration' => 2,
@@ -508,7 +508,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Cao Bằng - Suối Lênin',
+                'title' => 'Cao Bằng - Suối Lênin',
                 'description' => 'Thăm di tích lịch sử Pác Bó dòng suối xanh trong vắt dịu mát tâm hồn.',
                 'price' => 2100000,
                 'duration' => 3,
@@ -521,7 +521,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Sapa - Check-in Bản Cát Cát',
+                'title' => 'Sapa - Check-in Bản Cát Cát',
                 'description' => 'Khám phá ngôi làng cổ đẹp nhất Tây Bắc tìm hiểu cuộc sống đồng bào Mông.',
                 'price' => 2450000,
                 'duration' => 3,
@@ -534,7 +534,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Chùa Hương - Trẩy Hội Nam Thiên Đệ Nhất Động',
+                'title' => 'Chùa Hương - Trẩy Hội Nam Thiên Đệ Nhất Động',
                 'description' => 'Ngồi thuyền xuôi dòng suối Yến vãn cảnh quần thể tâm linh linh thiêng.',
                 'price' => 990000,
                 'duration' => 1,
@@ -547,7 +547,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Huế - Đà Nẵng - Hội An Hành Trình Di Sản',
+                'title' => 'Huế - Đà Nẵng - Hội An Hành Trình Di Sản',
                 'description' => 'Chuyến đi xuyên qua những địa danh văn hóa lịch sử nổi tiếng miền Trung.',
                 'price' => 3500000,
                 'duration' => 4,
@@ -560,7 +560,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Châu Đốc - Miếu Bà Chúa Xứ',
+                'title' => 'Châu Đốc - Miếu Bà Chúa Xứ',
                 'description' => 'Hành trình tâm linh miền Tây cầu tài lộc may mắn bình an cho gia đình.',
                 'price' => 1400000,
                 'duration' => 2,
@@ -573,7 +573,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Lai Châu - Chinh Phục Đỉnh Pu Si Lung',
+                'title' => 'Lai Châu - Chinh Phục Đỉnh Pu Si Lung',
                 'description' => 'Thử thách bản thân trekking qua cánh rừng già biên giới đại ngàn hùng vĩ.',
                 'price' => 3900000,
                 'duration' => 4,
@@ -586,7 +586,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Bình Hưng - Đảo Ngọc Hoang Sơ',
+                'title' => 'Bình Hưng - Đảo Ngọc Hoang Sơ',
                 'description' => 'Thư giãn yên bình tại bãi biển trong vắt nước nông nhìn tận đáy hải sản tươi ngon.',
                 'price' => 1750000,
                 'duration' => 2,
@@ -599,7 +599,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đà Lạt - Vườn Hoa Cẩm Tú Cầu',
+                'title' => 'Đà Lạt - Vườn Hoa Cẩm Tú Cầu',
                 'description' => 'Lạc bước check-in giữa cánh đồng hoa cẩm tú cầu nở rộ rực rỡ cả góc trời.',
                 'price' => 1550000,
                 'duration' => 2,
@@ -612,7 +612,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Rạch Giá - Đảo Hòn Sơn',
+                'title' => 'Rạch Giá - Đảo Hòn Sơn',
                 'description' => 'Tận hưởng kỳ nghỉ hoang sơ tuyệt vời rặng dừa xanh nghiêng bóng mát.',
                 'price' => 2500000,
                 'duration' => 3,
@@ -625,7 +625,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Huế - Lăng Khải Định Cổ Kính',
+                'title' => 'Huế - Lăng Khải Định Cổ Kính',
                 'description' => 'Chiêm ngưỡng đỉnh cao nghệ thuật khảm sành sứ độc đáo triều Nguyễn.',
                 'price' => 1200000,
                 'duration' => 2,
@@ -638,7 +638,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Vân Đồn - Quan Lạn Biển Gọi',
+                'title' => 'Vân Đồn - Quan Lạn Biển Gọi',
                 'description' => 'Khám phá bãi tắm Minh Châu cát trắng mịn màng nước biển mát lành trong xanh.',
                 'price' => 2200000,
                 'duration' => 3,
@@ -651,7 +651,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Hà Giang - Mùa Hoa Tam Giác Mạch',
+                'title' => 'Hà Giang - Mùa Hoa Tam Giác Mạch',
                 'description' => 'Đắm chìm không gian sắc hồng mộng mơ phủ kín các thung lũng đá tai mèo.',
                 'price' => 3400000,
                 'duration' => 4,
@@ -664,7 +664,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Ngũ Hành Sơn - Chùa Linh Ứng',
+                'title' => 'Ngũ Hành Sơn - Chùa Linh Ứng',
                 'description' => 'Hành trình tâm linh khám phá hệ thống hang động thạch nhũ huyền bí.',
                 'price' => 1450000,
                 'duration' => 2,
@@ -677,7 +677,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Côn Đảo - Câu Cá Biển Đông',
+                'title' => 'Côn Đảo - Câu Cá Biển Đông',
                 'description' => 'Trải nghiệm lênh đênh mặt biển thử thách kỹ năng câu cá đại dương.',
                 'price' => 3500000,
                 'duration' => 3,
@@ -690,7 +690,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Móng Cái - Cửa Khẩu Quốc Tế',
+                'title' => 'Móng Cái - Cửa Khẩu Quốc Tế',
                 'description' => 'Ghé thăm thành phố biên mậu sầm uất mua sắm giao thương đặc sắc.',
                 'price' => 1600000,
                 'duration' => 2,
@@ -703,7 +703,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Cao Nguyên Mộc Châu - Đồi Chè Trái Tim',
+                'title' => 'Cao Nguyên Mộc Châu - Đồi Chè Trái Tim',
                 'description' => 'Chụp ảnh đồi chè xanh mướt trải dài bao la ngút ngàn hút tầm mắt.',
                 'price' => 1750000,
                 'duration' => 2,
@@ -716,7 +716,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Tuyên Quang - Suối Khoáng Nóng Mỹ Lâm',
+                'title' => 'Tuyên Quang - Suối Khoáng Nóng Mỹ Lâm',
                 'description' => 'Tận hưởng cảm giác thư giãn ngâm mình dòng khoáng nóng tự nhiên tốt cho sức khỏe.',
                 'price' => 1850000,
                 'duration' => 2,
@@ -729,7 +729,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Ninh Bình - Cố Đô Hoa Lư',
+                'title' => 'Ninh Bình - Cố Đô Hoa Lư',
                 'description' => 'Ngược dòng lịch sử tìm hiểu kinh đô đầu tiên nhà nước phong kiến tập quyền.',
                 'price' => 1350000,
                 'duration' => 2,
@@ -742,7 +742,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Nha Trang - Đảo Khỉ Hòn Lao',
+                'title' => 'Nha Trang - Đảo Khỉ Hòn Lao',
                 'description' => 'Vui chơi cùng bầy khỉ hoang dã tinh nghịch tự nhiên thân thiện.',
                 'price' => 1400000,
                 'duration' => 2,
@@ -755,7 +755,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Quảng Bình - Suối Nước Moọc',
+                'title' => 'Quảng Bình - Suối Nước Moọc',
                 'description' => 'Trải nghiệm chèo thuyền kayak tắm suối xanh mát giữa núi rừng hoang sơ.',
                 'price' => 1900000,
                 'duration' => 2,
@@ -768,7 +768,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Lạng Sơn - Đền Mẫu Đồng Đăng',
+                'title' => 'Lạng Sơn - Đền Mẫu Đồng Đăng',
                 'description' => 'Hành trình chiêm bái di tích kiến trúc lịch sử tâm linh vùng biên giới.',
                 'price' => 1500000,
                 'duration' => 2,
@@ -781,7 +781,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Điện Biên - Chiến Trường Xưa Oai Hùng',
+                'title' => 'Điện Biên - Chiến Trường Xưa Oai Hùng',
                 'description' => 'Thăm lại hầm Đờ Cát đồi A1 vang dội cột mốc lịch sử hào hùng dân tộc.',
                 'price' => 2950000,
                 'duration' => 3,
@@ -794,7 +794,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Hà Nội - Làng Cổ Đường Lâm',
+                'title' => 'Hà Nội - Làng Cổ Đường Lâm',
                 'description' => 'Trở về không gian xưa mái ngói cây đa bến nước sân đình mộc mạc.',
                 'price' => 850000,
                 'duration' => 1,
@@ -807,7 +807,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đà Nẵng - Bán Đảo Sơn Trà Chùa Linh Ứng',
+                'title' => 'Đà Nẵng - Bán Đảo Sơn Trà Chùa Linh Ứng',
                 'description' => 'Chiêm ngưỡng tượng Phật Bà Quan Âm cao nhất Việt Nam hướng nhìn ra biển.',
                 'price' => 1250000,
                 'duration' => 2,
@@ -820,7 +820,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đồng Tháp - Vườn Quốc Gia Tràm Chim',
+                'title' => 'Đồng Tháp - Vườn Quốc Gia Tràm Chim',
                 'description' => 'Khám phá hệ sinh thái đất ngập nước ngắm sếu đầu đỏ quý hiếm.',
                 'price' => 1750000,
                 'duration' => 2,
@@ -833,7 +833,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Sa Pa - Cáp Treo Fansipan Legend',
+                'title' => 'Sa Pa - Cáp Treo Fansipan Legend',
                 'description' => 'Hành trình vượt mây bằng cáp treo hiện đại chinh phục nóc nhà Đông Dương.',
                 'price' => 2800000,
                 'duration' => 3,
@@ -846,7 +846,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Nha Trang - Suối Hoa Lan',
+                'title' => 'Nha Trang - Suối Hoa Lan',
                 'description' => 'Khám phá thiên nhiên rực rỡ sắc màu phong lan ven vịnh Nha Phu.',
                 'price' => 1450000,
                 'duration' => 2,
@@ -859,7 +859,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đà Lạt - Thung Lũng Tình Yêu',
+                'title' => 'Đà Lạt - Thung Lũng Tình Yêu',
                 'description' => 'Thăm điểm đến lãng mạn thơ mộng biểu tượng tình yêu đôi lứa phố hoa.',
                 'price' => 1650000,
                 'duration' => 2,
@@ -872,7 +872,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Phú Quốc - Khám Phá Hòn Thơm',
+                'title' => 'Phú Quốc - Khám Phá Hòn Thơm',
                 'description' => 'Trải nghiệm cáp treo vượt biển dài nhất thế giới vui chơi công viên nước.',
                 'price' => 2750000,
                 'duration' => 3,
@@ -885,7 +885,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Huế - Chùa Thiên Mụ Cổ Kính',
+                'title' => 'Huế - Chùa Thiên Mụ Cổ Kính',
                 'description' => 'Ghé thăm ngôi chùa cổ linh thiêng soi bóng bên dòng sông Hương hiền hòa.',
                 'price' => 1100000,
                 'duration' => 2,
@@ -898,7 +898,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Đảo Cát Bà - Vịnh Lan Hạ Khám Phá',
+                'title' => 'Đảo Cát Bà - Vịnh Lan Hạ Khám Phá',
                 'description' => 'Chèo kayak luồn lách qua các hang sáng hang tối ngắm cảnh hoang sơ.',
                 'price' => 2050000,
                 'duration' => 3,
@@ -911,7 +911,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Hà Giang - Chinh Phục Cột Cờ Lũng Cú',
+                'title' => 'Hà Giang - Chinh Phục Cột Cờ Lũng Cú',
                 'description' => 'Niềm tự hào đứng dưới lá cờ Tổ quốc thiêng liêng nơi địa đầu đất nước.',
                 'price' => 3300000,
                 'duration' => 4,
@@ -924,7 +924,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đèo Hải Vân - Thiên Hạ Đệ Nhất Hùng Quan',
+                'title' => 'Đèo Hải Vân - Thiên Hạ Đệ Nhất Hùng Quan',
                 'description' => 'Trải nghiệm những cung đường đèo uốn lượn ngắm nhìn đại dương bao la.',
                 'price' => 1500000,
                 'duration' => 2,
@@ -937,7 +937,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bãi Đầm Trầu Côn Đảo',
+                'title' => 'Bãi Đầm Trầu Côn Đảo',
                 'description' => 'Tắm biển thư giãn ngắm máy bay cất cánh hạ cánh sát ngay trên bãi biển.',
                 'price' => 3100000,
                 'duration' => 3,
@@ -950,7 +950,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Vịnh Hạ Long - Động Thiên Cung',
+                'title' => 'Vịnh Hạ Long - Động Thiên Cung',
                 'description' => 'Chiêm ngưỡng mê cung thạch nhũ lộng lẫy tráng lệ bậc nhất vịnh di sản.',
                 'price' => 1400000,
                 'duration' => 1,
@@ -963,7 +963,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Bản Lác Mai Châu Hòa Bình',
+                'title' => 'Bản Lác Mai Châu Hòa Bình',
                 'description' => 'Tìm hiểu đời sống mộc mạc phong tục tập quán lâu đời người đồng bào Thái.',
                 'price' => 1700000,
                 'duration' => 2,
@@ -976,7 +976,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Na Hang Tuyên Quang',
+                'title' => 'Na Hang Tuyên Quang',
                 'description' => 'Du ngoạn lòng hồ sinh thái Na Hang ngắm núi non trùng điệp kỳ vĩ.',
                 'price' => 1950000,
                 'duration' => 2,
@@ -989,7 +989,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Khu Sinh Thái Tràng An Ninh Bình',
+                'title' => 'Khu Sinh Thái Tràng An Ninh Bình',
                 'description' => 'Ngồi thuyền xuyên qua các hang động ngập nước ngắm cảnh phim Đảo Đầu Lâu.',
                 'price' => 1600000,
                 'duration' => 2,
@@ -1002,7 +1002,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Đảo Hòn Mun Nha Trang',
+                'title' => 'Đảo Hòn Mun Nha Trang',
                 'description' => 'Tận hưởng thiên đường lặn biển ngắm các loài san hô quý hiếm đa sắc màu.',
                 'price' => 2100000,
                 'duration' => 3,
@@ -1015,7 +1015,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Động Thiên Đường Quảng Bình',
+                'title' => 'Động Thiên Đường Quảng Bình',
                 'description' => 'Khám phá hoàng cung trong lòng đất kiến trúc thạch nhũ dài kỷ lục.',
                 'price' => 1800000,
                 'duration' => 2,
@@ -1028,7 +1028,7 @@ class TourSeeder extends Seeder
                 'status' => 'inactive',
             ],
             [
-                'title' => 'Tour Thác Bản Giốc Cao Bằng Hùng Vĩ',
+                'title' => 'Thác Bản Giốc Cao Bằng Hùng Vĩ',
                 'description' => 'Ngắm dòng thác ba tầng tuôn đổ bọt tung trắng xóa biên cương Tổ quốc.',
                 'price' => 1600000,
                 'duration' => 2,
@@ -1041,7 +1041,7 @@ class TourSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'title' => 'Tour Sapa Trekking Bản Tả Van',
+                'title' => 'Sapa Trekking Bản Tả Van',
                 'description' => 'Băng qua thung lũng Mường Hoa thơ mộng tìm hiểu bản sắc người Giáy.',
                 'price' => 2550000,
                 'duration' => 3,

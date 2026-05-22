@@ -1,176 +1,72 @@
 @extends('layouts.master')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Chi tiết thanh toán</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, sans-serif;
-        }
-        body{
-            background:#f4f7fb;
-            padding:30px;
-        }
-        .container{
-            max-width:900px;
-            margin:0 auto;
-        }
-        .card{
-            background:#fff;
-            border-radius:14px;
-            box-shadow:0 8px 24px rgba(0,0,0,0.08);
-            overflow:hidden;
-        }
-        .card-header{
-            background:#6f42c1;
-            color:#fff;
-            padding:22px 28px;
-        }
-        .card-body{
-            padding:28px;
-        }
-        .detail-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:18px;
-        }
-        .detail-item{
-            background:#f8f9fa;
-            border:1px solid #e9ecef;
-            border-radius:12px;
-            padding:18px;
-        }
-        .detail-item label{
-            display:block;
-            color:#666;
-            margin-bottom:8px;
-            font-size:14px;
-        }
-        .detail-item strong{
-            font-size:18px;
-            color:#222;
-        }
-        .full{
-            grid-column:1/-1;
-        }
-        .badge{
-            display:inline-block;
-            padding:7px 14px;
-            border-radius:999px;
-            font-size:13px;
-            font-weight:bold;
-        }
-        .paid{
-            background:#d1e7dd;
-            color:#0f5132;
-        }
-        .pending{
-            background:#fff3cd;
-            color:#856404;
-        }
-        .failed{
-            background:#f8d7da;
-            color:#842029;
-        }
-        .btn-group{
-            margin-top:24px;
-            display:flex;
-            gap:12px;
-            flex-wrap:wrap;
-        }
-        .btn{
-            text-decoration:none;
-            border:none;
-            padding:12px 18px;
-            border-radius:10px;
-            font-weight:bold;
-            cursor:pointer;
-        }
-        .btn-primary{
-            background:#0d6efd;
-            color:#fff;
-        }
-        .btn-secondary{
-            background:#6c757d;
-            color:#fff;
-        }
-        @media (max-width:768px){
-            .detail-grid{
-                grid-template-columns:1fr;
-            }
-            .full{
-                grid-column:auto;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h2>Chi tiết thanh toán #{{ $payment->id }}</h2>
+<div class="container py-4" style="max-width: 900px;">
+    <div class="payment-card">
+        <div class="payment-header" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <h2><i class="fas fa-file-invoice me-2"></i>Chi tiết thanh toán #{{ $payment->id }}</h2>
+            <p class="mb-0">Mã booking: {{ $payment->booking?->booking_code ?? ('#'.$payment->booking_id) }}</p>
         </div>
-
-        <div class="card-body">
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <label>Mã payment</label>
-                    <strong>#{{ $payment->id }}</strong>
+        <div class="payment-body">
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light h-100">
+                        <small class="text-muted d-block mb-1">Số tiền</small>
+                        <strong class="fs-4" style="color:#0d6efd;">{{ number_format($payment->amount, 0, ',', '.') }} đ</strong>
+                    </div>
                 </div>
-
-                <div class="detail-item">
-                    <label>Mã booking</label>
-                    <strong>#{{ $payment->booking_id }}</strong>
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light h-100">
+                        <small class="text-muted d-block mb-1">Phương thức</small>
+                        @php $m = $payment->payment_method; @endphp
+                        @if($m === 'cash')
+                            <span class="badge rounded-pill bg-secondary fs-6">Tiền mặt</span>
+                        @elseif($m === 'momo')
+                            <span class="badge rounded-pill fs-6" style="background:#d82d8b;color:#fff;">MoMo</span>
+                        @else
+                            <span class="badge rounded-pill bg-primary fs-6">VNPay</span>
+                        @endif
+                    </div>
                 </div>
-
-                <div class="detail-item">
-                    <label>Số tiền</label>
-                    <strong style="color:#dc3545;">{{ number_format($payment->amount, 0, ',', '.') }} VNĐ</strong>
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light h-100">
+                        <small class="text-muted d-block mb-1">Trạng thái</small>
+                        @if($payment->status === 'paid')
+                            <span class="status paid">Đã thanh toán</span>
+                        @else
+                            <span class="status pending">Đang chờ</span>
+                        @endif
+                    </div>
                 </div>
-
-                <div class="detail-item">
-                    <label>Phương thức</label>
-                    <strong>{{ strtoupper($payment->payment_method) }}</strong>
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light h-100">
+                        <small class="text-muted d-block mb-1">Mã giao dịch (hiển thị)</small>
+                        <strong class="small text-break">
+                            {{ strtoupper($payment->payment_method) }}-{{ $payment->created_at?->format('Ymd') }}-{{ str_pad((string) $payment->id, 4, '0', STR_PAD_LEFT) }}
+                        </strong>
+                    </div>
                 </div>
-
-                <div class="detail-item">
-                    <label>Trạng thái</label>
-                    @if($payment->status == 'paid')
-                        <span class="badge paid">Đã thanh toán</span>
-                    @elseif($payment->status == 'pending')
-                        <span class="badge pending">Đang chờ</span>
-                    @else
-                        <span class="badge failed">Thất bại</span>
-                    @endif
-                </div>
-
-                <div class="detail-item">
-                    <label>Mã giao dịch</label>
-                    <strong>
-                        {{ strtoupper($payment->payment_method) }}-{{ date('Ymd', strtotime($payment->created_at)) }}-{{ str_pad($payment->id, 4, '0', STR_PAD_LEFT) }}
-                    </strong>
-                </div>
-
-                <div class="detail-item full">
-                    <label>Ngày tạo</label>
-                    <strong>{{ $payment->created_at }}</strong>
+                @if($payment->booking?->tour)
+                    <div class="col-12">
+                        <div class="p-3 rounded-3 border">
+                            <small class="text-muted d-block mb-1">Tour</small>
+                            <strong>{{ $payment->booking->tour->title }}</strong>
+                        </div>
+                    </div>
+                @endif
+                <div class="col-12">
+                    <div class="p-3 rounded-3 border bg-light">
+                        <small class="text-muted d-block mb-1">Thời gian tạo</small>
+                        <strong>{{ $payment->created_at?->format('d/m/Y H:i') }}</strong>
+                    </div>
                 </div>
             </div>
 
-            <div class="btn-group">
-                <a href="{{ route('payment.index') }}" class="btn btn-primary">Quay lại lịch sử</a>
-                <a href="{{ url()->previous() }}" class="btn btn-secondary">Trang trước</a>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('payment.index') }}" class="btn-view">← Lịch sử thanh toán</a>
+                <a href="{{ route('bookings.index') }}" class="btn btn-outline-primary rounded-3 fw-semibold px-3">Booking của tôi</a>
             </div>
         </div>
     </div>
 </div>
-</body>
-</html>
 @endsection
