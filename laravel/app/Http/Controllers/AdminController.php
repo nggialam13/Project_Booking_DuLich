@@ -10,11 +10,40 @@ use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    public function payments(): View
+    public function payments(Request $request): View
     {
-        $payments = Payment::with(['booking.tour', 'booking.user'])
-            ->latest()
-            ->paginate(15);
+        $statusFilter = null;
+        if ($request->filled('status')) {
+            $s = $request->string('status')->toString();
+            if (in_array($s, ['pending', 'paid'], true)) {
+                $statusFilter = $s;
+            }
+        }
+
+        $methodFilter = null;
+        if ($request->filled('method')) {
+            $m = $request->string('method')->toString();
+            if (in_array($m, ['cash', 'momo', 'vnpay'], true)) {
+                $methodFilter = $m;
+            }
+        }
+
+        $query = Payment::with(['booking.tour', 'booking.user'])->latest();
+        if ($statusFilter !== null) {
+            $query->where('status', $statusFilter);
+        }
+        if ($methodFilter !== null) {
+            $query->where('payment_method', $methodFilter);
+        }
+
+        $payments = $query->paginate(15);
+        $filterQuery = array_filter([
+            'status' => $statusFilter,
+            'method' => $methodFilter,
+        ], fn ($v) => $v !== null);
+        if ($filterQuery !== []) {
+            $payments->appends($filterQuery);
+        }
 
         $stats = [
             'total' => Payment::count(),
@@ -22,7 +51,7 @@ class AdminController extends Controller
             'revenue' => (int) Payment::where('status', 'paid')->sum('amount'),
         ];
 
-        return view('admin.payments.index', compact('payments', 'stats'));
+        return view('admin.payments.index', compact('payments', 'stats', 'statusFilter', 'methodFilter'));
     }
 
     public function createPayment(): View

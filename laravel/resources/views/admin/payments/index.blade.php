@@ -51,6 +51,28 @@
     <div class="card card-admin">
         <div class="card-admin-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i>Danh sách thanh toán</h5>
+            <form method="get" action="{{ route('admin.payments.index') }}" class="d-flex flex-nowrap align-items-center gap-2 mb-0">
+                <div class="d-flex flex-nowrap align-items-center gap-1">
+                    <label for="filter-payment-status" class="small text-muted mb-0 text-nowrap">Trạng thái</label>
+                    <select name="status" id="filter-payment-status" class="form-select form-select-sm" style="width: 9.5rem;" onchange="this.form.submit()">
+                        <option value="" @selected(($statusFilter ?? null) === null)>Tất cả</option>
+                        <option value="pending" @selected(($statusFilter ?? null) === 'pending')>Đang chờ</option>
+                        <option value="paid" @selected(($statusFilter ?? null) === 'paid')>Đã thanh toán</option>
+                    </select>
+                </div>
+                <div class="d-flex flex-nowrap align-items-center gap-1">
+                    <label for="filter-payment-method" class="small text-muted mb-0 text-nowrap">Phương thức</label>
+                    <select name="method" id="filter-payment-method" class="form-select form-select-sm" style="width: 9.5rem;" onchange="this.form.submit()">
+                        <option value="" @selected(($methodFilter ?? null) === null)>Tất cả</option>
+                        <option value="cash" @selected(($methodFilter ?? null) === 'cash')>Tiền mặt</option>
+                        <option value="momo" @selected(($methodFilter ?? null) === 'momo')>MoMo</option>
+                        <option value="vnpay" @selected(($methodFilter ?? null) === 'vnpay')>VNPay</option>
+                    </select>
+                </div>
+                @if(($statusFilter ?? null) !== null || ($methodFilter ?? null) !== null)
+                    <a href="{{ route('admin.payments.index') }}" class="btn btn-sm btn-outline-secondary text-nowrap flex-shrink-0">Xóa lọc</a>
+                @endif
+            </form>
         </div>
         <div class="card-admin-body p-0">
             <div class="table-responsive">
