@@ -3,21 +3,36 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Payment;
 use App\Models\Booking;
+use App\Models\Payment;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PaymentController extends Controller
 {
-    public function create($booking_id)
+    private function paymentForCurrentUser(int $id): Payment
     {
-        $booking = Booking::findOrFail($booking_id);
-        $amount = $booking->total_price;
+        return Payment::query()
+            ->whereHas('booking', function ($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->findOrFail($id);
+    }
+
+    public function create($booking_id): View
+    {
+        $booking = Booking::query()
+            ->where('user_id', auth()->id())
+            ->with(['tour'])
+            ->findOrFail($booking_id);
+
+        $amount = (int) $booking->total_price;
 
         return view('payments.create', compact('booking', 'amount'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'booking_id' => 'required|exists:bookings,id',
@@ -25,9 +40,13 @@ class PaymentController extends Controller
             'method' => 'required|in:momo,vnpay',
         ]);
 
+        $booking = Booking::query()
+            ->where('user_id', auth()->id())
+            ->findOrFail($validated['booking_id']);
+
         $payment = Payment::create([
-            'booking_id' => $validated['booking_id'],
-            'amount' => $validated['amount'],
+            'booking_id' => $booking->id,
+            'amount' => (int) round($validated['amount']),
             'payment_method' => $validated['method'],
             'status' => 'pending',
         ]);
@@ -39,9 +58,9 @@ class PaymentController extends Controller
         return redirect()->route('payment.vnpay', $payment->id);
     }
 
-    public function momo($id)
+    public function momo($id): RedirectResponse
     {
-        $payment = Payment::findOrFail($id);
+        $payment = $this->paymentForCurrentUser((int) $id);
 
         $payment->update([
             'status' => 'paid',
@@ -56,9 +75,9 @@ class PaymentController extends Controller
         return redirect()->route('payment.success', $id);
     }
 
-    public function vnpay($id)
+    public function vnpay($id): RedirectResponse
     {
-        $payment = Payment::findOrFail($id);
+        $payment = $this->paymentForCurrentUser((int) $id);
 
         $payment->update([
             'status' => 'paid',
@@ -73,21 +92,32 @@ class PaymentController extends Controller
         return redirect()->route('payment.success', $id);
     }
 
-    public function success($id)
+    public function success($id): View
     {
-        $payment = Payment::findOrFail($id);
+        $payment = $this->paymentForCurrentUser((int) $id);
+        $payment->load(['booking.tour']);
+
         return view('payments.success', compact('payment'));
     }
 
-    public function index()
+    public function index(): View
     {
-        $payments = Payment::latest()->get();
+        $payments = Payment::query()
+            ->whereHas('booking', function ($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->with(['booking.tour'])
+            ->latest()
+            ->paginate(12);
+
         return view('payments.index', compact('payments'));
     }
 
-    public function show($id)
+    public function show($id): View
     {
-        $payment = Payment::findOrFail($id);
+        $payment = $this->paymentForCurrentUser((int) $id);
+        $payment->load(['booking.tour']);
+
         return view('payments.show', compact('payment'));
     }
 }
