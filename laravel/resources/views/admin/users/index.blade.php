@@ -9,12 +9,12 @@
         <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
     </div>
 
-    @if(session('success'))
+    <!-- @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+    @endif -->
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">

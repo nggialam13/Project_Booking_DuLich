@@ -47,7 +47,7 @@ return new class extends Migration
 
         // Remove payment amount check to avoid touching Payment teammate's domain.
         if ($this->checkConstraintExists('payments', 'chk_payments_amount_non_negative')) {
-            DB::statement('ALTER TABLE payments DROP CHECK chk_payments_amount_non_negative');
+            DB::statement('ALTER TABLE payments DROP CONSTRAINT chk_payments_amount_non_negative');
         }
     }
 
