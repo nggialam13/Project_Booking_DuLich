@@ -9,9 +9,38 @@ use Psy\Readline\Hoa\Console;
 
 class TourController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tours = Tour::paginate(30);
+        $title = $request->get('title');
+        $priceMin = $request->get('price_min');
+        $priceMax = $request->get('price_max');
+        $daysMin = $request->get('days_min');
+        $daysMax = $request->get('days_max');
+
+        $query = Tour::query();
+
+        if ($title) {
+            $query->where('title', 'like', "%{$title}%");
+        }
+
+        if ($priceMin !== null && $priceMin !== '' && is_numeric($priceMin)) {
+            $query->where('price', '>=', $priceMin);
+        }
+
+        if ($priceMax !== null && $priceMax !== '' && is_numeric($priceMax)) {
+            $query->where('price', '<=', $priceMax);
+        }
+
+        if ($daysMin !== null && $daysMin !== '' && is_numeric($daysMin)) {
+            $query->where('duration', '>=', $daysMin);
+        }
+
+        if ($daysMax !== null && $daysMax !== '' && is_numeric($daysMax)) {
+            $query->where('duration', '<=', $daysMax);
+        }
+
+        $tours = $query->orderBy('id', 'asc')->paginate(30)->withQueryString();
+
         return view('tours.index', compact('tours'));
     }
 
@@ -22,13 +51,25 @@ class TourController extends Controller
 
     public function edit($id)
     {
-        $tour = Tour::findOrFail($id);
+        $tour = Tour::find($id);
+
+        if (!$tour) {
+            return redirect()->route('tours.index')
+                ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
+        }
+
         return view('tours.edit', compact('tour'));
     }
 
     public function update(Request $request, $id)
     {
-        $tour = Tour::findOrFail($id);
+        $tour = Tour::find($id);
+
+        if (!$tour) {
+            return redirect()->route('tours.index')
+                ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
+        }
+
         $booked = $tour->slots - $tour->available_slots;
 
         $validated = $request->validate([
@@ -39,7 +80,7 @@ class TourController extends Controller
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:' . $booked . '|max:9999',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'image' => 'nullable|image|mimes:png,jpg|max:2048'
         ]);
 
         // Tính lại duration từ start_date & end_date
@@ -128,7 +169,7 @@ class TourController extends Controller
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:1|max:9999',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'image' => 'nullable|image|mimes:png,jpg|max:2048'
         ]);
 
         // Tính lại duration từ start_date & end_date
@@ -163,14 +204,33 @@ class TourController extends Controller
 
     public function destroyTour($id)
     {
-        $tour = Tour::findOrFail($id);
+        $tour = Tour::find($id);
+
+        if (!$tour) {
+            return redirect()->route('tours.index')
+                ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
+        }
+
+        $bookedSlots = max(0, (int) $tour->slots - (int) $tour->available_slots);
+
+        if ($bookedSlots > 0) {
+            return redirect()->route('tours.index')
+            ->with('error', 'Không thể xóa tour đã có người đặt. Hãy đổi trạng thái sang Tắt thay vì xóa.');
+        }
+
         $tour->delete();
         return redirect()->route('tours.index')->with('success', 'Tour đã được xóa thành công!');
     }
 
     public function toggleStatus($id)
     {
-        $tour = Tour::findOrFail($id);
+        $tour = Tour::find($id);
+
+        if (!$tour) {
+            return redirect()->route('tours.index')
+                ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
+        }
+
         $tour->status = $tour->status === 'active' ? 'inactive' : 'active';
         $tour->save();
         return redirect()->route('tours.index')->with('success', 'Cập nhật thành công!');
