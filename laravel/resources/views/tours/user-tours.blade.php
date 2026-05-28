@@ -6,48 +6,12 @@
  <div class="container mb-5">
      <!-- Search Section -->
      @if($tours->count() > 0)
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title mb-3"><i class="fas fa-filter"></i> Tìm Tour</h5>
-            <form method="GET" class="row g-2 align-items-end">
-                <div class="col-12 col-md-4">
-                    <label class="form-label small text-muted mb-1">Tiêu đề</label>
-                    <input type="text" name="title" class="form-control"
-                        placeholder="Nhập tên tour" value="{{ request('title') }}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1">Giá từ</label>
-                    <input type="number" name="price_min" class="form-control" min="0" step="1"
-                        placeholder="Từ" value="{{ request('price_min') }}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1">Giá đến</label>
-                    <input type="number" name="price_max" class="form-control" min="0" step="1"
-                        placeholder="Đến" value="{{ request('price_max') }}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1">Ngày từ</label>
-                    <input type="number" name="days_min" class="form-control" min="1" step="1"
-                        placeholder="Từ" value="{{ request('days_min') }}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1">Ngày đến</label>
-                    <input type="number" name="days_max" class="form-control" min="1" step="1"
-                        placeholder="Đến" value="{{ request('days_max') }}">
-                </div>
-                <div class="col-6 col-md-2 d-grid">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Tìm
-                    </button>
-                </div>
-                <div class="col-6 col-md-2 d-grid">
-                    <a href="{{ route('tours.user-index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-rotate-right"></i> Làm mới
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
+     <div class="card mb-4">
+         <div class="card-body">
+             <h5 class="card-title mb-3"><i class="fas fa-filter"></i> Tìm Tour</h5>
+             @include('tours._search-form', ['action' => route('tours.user-index'), 'reset' => route('tours.user-index')])
+         </div>
+     </div>
 
      <!-- Tour Grid -->
      <div class="row g-4 mb-5">
@@ -144,19 +108,19 @@
                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                      </div>
                      <div class="modal-body">
-                        <div class="mb-4">
-                            @if($tour->image&&Storage::disk('public')->exists($tour->image))
-                            <img src="{{ asset('storage/' . $tour->image) }}" alt="{{ $tour->title }}"
-                                class="img-fluid rounded w-100" style="max-height: 320px; object-fit: cover;">
-                            @elseif($tour->image&&Storage::disk('public')->exists('demo/'.$tour->image))
-                            <img src="{{ asset('storage/demo/' . $tour->image) }}" alt="{{ $tour->title }}"
-                                class="img-fluid rounded w-100" style="max-height: 320px; object-fit: cover;">
-                            @else
-                            <div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 220px;">
-                                <i class="fas fa-image text-muted" style="font-size: 48px;"></i>
-                            </div>
-                            @endif
-                        </div>
+                         <div class="mb-4">
+                             @if($tour->image&&Storage::disk('public')->exists($tour->image))
+                             <img src="{{ asset('storage/' . $tour->image) }}" alt="{{ $tour->title }}"
+                                 class="img-fluid rounded w-100" style="max-height: 320px; object-fit: cover;">
+                             @elseif($tour->image&&Storage::disk('public')->exists('demo/'.$tour->image))
+                             <img src="{{ asset('storage/demo/' . $tour->image) }}" alt="{{ $tour->title }}"
+                                 class="img-fluid rounded w-100" style="max-height: 320px; object-fit: cover;">
+                             @else
+                             <div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 220px;">
+                                 <i class="fas fa-image text-muted" style="font-size: 48px;"></i>
+                             </div>
+                             @endif
+                         </div>
                          <div class="mb-3">
                              <strong>Địa Điểm:</strong>
                              <p><i class="fas fa-map-pin text-danger"></i> {{ $tour->location }}</p>

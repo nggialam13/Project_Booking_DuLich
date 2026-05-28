@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;
 @endphp
 
 <style>
@@ -83,7 +83,12 @@
             </a>
         </div>
     </div>
-
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3"><i class="fas fa-filter"></i> Tìm Tour</h5>
+            @include('tours._search-form', ['action' => route('tours.index'), 'reset' => route('tours.index')])
+        </div>
+    </div>
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card card-admin mb-0">
@@ -106,24 +111,24 @@
                             <tbody>
                                 @forelse($tours as $tour)
                                 @php
-                                    $previewImageUrl = null;
-                                    if ($tour->image && Storage::disk('public')->exists($tour->image)) {
-                                        $previewImageUrl = asset('storage/' . $tour->image);
-                                    } elseif ($tour->image && Storage::disk('public')->exists('demo/' . $tour->image)) {
-                                        $previewImageUrl = asset('storage/demo/' . $tour->image);
-                                    }
-                                    $previewData = [
-                                        'title' => $tour->title,
-                                        'description' => $tour->description,
-                                        'location' => $tour->location,
-                                        'price' => number_format($tour->price) . ' VND',
-                                        'duration' => $tour->duration . ' ngày',
-                                        'start' => \Carbon\Carbon::parse($tour->start_date)->format('d/m/Y'),
-                                        'end' => \Carbon\Carbon::parse($tour->end_date)->format('d/m/Y'),
-                                        'slots' => ($tour->slots - $tour->available_slots) . '/' . $tour->slots . ' chỗ',
-                                        'status' => $tour->status === 'active' ? 'Hoạt động' : 'Không hoạt động',
-                                        'image' => $previewImageUrl ?? '',
-                                    ];
+                                $previewImageUrl = null;
+                                if ($tour->image && Storage::disk('public')->exists($tour->image)) {
+                                $previewImageUrl = asset('storage/' . $tour->image);
+                                } elseif ($tour->image && Storage::disk('public')->exists('demo/' . $tour->image)) {
+                                $previewImageUrl = asset('storage/demo/' . $tour->image);
+                                }
+                                $previewData = [
+                                'title' => $tour->title,
+                                'description' => $tour->description,
+                                'location' => $tour->location,
+                                'price' => number_format($tour->price) . ' VND',
+                                'duration' => $tour->duration . ' ngày',
+                                'start' => \Carbon\Carbon::parse($tour->start_date)->format('d/m/Y'),
+                                'end' => \Carbon\Carbon::parse($tour->end_date)->format('d/m/Y'),
+                                'slots' => ($tour->slots - $tour->available_slots) . '/' . $tour->slots . ' chỗ',
+                                'status' => $tour->status === 'active' ? 'Hoạt động' : 'Không hoạt động',
+                                'image' => $previewImageUrl ?? '',
+                                ];
                                 @endphp
                                 <tr @if($tour->status === 'inactive') class="table-danger" @endif
                                     data-preview-title="{{ e($previewData['title']) }}"
@@ -172,7 +177,8 @@
                                         <button type="button"
                                             class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#deleteTourModal{{ $tour->id }}">
+                                            data-bs-target="#deleteTourModal{{ $tour->id }}"
+                                            @if(($tour->slots - $tour->available_slots) > 0) disabled title="Tour đã có người đặt, không thể xóa" @endif>
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -269,15 +275,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                @if(($tour->slots - $tour->available_slots) > 0)
+                Tour <strong>{{ $tour->title }}</strong> đã có người đặt nên không thể xóa.
+                @else
                 Bạn chắc chắn muốn xóa tour <strong>{{ $tour->title }}</strong>?
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                @if(($tour->slots - $tour->available_slots) === 0)
                 <form method="POST" action="{{ route('tours.destroy', $tour->id) }}" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </form>
+                @endif
             </div>
         </div>
     </div>
@@ -285,7 +297,7 @@
 @endforeach
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const rows = document.querySelectorAll('tr[data-preview-image]');
         const preview = {
             image: document.querySelector('#tourPreviewImage'),
