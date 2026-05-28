@@ -74,44 +74,117 @@ class BookingService
         $this->cancelBooking($booking->id);
     }
 
-    public function cancelByAdmin(int $bookingId): void
-    {
-        $booking = Booking::findOrFail($bookingId);
-        $this->cancelBooking($booking->id);
-    }
+ public function cancelByAdmin(int $bookingId): void
+{
+    $booking = Booking::findOrFail($bookingId);
 
-    public function confirm(int $bookingId): void
-    {
-        $booking = Booking::findOrFail($bookingId);
+    $this->forceCancel($booking);
+}
+private function forceCancel(Booking $booking): void
+{
+    DB::transaction(function () use ($booking) {
+
+        $booking = Booking::where('id', $booking->id)
+            ->lockForUpdate()
+            ->firstOrFail();
 
         if ($booking->status !== 'pending') {
-            throw new \RuntimeException('Không thể xác nhận booking này');
+            throw new \RuntimeException(
+                'Booking không thể hủy.'
+            );
         }
 
-        $booking->update(['status' => 'confirmed']);
-    }
+        $booking->load('bookingDetail');
 
-    private function cancelBooking(int $bookingId): void
-    {
-        DB::transaction(function () use ($bookingId) {
-            // Lock booking row to avoid double-cancel race condition.
-            $booking = Booking::where('id', $bookingId)->lockForUpdate()->firstOrFail();
+        $quantity = (int) optional($booking->bookingDetail)->quantity;
 
-            if ($booking->status === 'cancelled') {
-                throw new \RuntimeException('Booking đã bị hủy');
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
+
+        if ($quantity > 0) {
+
+            $tour = Tour::where('id', $booking->tour_id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($tour) {
+                $tour->increment(
+                    'available_slots',
+                    $quantity
+                );
             }
+        }
+    });
+}
+  public function confirm(int $bookingId): void
+{
+    DB::transaction(function () use ($bookingId) {
 
-            $booking->load('bookingDetail');
-            $quantity = (int) optional($booking->bookingDetail)->quantity;
+        $booking = Booking::where('id', $bookingId)
+            ->lockForUpdate()
+            ->firstOrFail();
 
-            $booking->update(['status' => 'cancelled']);
+        if ($booking->status !== 'pending') {
+            throw new \RuntimeException(
+                'Booking đã được xử lý rồi.'
+            );
+        }
 
-            if ($quantity > 0) {
-                $tour = Tour::where('id', $booking->tour_id)->lockForUpdate()->first();
-                if ($tour) {
-                    $tour->increment('available_slots', $quantity);
-                }
+        $booking->update([
+            'status' => 'confirmed'
+        ]);
+    });
+}
+ private function cancelBooking(int $bookingId): void
+{
+    DB::transaction(function () use ($bookingId) {
+
+        $booking = Booking::where('id',$bookingId)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        switch($booking->status)
+        {
+            case 'confirmed':
+                throw new \RuntimeException(
+                    'Booking đã xác nhận.'
+                );
+
+            case 'cancelled':
+                throw new \RuntimeException(
+                    'Booking đã bị hủy.'
+                );
+        }
+
+        $booking->load('bookingDetail');
+
+        $quantity =
+            (int) optional(
+                $booking->bookingDetail
+            )->quantity;
+
+        $booking->update([
+            'status'=>'cancelled'
+        ]);
+
+        if($quantity>0)
+        {
+            $tour = Tour::where(
+                    'id',
+                    $booking->tour_id
+                )
+                ->lockForUpdate()
+                ->first();
+
+            if($tour)
+            {
+                $tour->increment(
+                    'available_slots',
+                    $quantity
+                );
             }
-        });
-    }
+        }
+    });
+}
 }
