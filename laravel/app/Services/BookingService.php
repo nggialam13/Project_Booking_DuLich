@@ -13,7 +13,7 @@ class BookingService
     // Query service methods: keep read/list logic out of controller.
     public function getUserBookingsPaginated(int $userId, int $perPage = 6): LengthAwarePaginator
     {
-        return Booking::with(['tour', 'payments'])
+        return Booking::with('tour')
             ->where('user_id', $userId)
             ->latest()
             ->paginate($perPage)
@@ -22,36 +22,20 @@ class BookingService
 
     public function getUserBookingDetail(int $userId, int $bookingId): Booking
     {
-        return Booking::with(['tour', 'bookingDetail', 'payments'])
+        return Booking::with(['tour', 'bookingDetail'])
             ->where('user_id', $userId)
             ->findOrFail($bookingId);
     }
 
-    public function getAdminBookingsPaginated($status = null, $keyword = null)
+    public function getAdminBookingsPaginated(?string $status, int $perPage = 10): LengthAwarePaginator
     {
-        return Booking::with(['user', 'tour', 'bookingDetail'])
+        $query = Booking::with(['tour', 'user', 'bookingDetail'])->latest();
 
-            // 🔍 SEARCH
-            ->when($keyword, function ($query) use ($keyword) {
-                $query->where(function ($q) use ($keyword) {
+        if (in_array($status, ['pending', 'confirmed', 'cancelled'], true)) {
+            $query->where('status', $status);
+        }
 
-                    $q->whereHas('user', function ($q2) use ($keyword) {
-                        $q2->where('name', 'like', "%$keyword%");
-                    })
-
-                        ->orWhereHas('tour', function ($q2) use ($keyword) {
-                            $q2->where('title', 'like', "%$keyword%");
-                        });
-                });
-            })
-
-            // 🎯 FILTER STATUS
-            ->when(in_array($status, ['pending', 'confirmed', 'cancelled']), function ($query) use ($status) {
-                $query->where('status', $status);
-            })
-
-            ->latest()
-            ->paginate(10);
+        return $query->paginate($perPage)->withQueryString();
     }
 
     public function createBooking(int $userId, int $tourId, int $quantity): Booking
@@ -90,54 +74,50 @@ class BookingService
         $this->cancelBooking($booking->id);
     }
 
-    public function cancelByAdmin(int $bookingId): void
-    {
-        $booking = Booking::findOrFail($bookingId);
+ public function cancelByAdmin(int $bookingId): void
+{
+    $booking = Booking::findOrFail($bookingId);
 
-        if ($booking->status === 'cancelled') {
-            throw new \RuntimeException('Đã hủy rồi');
-        }
+    $this->forceCancel($booking);
+}
+private function forceCancel(Booking $booking): void
+{
+    DB::transaction(function () use ($booking) {
 
-        $this->forceCancel($booking);
-    }
-
-    private function forceCancel(Booking $booking): void
-    {
-        DB::transaction(function () use ($booking) {
-
-            $booking = Booking::where('id', $booking->id)->lockForUpdate()->first();
-
-            if ($booking->status === 'cancelled') {
-                throw new \RuntimeException('Đã hủy rồi');
-            }
-
-            $booking->load('bookingDetail');
-            $quantity = (int) optional($booking->bookingDetail)->quantity;
-
-            $booking->update(['status' => 'cancelled']);
-
-            if ($quantity > 0) {
-                $tour = Tour::where('id', $booking->tour_id)->lockForUpdate()->first();
-                if ($tour) {
-                    $tour->increment('available_slots', $quantity);
-                }
-            }
-        });
-    }
-
-    public function confirm(int $bookingId): void
-    {
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Booking::where('id', $booking->id)
+            ->lockForUpdate()
+            ->firstOrFail();
 
         if ($booking->status !== 'pending') {
-            throw new \RuntimeException('Không thể xác nhận booking này');
+            throw new \RuntimeException(
+                'Booking không thể hủy.'
+            );
         }
 
-        $booking->update(['status' => 'confirmed']);
-    }
+        $booking->load('bookingDetail');
 
+        $quantity = (int) optional($booking->bookingDetail)->quantity;
 
-private function cancelBooking(int $bookingId): void
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
+
+        if ($quantity > 0) {
+
+            $tour = Tour::where('id', $booking->tour_id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($tour) {
+                $tour->increment(
+                    'available_slots',
+                    $quantity
+                );
+            }
+        }
+    });
+}
+  public function confirm(int $bookingId): void
 {
     DB::transaction(function () use ($bookingId) {
 
@@ -145,30 +125,64 @@ private function cancelBooking(int $bookingId): void
             ->lockForUpdate()
             ->firstOrFail();
 
-        // Check trạng thái booking
-        switch ($booking->status) {
-            case 'confirmed':
-                throw new \RuntimeException('Booking đã được xác nhận nên không thể hủy.');
-            case 'cancelled':
-                throw new \RuntimeException('Booking này đã bị hủy trước đó.');
+        if ($booking->status !== 'pending') {
+            throw new \RuntimeException(
+                'Booking đã được xử lý rồi.'
+            );
         }
 
-        //  Chỉ pending mới chạy tiếp
+        $booking->update([
+            'status' => 'confirmed'
+        ]);
+    });
+}
+ private function cancelBooking(int $bookingId): void
+{
+    DB::transaction(function () use ($bookingId) {
+
+        $booking = Booking::where('id',$bookingId)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        switch($booking->status)
+        {
+            case 'confirmed':
+                throw new \RuntimeException(
+                    'Booking đã xác nhận.'
+                );
+
+            case 'cancelled':
+                throw new \RuntimeException(
+                    'Booking đã bị hủy.'
+                );
+        }
+
         $booking->load('bookingDetail');
-        $quantity = (int) optional($booking->bookingDetail)->quantity;
+
+        $quantity =
+            (int) optional(
+                $booking->bookingDetail
+            )->quantity;
 
         $booking->update([
-            'status' => 'cancelled'
+            'status'=>'cancelled'
         ]);
 
-        //  hoàn lại slot
-        if ($quantity > 0) {
-            $tour = Tour::where('id', $booking->tour_id)
+        if($quantity>0)
+        {
+            $tour = Tour::where(
+                    'id',
+                    $booking->tour_id
+                )
                 ->lockForUpdate()
                 ->first();
 
-            if ($tour) {
-                $tour->increment('available_slots', $quantity);
+            if($tour)
+            {
+                $tour->increment(
+                    'available_slots',
+                    $quantity
+                );
             }
         }
     });
