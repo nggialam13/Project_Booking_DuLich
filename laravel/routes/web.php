@@ -37,6 +37,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::patch('/payments/{payment}/status', [AdminController::class, 'updatePaymentStatus'])->name('admin.payments.update-status');
 
     Route::get('/report', [ReportController::class, 'index'])->name('admin.report');
+    Route::get('/chart', [ReportController::class, 'chart'])->name('admin.chart');
 });
 
 require __DIR__ . '/tour.php';
@@ -46,3 +47,4 @@ require __DIR__.'/payment.php';
 Route::get('/test-alert', function () {
     return redirect('/tours')->with('success', 'Thành công!');
 });
+
