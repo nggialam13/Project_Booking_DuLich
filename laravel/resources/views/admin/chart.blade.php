@@ -128,14 +128,14 @@
 {{-- DATA BLADE --}}
 {{-- ===================== --}}
 <script>
-    const chartData = document.getElementById('chartData');
+    const dayLabels = @json($bookingByDay->pluck('date'));
+    const dayData = @json($bookingByDay->pluck('total'));
 
-    const dayLabels   = chartData.dataset.dayLabels.split(',');
-    const dayData     = chartData.dataset.dayData.split(',').map(Number);
-    const weekLabels  = chartData.dataset.weekLabels.split(',');
-    const weekData    = chartData.dataset.weekData.split(',').map(Number);
-    const monthLabels = chartData.dataset.monthLabels.split(',');
-    const monthData   = chartData.dataset.monthData.split(',').map(Number);
+    const weekLabels = @json($bookingByWeek->pluck('week'));
+    const weekData = @json($bookingByWeek->pluck('total'));
+
+    const monthLabels = @json($bookingByMonth->pluck('month'));
+    const monthData = @json($bookingByMonth->pluck('total'));
 </script>
 
 {{-- ===================== --}}
