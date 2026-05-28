@@ -7,12 +7,9 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
         <div>
             <h2 class="mb-1"><i class="fas fa-credit-card me-2"></i>Quản lý thanh toán</h2>
-            <p class="text-muted mb-0">Theo dõi giao dịch, ghi nhận thanh toán và cập nhật trạng thái</p>
+            <p class="text-muted mb-0">Theo dõi giao dịch do người dùng tạo và cập nhật trạng thái</p>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            <a href="{{ route('admin.payments.create') }}" class="btn btn-admin btn-admin-primary px-4">
-                <i class="fas fa-plus me-1"></i> Tạo thanh toán
-            </a>
             <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Dashboard
             </a>
@@ -51,6 +48,7 @@
     <div class="card card-admin">
         <div class="card-admin-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i>Danh sách thanh toán</h5>
+
             <form method="get" action="{{ route('admin.payments.index') }}" class="d-flex flex-nowrap align-items-center gap-2 mb-0">
                 <div class="d-flex flex-nowrap align-items-center gap-1">
                     <label for="filter-payment-status" class="small text-muted mb-0 text-nowrap">Trạng thái</label>
@@ -60,6 +58,7 @@
                         <option value="paid" @selected(($statusFilter ?? null) === 'paid')>Đã thanh toán</option>
                     </select>
                 </div>
+
                 <div class="d-flex flex-nowrap align-items-center gap-1">
                     <label for="filter-payment-method" class="small text-muted mb-0 text-nowrap">Phương thức</label>
                     <select name="method" id="filter-payment-method" class="form-select form-select-sm" style="width: 9.5rem;" onchange="this.form.submit()">
@@ -69,11 +68,13 @@
                         <option value="vnpay" @selected(($methodFilter ?? null) === 'vnpay')>VNPay</option>
                     </select>
                 </div>
+
                 @if(($statusFilter ?? null) !== null || ($methodFilter ?? null) !== null)
                     <a href="{{ route('admin.payments.index') }}" class="btn btn-sm btn-outline-secondary text-nowrap flex-shrink-0">Xóa lọc</a>
                 @endif
             </form>
         </div>
+
         <div class="card-admin-body p-0">
             <div class="table-responsive">
                 <table class="table table-admin mb-0 align-middle">
@@ -113,6 +114,7 @@
                                 </td>
                                 <td>
                                     @php $m = $payment->payment_method; @endphp
+
                                     @if($m === 'cash')
                                         <span class="badge rounded-pill bg-secondary">Tiền mặt</span>
                                     @elseif($m === 'momo')
@@ -128,7 +130,9 @@
                                         <span class="badge badge-status-warning">Đang chờ</span>
                                     @endif
                                 </td>
-                                <td><small>{{ $payment->created_at?->format('d/m/Y H:i') }}</small></td>
+                                <td>
+                                    <small>{{ $payment->created_at?->format('d/m/Y H:i') }}</small>
+                                </td>
                                 <td class="text-center">
                                     <a href="{{ route('admin.payments.show', $payment) }}" class="btn btn-sm btn-admin btn-admin-primary">
                                         <i class="fas fa-eye me-1"></i> Chi tiết
@@ -147,6 +151,7 @@
                 </table>
             </div>
         </div>
+
         @if($payments->hasPages())
             <div class="card-admin-body border-top pt-3">
                 {{ $payments->links() }}

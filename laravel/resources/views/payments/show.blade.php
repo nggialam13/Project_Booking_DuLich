@@ -8,6 +8,16 @@
             <p class="mb-0">Mã booking: {{ $payment->booking?->booking_code ?? ('#'.$payment->booking_id) }}</p>
         </div>
         <div class="payment-body">
+            @if($payment->payment_method === 'cash' && $payment->status === 'pending')
+                <div class="alert alert-info border-0 mb-4" style="border-radius:12px;">
+                    <h6 class="fw-bold mb-2"><i class="fas fa-money-bill-wave me-2"></i>Hướng dẫn thanh toán tiền mặt</h6>
+                    <ul class="mb-0 ps-3 small">
+                        <li>Mang mã booking <strong>{{ $payment->booking?->booking_code }}</strong> đến quầy giao dịch.</li>
+                        <li>Thanh toán đúng số tiền: <strong>{{ number_format($payment->amount, 0, ',', '.') }} đ</strong>.</li>
+                        <li>Sau khi thu tiền, quản trị viên sẽ xác nhận và booking chuyển sang trạng thái đã xác nhận.</li>
+                    </ul>
+                </div>
+            @endif
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
                     <div class="p-3 rounded-3 border bg-light h-100">
@@ -63,6 +73,11 @@
             </div>
 
             <div class="d-flex flex-wrap gap-2">
+                @if($payment->status === 'pending' && in_array($payment->payment_method, ['momo', 'vnpay']))
+                    <a href="{{ route('payment.'.$payment->payment_method, $payment->id) }}" class="btn btn-lg text-white fw-semibold px-4" style="background:linear-gradient(135deg,#0d6efd,#0dcaf0);border:none;border-radius:10px;">
+                        <i class="fas fa-credit-card me-1"></i> Tiếp tục thanh toán
+                    </a>
+                @endif
                 <a href="{{ route('payment.index') }}" class="btn-view">← Lịch sử thanh toán</a>
                 <a href="{{ route('bookings.index') }}" class="btn btn-outline-primary rounded-3 fw-semibold px-3">Booking của tôi</a>
             </div>

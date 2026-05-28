@@ -72,10 +72,14 @@
         </div>
 
         <!-- ACTION -->
-        <div class="action-box mt-4">
+        <div class="action-box mt-4 d-flex flex-wrap gap-2 align-items-center">
+
+            @if($booking->status !== 'cancelled')
+                @include('bookings.partials.payment-actions', ['booking' => $booking])
+            @endif
 
             @if(in_array($booking->status, ['pending', 'confirmed']))
-            <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
+            <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST" class="d-inline">
                 @csrf
                 <button class="btn btn-cancel"
                     onclick="return confirm('Bạn chắc chắn muốn hủy?')">

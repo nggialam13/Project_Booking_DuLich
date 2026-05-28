@@ -1,4 +1,4 @@
-@extends('layouts.master')
+﻿@extends('layouts.master')
 
 @section('content')
 <div class="container py-4">
@@ -77,13 +77,21 @@
                                 <td>
                                     <small>{{ $payment->created_at?->format('d/m/Y H:i') }}</small>
                                 </td>
-                                <td>
+                                <td class="text-nowrap">
+                                    @if($payment->status === 'pending' && in_array($payment->payment_method, ['momo', 'vnpay']))
+                                        <a href="{{ route('payment.'.$payment->payment_method, $payment->id) }}" class="btn-view me-1">Thanh toán</a>
+                                    @endif
                                     <a href="{{ route('payment.show', $payment->id) }}" class="btn-view">Chi tiết</a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="empty">Chưa có giao dịch thanh toán nào.</td>
+                                <td colspan="8" class="empty">
+                                    Chưa có giao dịch thanh toán nào.
+                                    <div class="mt-2">
+                                        <a href="{{ route('bookings.index') }}" class="btn-view">Xem booking của tôi</a>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -99,3 +107,4 @@
     </div>
 </div>
 @endsection
+

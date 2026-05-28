@@ -52,31 +52,43 @@
                 </h3>
 
                 <div class="row g-3 mb-4">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="user-payment-method w-100 mb-0">
-                            <input type="radio" name="method" value="momo" class="d-none" checked>
+                            <input type="radio" name="method" value="cash" class="d-none payment-method-input" checked>
                             <span class="user-payment-method-inner d-block border rounded-3 p-4 h-100 text-center">
-                                <i class="fas fa-mobile-screen-button fa-2x mb-2" style="color:#d82d8b;"></i>
-                                <span class="d-block fw-bold">MoMo</span>
-                                <small class="text-muted">Luồng demo — xác nhận nhanh</small>
+                                <i class="fas fa-money-bill-wave fa-2x text-secondary mb-2"></i>
+                                <span class="d-block fw-bold">Tiền mặt</span>
+                                <small class="text-muted">Thanh toán tại quầy</small>
                             </span>
                         </label>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="user-payment-method w-100 mb-0">
-                            <input type="radio" name="method" value="vnpay" class="d-none">
+                            <input type="radio" name="method" value="momo" class="d-none payment-method-input">
+                            <span class="user-payment-method-inner d-block border rounded-3 p-4 h-100 text-center">
+                                <i class="fas fa-mobile-screen-button fa-2x mb-2" style="color:#d82d8b;"></i>
+                                <span class="d-block fw-bold">MoMo</span>
+                                <small class="text-muted">Demo — xác nhận nhanh</small>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="user-payment-method w-100 mb-0">
+                            <input type="radio" name="method" value="vnpay" class="d-none payment-method-input">
                             <span class="user-payment-method-inner d-block border rounded-3 p-4 h-100 text-center">
                                 <i class="fas fa-qrcode fa-2x text-primary mb-2"></i>
                                 <span class="d-block fw-bold">VNPay</span>
-                                <small class="text-muted">Luồng demo — xác nhận nhanh</small>
+                                <small class="text-muted">Demo — xác nhận nhanh</small>
                             </span>
                         </label>
                     </div>
                 </div>
 
-                <div class="alert alert-warning border-0 small mb-4" style="border-radius:12px;">
+                <div id="payment-method-hint" class="alert alert-warning border-0 small mb-4" style="border-radius:12px;">
                     <i class="fas fa-info-circle me-1"></i>
-                    Đây là cổng thanh toán mô phỏng dùng cho demo: sau khi bấm xác nhận, hệ thống sẽ chuyển hướng và đánh dấu đã thanh toán.
+                    <span data-hint="cash">Thanh toán tiền mặt: hệ thống ghi nhận yêu cầu, bạn mang mã booking đến quầy. Admin xác nhận sau khi thu tiền.</span>
+                    <span data-hint="momo" class="d-none">MoMo (demo): sau khi xác nhận, hệ thống tự đánh dấu đã thanh toán.</span>
+                    <span data-hint="vnpay" class="d-none">VNPay (demo): sau khi xác nhận, hệ thống tự đánh dấu đã thanh toán.</span>
                 </div>
 
                 <div class="d-flex flex-wrap gap-2">
@@ -108,4 +120,13 @@
         border-color: #0d6efd !important;
     }
 </style>
+<script>
+    document.querySelectorAll('.payment-method-input').forEach(function (input) {
+        input.addEventListener('change', function () {
+            document.querySelectorAll('#payment-method-hint [data-hint]').forEach(function (el) {
+                el.classList.toggle('d-none', el.getAttribute('data-hint') !== input.value);
+            });
+        });
+    });
+</script>
 @endsection

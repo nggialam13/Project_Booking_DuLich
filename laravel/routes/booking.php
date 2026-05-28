@@ -41,10 +41,9 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-        // dashboard
-      Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
 
     // list booking
     Route::get('/bookings', [BookingController::class, 'adminIndex'])
