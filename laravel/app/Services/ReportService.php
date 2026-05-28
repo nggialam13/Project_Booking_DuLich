@@ -76,6 +76,23 @@ class ReportService
             ->orderBy('date')
             ->get();
 
+        // BOOKING BY WEEK
+        $bookingByWeek = Booking::select(
+            DB::raw('YEARWEEK(created_at, 1) as week'),
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy('week')
+            ->orderBy('week')
+            ->get();
+        // BOOKING BY MONTH
+        $bookingByMonth = Booking::select(
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('COUNT(*) as total')
+        )
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
         // TOP TOUR
         $topTours = Booking::select('tour_id', DB::raw('COUNT(*) as total'))
             ->groupBy('tour_id')
@@ -109,6 +126,9 @@ class ReportService
             'topTours' => $topTours,
             'bookingStatus' => $bookingStatus,
             'paymentStatus' => $paymentStatus,
+            'bookingByWeek' => $bookingByWeek,
+            'bookingByMonth' => $bookingByMonth,
+
         ];
     }
 }

@@ -78,6 +78,7 @@
             </form>
         </div>
     </div>
+    
 
 
     <!-- 📄 TABLE BOOKING -->
@@ -489,7 +490,6 @@
         </div>
 
     </div>
+
 </div>
-
-
 @endsection

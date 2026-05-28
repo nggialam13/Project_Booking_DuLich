@@ -26,7 +26,15 @@
                 </li>
                 <li class="d-flex justify-content-between py-2 border-bottom">
                     <span class="text-muted">Phương thức</span>
-                    <strong>{{ strtoupper($payment->payment_method) }}</strong>
+                    <strong>
+                        @if($payment->payment_method === 'cash')
+                            Tiền mặt
+                        @elseif($payment->payment_method === 'momo')
+                            MoMo
+                        @else
+                            VNPay
+                        @endif
+                    </strong>
                 </li>
                 <li class="d-flex justify-content-between py-2">
                     <span class="text-muted">Mã giao dịch</span>

@@ -75,6 +75,10 @@
                         Xem chi tiết
                     </a>
 
+                    @if($booking->status !== 'cancelled')
+                        @include('bookings.partials.payment-actions', ['booking' => $booking])
+                    @endif
+
                     @if(in_array($booking->status, ['pending', 'confirmed']))
                     <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
                         @csrf

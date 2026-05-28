@@ -313,6 +313,40 @@ body.admin-tour-page {
     box-shadow: 0 10px 20px rgba(14,165,233,.25);
 }
 
+.btn-pay {
+    background: linear-gradient(135deg, #198754, #20c997);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-block;
+    transition: .3s;
+}
+
+.btn-pay:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(25, 135, 84, .28);
+}
+
+.btn-pay-done {
+    background: linear-gradient(135deg, #64748b, #94a3b8);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-block;
+    transition: .3s;
+}
+
+.btn-pay-done:hover {
+    color: #fff;
+    opacity: .95;
+}
+
 /* empty */
 .empty {
     text-align: center;

@@ -5,6 +5,7 @@ use App\Http\Controllers\TourController;
 
 // User Tours Routes (Public)
 Route::get('/tours', [TourController::class, 'userIndex'])->name('tours.user-index');
+Route::get('/tours/{id}', [TourController::class, 'show'])->name('tours.show');
 
 // Admin Tours Routes
 Route::middleware(['auth', 'admin'])->group(function () {
