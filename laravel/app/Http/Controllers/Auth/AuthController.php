@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Booking;
 
 class AuthController extends Controller
 {
@@ -28,6 +29,11 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'phone' => 'nullable|string|max:20',
+        ], [
+            'name.required' => 'Họ tên không được để trống.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại.',
         ]);
 
         if ($validator->fails()) {
@@ -122,6 +128,15 @@ class AuthController extends Controller
             'bio' => 'nullable|string|max:500',
             'gender' => 'nullable|in:male,female,other',
             'dob' => 'nullable|date|before:today',
+        ], [
+            'name.required' => 'Họ tên không được để trống.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại.',
+            'avatar.image' => 'File tải lên phải là ảnh.',
+            'avatar.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, gif, webp.',
+            'avatar.max' => 'Dung lượng ảnh không được quá 2MB.',
+            'dob.before' => 'Ngày sinh phải trước ngày hôm nay.',
         ]);
 
         if ($request->hasFile('avatar')) {
@@ -167,12 +182,22 @@ class AuthController extends Controller
         return view('admin.users.index', compact('users'));
     }
     // xóa user (admin không thể xóa chính mình)
+
     public function deleteUser($id)
     {
+        // Không cho xóa chính mình
         if ($id == Auth::id()) {
             return back()->with('error', 'Không thể tự xóa chính mình.');
         }
+
         $user = User::findOrFail($id);
+
+        // Kiểm tra user có booking không
+        $hasBookings = Booking::where('user_id', $id)->exists();
+        if ($hasBookings) {
+            return back()->with('error', 'Không thể xóa người dùng vì có tồn tại booking.');
+        }
+
         $user->delete();
         return redirect()->route('admin.users')->with('success', 'Xóa người dùng thành công.');
     }
@@ -186,34 +211,40 @@ class AuthController extends Controller
     // Xử lý cập nhật user
     public function updateUser(Request $request, $id)
     {
-        /// Tìm user, nếu không tồn tại thì chuyển hướng
+        // 1. Kiểm tra user tồn tại hay không
         $user = User::find($id);
         if (!$user) {
             return redirect()->route('admin.users')->with('error', 'Người dùng không tồn tại hoặc đã bị xóa.');
         }
 
-        // Kiểm tra updated_at (phòng trường hợp sửa ở tab khác)
+        // 2. Kiểm tra dữ liệu có bị thay đổi từ lúc load form không
         if ($request->has('original_updated_at') && $request->original_updated_at != $user->updated_at) {
             return redirect()->route('admin.users')->with('error', 'Dữ liệu đã bị thay đổi bởi người khác. Vui lòng thao tác lại.');
         }
-        // Validate dữ liệu
+
+        // 3. Validate dữ liệu
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:11',
+            'phone' => 'nullable|string|max:20',
             'role' => 'required|in:user,admin',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
-            'avatar.image' => 'File phải là ảnh.',
-            'avatar.mimes' => 'Chỉ chấp nhận định dạng: jpeg, png, jpg, gif, webp.',
-            'avatar.max' => 'Dung lượng ảnh không được vượt quá 2MB.',
+            'name.required' => 'Họ tên không được để trống.',
+            'name.max' => 'Họ tên không được vượt quá 255 ký tự.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại trong hệ thống.',
+            'phone.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+            'role.required' => 'Vai trò không được để trống.',
+            'role.in' => 'Vai trò không hợp lệ.',
         ]);
 
-        // Không cho admin tự hạ cấp role của chính mình
-        if ($id == Auth::id() && $request->role != Auth::user()->role) {
+        // 4. Không cho admin tự thay đổi role của chính mình
+        if ($id == Auth::id() && $request->role != $user->role) {
             return back()->withErrors(['role' => 'Bạn không thể thay đổi vai trò của chính mình.']);
         }
 
+        // 5. Cập nhật
         $user->update($request->only('name', 'email', 'phone', 'role'));
 
         return redirect()->route('admin.users')->with('success', 'Cập nhật người dùng thành công.');
