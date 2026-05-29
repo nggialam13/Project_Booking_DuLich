@@ -186,8 +186,16 @@ class AuthController extends Controller
     // Xử lý cập nhật user
     public function updateUser(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        /// Tìm user, nếu không tồn tại thì chuyển hướng
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users')->with('error', 'Người dùng không tồn tại hoặc đã bị xóa.');
+        }
 
+        // Kiểm tra updated_at (phòng trường hợp sửa ở tab khác)
+        if ($request->has('original_updated_at') && $request->original_updated_at != $user->updated_at) {
+            return redirect()->route('admin.users')->with('error', 'Dữ liệu đã bị thay đổi bởi người khác. Vui lòng thao tác lại.');
+        }
         // Validate dữ liệu
         $request->validate([
             'name' => 'required|string|max:255',
