@@ -1,6 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -63,7 +64,7 @@
                         <button type="submit" class="btn btn-primary">Đăng ký</button>
                         
                         
-                        <a href="/login" class="btn btn-link">Đã có tài khoản? Đăng nhập</a>
+                        <a href="{{ route('register') }}" class="btn btn-link">Chưa có tài khoản? Đăng ký</a>
                     </form>
                 </div>
             </div>

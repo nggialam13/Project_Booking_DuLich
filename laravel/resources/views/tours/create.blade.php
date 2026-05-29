@@ -1,124 +1,144 @@
-<!DOCTYPE html>
-<html lang="vi">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Tour</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container my-5">
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <h1>Tạo Tour Mới</h1>
-            </div>
-        </div>
-
-        @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Lỗi:</strong>
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-
-        <div class="card">
-            <div class="card-body">
-                <form action="{{ route('tours.storeNewTour') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Tiêu đề</label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" required>
-                        @error('title')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Mô tả</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4" required>{{ old('description') }}</textarea>
-                        @error('description')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="price" class="form-label">Giá (VND)</label>
-                            <input type="number" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price') }}" step="0.01" required>
-                            @error('price')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="duration" class="form-label">Thời gian (ngày)</label>
-                            <input type="number" class="form-control @error('duration') is-invalid @enderror" id="duration" name="duration" value="{{ old('duration') }}" required>
-                            @error('duration')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="location" class="form-label">Địa điểm</label>
-                        <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}" required>
-                        @error('location')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="start_date" class="form-label">Ngày bắt đầu</label>
-                            <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date') }}" required>
-                            @error('start_date')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="end_date" class="form-label">Ngày kết thúc</label>
-                            <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date') }}" required>
-                            @error('end_date')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="slots" class="form-label">Số lượng chỗ</label>
-                        <input type="number" class="form-control @error('slots') is-invalid @enderror" id="slots" name="slots" value="{{ old('slots') }}" required>
-                        @error('slots')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Hình ảnh</label>
-                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
-                        @error('image')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">Tạo Tour</button>
-                        <a href="{{ route('tours.index') }}" class="btn btn-secondary">Hủy</a>
-                    </div>
-                </form>
-            </div>
-        </div>
+@section('content')
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-plus-circle"></i> Tạo Tour Mới</h2>
     </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ route('tours.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+@if ($errors->any())
+<div class="alert alert-admin alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle"></i> <strong>Vui lòng kiểm tra lại:</strong>
+    <ul class="mb-0 mt-2">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
 
-</html>
+<div class="card-admin">
+    <div class="card-admin-header">
+        <h5><i class="fas fa-file-alt"></i> Thông tin Tour</h5>
+    </div>
+    <div class="card-admin-body">
+        <form action="{{ route('tours.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <!-- Tiêu đề -->
+            <div class="mb-4">
+                <label for="title" class="form-label fw-600">Tiêu đề <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('title') is-invalid @enderror" 
+                       id="title" name="title" value="{{ old('title') }}" 
+                       placeholder="Nhập tiêu đề tour" required>
+                @error('title')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Mô tả -->
+            <div class="mb-4">
+                <label for="description" class="form-label fw-600">Mô tả <span class="text-danger">*</span></label>
+                <textarea class="form-control @error('description') is-invalid @enderror" 
+                          id="description" name="description" rows="5" 
+                          placeholder="Nhập mô tả chi tiết về tour" required>{{ old('description') }}</textarea>
+                @error('description')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Địa điểm -->
+            <div class="mb-4">
+                <label for="location" class="form-label fw-600">Địa điểm <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('location') is-invalid @enderror" 
+                       id="location" name="location" value="{{ old('location') }}" 
+                       placeholder="Nhập địa điểm tour" required>
+                @error('location')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Giá & Thời gian -->
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label for="price" class="form-label fw-600">Giá (VND) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control @error('price') is-invalid @enderror" 
+                           id="price" name="price" value="{{ old('price') }}" 
+                           placeholder="0" step="1" required>
+                    @error('price')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label for="duration" class="form-label fw-600">Thời gian (ngày)</label>
+                    <input type="number" class="form-control" 
+                           id="duration" name="duration" value="0" 
+                           placeholder="0" readonly>
+                    <small class="text-muted d-block mt-2">Được tính tự động từ ngày bắt đầu & kết thúc</small>
+                </div>
+            </div>
+
+            <!-- Ngày bắt đầu & Kết thúc -->
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label for="start_date" class="form-label fw-600">Ngày bắt đầu <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control @error('start_date') is-invalid @enderror" 
+                           id="start_date" name="start_date" value="{{ old('start_date') }}" required>
+                    @error('start_date')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <label for="end_date" class="form-label fw-600">Ngày kết thúc <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control @error('end_date') is-invalid @enderror" 
+                           id="end_date" name="end_date" value="{{ old('end_date') }}" required>
+                    @error('end_date')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Số lượng chỗ -->
+            <div class="mb-4">
+                <label for="slots" class="form-label fw-600">Số lượng chỗ <span class="text-danger">*</span></label>
+                <input type="number" class="form-control @error('slots') is-invalid @enderror" 
+                       id="slots" name="slots" value="{{ old('slots') }}" 
+                       placeholder="0" required>
+                @error('slots')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Hình ảnh -->
+            <div class="mb-4">
+                <label for="image" class="form-label fw-600">Hình ảnh</label>
+                <input type="file" class="form-control @error('image') is-invalid @enderror" 
+                       id="image" name="image" accept="image/*">
+                <small class="text-muted d-block mt-2">Định dạng: PNG, JPG | Kích thước tối đa: 2MB</small>
+                @error('image')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-5 pt-4 border-top">
+                <button type="submit" class="btn btn-admin-primary btn-lg">
+                    <i class="fas fa-check"></i> Tạo Tour
+                </button>
+                <a href="{{ route('tours.index') }}" class="btn btn-secondary btn-lg ms-2">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@endsection
