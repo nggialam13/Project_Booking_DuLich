@@ -24,6 +24,8 @@
                     <form method="POST" action="{{ route('admin.users.update', $user->id) }}">
                         @csrf
                         @method('PUT')
+                        <!-- Thêm trường ẩn để kiểm tra dữ liệu đã bị thay đổi hay chưa -->
+                        <input type="hidden" name="original_updated_at" value="{{ $user->updated_at }}">
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Họ tên</label>
