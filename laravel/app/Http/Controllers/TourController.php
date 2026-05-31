@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tour;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Psy\Readline\Hoa\Console;
 
 class TourController extends Controller
 {
     public function index(Request $request)
     {
-        $title = $request->get('title');
-        $priceMin = $request->get('price_min');
-        $priceMax = $request->get('price_max');
-        $daysMin = $request->get('days_min');
-        $daysMax = $request->get('days_max');
+        $this->syncExpiredTours();
+
+        $title = $request->input('title');
+        $priceMin = $request->input('price_min');
+        $priceMax = $request->input('price_max');
+        $daysMin = $request->input('days_min');
+        $daysMax = $request->input('days_max');
 
         $query = Tour::query();
 
@@ -49,7 +50,7 @@ class TourController extends Controller
         return view('tours.create');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $tour = Tour::find($id);
 
@@ -58,10 +59,12 @@ class TourController extends Controller
                 ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
         }
 
+        $this->syncTourStatus($tour);
+
         return view('tours.edit', compact('tour'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $tour = Tour::find($id);
 
@@ -80,54 +83,47 @@ class TourController extends Controller
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:' . $booked . '|max:9999',
-            'image' => 'nullable|image|mimes:png,jpg|max:2048'
+            'image' => 'nullable|image|mimes:png,jpg|max:2048',
         ]);
 
-        // Tính lại duration từ start_date & end_date
-        $startDate = \Carbon\Carbon::parse($request->start_date);
-        $endDate = \Carbon\Carbon::parse($request->end_date);
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
         $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
 
-        // Cập nhật available_slots khi slots thay đổi
         $booked = $tour->slots - $tour->available_slots;
         $validated['available_slots'] = $validated['slots'] - $booked;
 
         if ($request->hasFile('image')) {
             $uploadedFile = $request->file('image');
             $uploadedHash = md5_file($uploadedFile->getRealPath());
-
-            // Check if image with same hash already exists
             $existingImage = $this->findImageByHash($uploadedHash);
 
             if ($existingImage) {
-                // Reuse existing image
                 $validated['image'] = $existingImage;
             } else {
-                // Upload new image
-                $path = $uploadedFile->store('tours', 'public');
-                $validated['image'] = $path;
+                $validated['image'] = $uploadedFile->store('tours', 'public');
             }
         } else {
-            // Don't update image if no new file uploaded
             unset($validated['image']);
         }
 
         $tour->update($validated);
+        $this->syncTourStatus($tour->fresh());
 
         return redirect()->route('tours.index')->with('success', 'Chỉnh sửa tour thành công!');
     }
 
-    /**
-     * Display tours for users (public view)
-     */
     public function userIndex()
     {
+        $this->syncExpiredTours();
+
         $title = request('title');
         $priceMin = request('price_min');
         $priceMax = request('price_max');
         $daysMin = request('days_min');
         $daysMax = request('days_max');
-        $query = Tour::where('status', 'active');
+
+        $query = Tour::where('status', 'active')->whereDate('end_date', '>=', today());
 
         if ($title) {
             $query->where('title', 'like', "%{$title}%");
@@ -150,12 +146,15 @@ class TourController extends Controller
         }
 
         $tours = $query->paginate(12)->withQueryString();
+
         return view('tours.user-tours', compact('tours'));
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $tour = Tour::findOrFail($id);
+        $this->syncTourStatus($tour);
+
         return view('tours.show', compact('tour'));
     }
 
@@ -169,31 +168,25 @@ class TourController extends Controller
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:1|max:9999',
-            'image' => 'nullable|image|mimes:png,jpg|max:2048'
+            'image' => 'nullable|image|mimes:png,jpg|max:2048',
         ]);
 
-        // Tính lại duration từ start_date & end_date
-        $startDate = \Carbon\Carbon::parse($request->start_date);
-        $endDate = \Carbon\Carbon::parse($request->end_date);
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
         $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
-
-        $validated['status'] = 'active';
+        // If the tour starts today (or earlier) or ends today (or earlier), mark as inactive
+        $validated['status'] = ($startDate->lte(today()) || $endDate->lte(today())) ? 'inactive' : 'active';
         $validated['available_slots'] = $validated['slots'];
 
         if ($request->hasFile('image')) {
             $uploadedFile = $request->file('image');
             $uploadedHash = md5_file($uploadedFile->getRealPath());
-
-            // Check if image with same hash already exists
             $existingImage = $this->findImageByHash($uploadedHash);
 
             if ($existingImage) {
-                // Reuse existing image
                 $validated['image'] = $existingImage;
             } else {
-                // Upload new image
-                $path = $uploadedFile->store('tours', 'public');
-                $validated['image'] = $path;
+                $validated['image'] = $uploadedFile->store('tours', 'public');
             }
         }
 
@@ -202,7 +195,7 @@ class TourController extends Controller
         return redirect()->route('tours.index')->with('success', 'Tạo tour thành công!');
     }
 
-    public function destroyTour($id)
+    public function destroyTour(int $id)
     {
         $tour = Tour::find($id);
 
@@ -215,14 +208,15 @@ class TourController extends Controller
 
         if ($bookedSlots > 0) {
             return redirect()->route('tours.index')
-            ->with('error', 'Không thể xóa tour đã có người đặt. Hãy đổi trạng thái sang Tắt thay vì xóa.');
+                ->with('error', 'Không thể xóa tour đã có người đặt. Hãy đổi trạng thái sang Tắt thay vì xóa.');
         }
 
         $tour->delete();
+
         return redirect()->route('tours.index')->with('success', 'Tour đã được xóa thành công!');
     }
 
-    public function toggleStatus($id)
+    public function toggleStatus(int $id)
     {
         $tour = Tour::find($id);
 
@@ -231,15 +225,42 @@ class TourController extends Controller
                 ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
         }
 
-        $tour->status = $tour->status === 'active' ? 'inactive' : 'active';
+        $start = Carbon::parse($tour->start_date);
+        $end = Carbon::parse($tour->end_date);
+
+        if ($start->lte(today()) || $end->lte(today())) {
+            $tour->status = 'inactive';
+        } else {
+            $tour->status = $tour->status === 'active' ? 'inactive' : 'active';
+        }
+
         $tour->save();
+
         return redirect()->route('tours.index')->with('success', 'Cập nhật thành công!');
     }
 
-    /**
-     * Find image by hash to detect duplicates
-     */
-    private function findImageByHash($uploadedHash)
+    private function syncExpiredTours(): void
+    {
+        // Mark tours that start today or earlier, or end today or earlier, as inactive
+        Tour::where(function ($q) {
+            $q->whereDate('start_date', '<=', today())
+                ->orWhereDate('end_date', '<=', today());
+        })->where('status', '!=', 'inactive')
+            ->update(['status' => 'inactive']);
+    }
+
+    private function syncTourStatus(Tour $tour): void
+    {
+        $start = Carbon::parse($tour->start_date);
+        $end = Carbon::parse($tour->end_date);
+
+        if (($start->lte(today()) || $end->lte(today())) && $tour->status !== 'inactive') {
+            $tour->status = 'inactive';
+            $tour->save();
+        }
+    }
+
+    private function findImageByHash(string $uploadedHash): ?string
     {
         $toursPath = storage_path('app/public/tours');
 

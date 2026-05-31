@@ -100,8 +100,8 @@ use Illuminate\Support\Facades\Storage;
                                     <th>ID</th>
                                     <th>Tiêu đề</th>
                                     <th>Địa điểm</th>
-                                    <th>Giá (VND)</th>
-                                    <th>Thời gian</th>
+                                    <th>Giá </th>
+                                    <th>Thời gian (ngày)</th>
                                     <th>Lịch trình</th>
                                     <th>Chỗ trống</th>
                                     <th>Trạng thái</th>
@@ -122,7 +122,7 @@ use Illuminate\Support\Facades\Storage;
                                 'description' => $tour->description,
                                 'location' => $tour->location,
                                 'price' => number_format($tour->price) . ' VND',
-                                'duration' => $tour->duration . ' ngày',
+                                'duration' => $tour->duration,
                                 'start' => \Carbon\Carbon::parse($tour->start_date)->format('d/m/Y'),
                                 'end' => \Carbon\Carbon::parse($tour->end_date)->format('d/m/Y'),
                                 'slots' => ($tour->slots - $tour->available_slots) . '/' . $tour->slots . ' chỗ',
