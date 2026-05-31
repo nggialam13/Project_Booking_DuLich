@@ -14,6 +14,11 @@ use App\Models\Booking;
 
 class AuthController extends Controller
 {
+    // Regex dùng chung
+    private $latinRegex = '/^[\p{Latin}0-9\s]+$/u';
+    private $asciiRegex = '/^[\x20-\x7E]+$/';
+    private $phoneRegex = '/^[0-9]+$/';
+
     // Hiển thị form đăng ký
     public function showRegister()
     {
@@ -23,17 +28,34 @@ class AuthController extends Controller
     // Xử lý đăng ký
     public function register(Request $request)
     {
-        // Validate dữ liệu
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255|regex:' . $this->latinRegex,
+            'email' => 'required|string|email|max:255|unique:users|regex:' . $this->asciiRegex,
+            'password' => 'required|string|min:6|confirmed|regex:' . $this->asciiRegex,
+            'phone' => 'nullable|numeric|digits_between:9,12|regex:' . $this->phoneRegex,
         ], [
+
+            // NAME
             'name.required' => 'Họ tên không được để trống.',
+            'name.regex' => 'Họ tên không hỗ trợ ký tự hoặc ngôn ngữ đặc biệt.',
+
+            // EMAIL
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email đã tồn tại.',
+            'email.regex' => 'Email không hỗ trợ ký tự Unicode hoặc ngôn ngữ khác.',
+
+            // PASSWORD
+            'password.required' => 'Mật khẩu không được để trống.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'password.regex' => 'Mật khẩu không hỗ trợ ký tự Unicode hoặc ngôn ngữ khác.',
+
+            // PHONE
+            'phone.numeric' => 'Số điện thoại phải là chữ số.',
+            'phone.digits_between' => 'Số điện thoại phải có độ dài từ 9 đến 12 số.',
+            'phone.regex' => 'Số điện thoại không hỗ trợ số Unicode hoặc ký tự đặc biệt.',
+
         ]);
 
         if ($validator->fails()) {
@@ -46,19 +68,18 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'role' => 'user', // mặc định
+            'role' => 'user',
         ]);
 
-        // Đăng nhập ngay sau khi đăng ký
         Auth::login($user);
 
-        // Chuyển hướng
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
+
         return redirect('/tours');
-        //return redirect()->route('tours.user-index');
     }
+
     // Hiển thị form đăng nhập
     public function showLogin()
     {
@@ -71,20 +92,21 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+        ], [
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
+            'password.required' => 'Mật khẩu không được để trống.',
         ]);
 
-        $credentials = $request->only('email', 'password');
-        $remember = $request->boolean('remember');
-        // đường dẫn tới trang profile
-        if (Auth::attempt($credentials, $request->has('remember'))) {
+        $remember = $request->has('remember') ? true : false;
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
             $request->session()->regenerate();
 
-            // Redirect theo role
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
             return redirect('/tours');
-            //return redirect()->route('tours.user-index');
         }
 
         throw ValidationException::withMessages([
@@ -92,161 +114,224 @@ class AuthController extends Controller
         ]);
     }
 
-    // xử lý logout
+    // Logout
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
+
         return redirect('login')->with('success', 'Đã đăng xuất.');
     }
 
-    // Hiển thị trang profile (chỉ xem)
+    // Hiển thị profile
     public function showProfile()
     {
         $user = Auth::user();
+
         return view('auth.profile.show', compact('user'));
     }
 
-    // Hiển thị form chỉnh sửa profile
+    // Form edit profile
     public function editProfile()
     {
         $user = Auth::user();
+
         return view('auth.profile.edit', compact('user'));
     }
 
-    // Xử lý cập nhật profile (dùng PUT)
+    // Update profile
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255|regex:' . $this->latinRegex,
+            'email' => 'required|email|unique:users,email,' . $user->id . '|regex:' . $this->asciiRegex,
+            'phone' => 'nullable|numeric|digits_between:9,12|regex:' . $this->phoneRegex,
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'bio' => 'nullable|string|max:500',
+            'bio' => 'nullable|string|max:500|regex:' . $this->latinRegex,
             'gender' => 'nullable|in:male,female,other',
             'dob' => 'nullable|date|before:today',
         ], [
+
             'name.required' => 'Họ tên không được để trống.',
+            'name.regex' => 'Họ tên không hỗ trợ ký tự hoặc ngôn ngữ đặc biệt.',
+
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email đã tồn tại.',
+            'email.regex' => 'Email không hỗ trợ ký tự Unicode.',
+
+            'phone.numeric' => 'Số điện thoại phải là chữ số.',
+            'phone.digits_between' => 'Số điện thoại phải có độ dài từ 9 đến 12 số.',
+            'phone.regex' => 'Số điện thoại không hỗ trợ số Unicode.',
+
+            'bio.regex' => 'Giới thiệu không hỗ trợ ký tự hoặc ngôn ngữ đặc biệt.',
+
             'avatar.image' => 'File tải lên phải là ảnh.',
             'avatar.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, gif, webp.',
             'avatar.max' => 'Dung lượng ảnh không được quá 2MB.',
+
             'dob.before' => 'Ngày sinh phải trước ngày hôm nay.',
         ]);
 
         if ($request->hasFile('avatar')) {
+
             if ($user->avatar) {
                 Storage::delete('public/' . $user->avatar);
             }
+
             $path = $request->file('avatar')->store('avatars', 'public');
+
             $user->avatar = $path;
         }
 
-        $user->update($request->only('name', 'email', 'phone', 'bio', 'gender', 'dob'));
+        $user->update($request->only(
+            'name',
+            'email',
+            'phone',
+            'bio',
+            'gender',
+            'dob'
+        ));
 
-        return redirect()->route('profile.show')->with('success', 'Cập nhật thông tin thành công.');
+        return redirect()->route('profile.show')
+            ->with('success', 'Cập nhật thông tin thành công.');
     }
-    // Hiển thị form đổi mật khẩu riêng
+
+    // Form đổi mật khẩu
     public function showChangePasswordForm()
     {
         return view('auth.change-password');
     }
+
     // Đổi mật khẩu
     public function changePassword(Request $request)
     {
         $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
+            'current_password' => 'required|regex:' . $this->asciiRegex,
+            'new_password' => 'required|min:6|confirmed|regex:' . $this->asciiRegex,
+        ], [
+            'current_password.regex' => 'Mật khẩu hiện tại không hỗ trợ ký tự Unicode.',
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+            'new_password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'new_password.regex' => 'Mật khẩu mới không hỗ trợ ký tự Unicode.',
         ]);
 
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
+
+            return back()->withErrors([
+                'current_password' => 'Mật khẩu hiện tại không đúng.'
+            ]);
         }
 
         $user->password = Hash::make($request->new_password);
+
         $user->save();
 
-        return redirect()->route('profile.show')->with('success', 'Đổi mật khẩu thành công!');
+        return redirect()->route('profile.show')
+            ->with('success', 'Đổi mật khẩu thành công!');
     }
-    // hiển thị danh sách users
+
+    // Danh sách users
     public function listUsers()
     {
         $users = User::paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
-    // xóa user (admin không thể xóa chính mình)
 
+    // Xóa user
     public function deleteUser($id)
     {
-        // Không cho xóa chính mình
         if ($id == Auth::id()) {
             return back()->with('error', 'Không thể tự xóa chính mình.');
         }
 
         $user = User::findOrFail($id);
 
-        // Kiểm tra user có booking không
         $hasBookings = Booking::where('user_id', $id)->exists();
+
         if ($hasBookings) {
             return back()->with('error', 'Không thể xóa người dùng vì có tồn tại booking.');
         }
 
         $user->delete();
-        return redirect()->route('admin.users')->with('success', 'Xóa người dùng thành công.');
+
+        return redirect()->route('admin.users')
+            ->with('success', 'Xóa người dùng thành công.');
     }
-    // Hiển thị form edit user
+
+    // Form edit user
     public function editUser($id)
     {
         $user = User::findOrFail($id);
+
         return view('admin.users.edit', compact('user'));
     }
 
-    // Xử lý cập nhật user
+    // Update user
     public function updateUser(Request $request, $id)
     {
-        // 1. Kiểm tra user tồn tại hay không
         $user = User::find($id);
+
         if (!$user) {
-            return redirect()->route('admin.users')->with('error', 'Người dùng không tồn tại hoặc đã bị xóa.');
+            return redirect()->route('admin.users')
+                ->with('error', 'Người dùng không tồn tại hoặc đã bị xóa.');
         }
 
-        // 2. Kiểm tra dữ liệu có bị thay đổi từ lúc load form không
-        if ($request->has('original_updated_at') && $request->original_updated_at != $user->updated_at) {
-            return redirect()->route('admin.users')->with('error', 'Dữ liệu đã bị thay đổi bởi người khác. Vui lòng thao tác lại.');
+        if (
+            $request->has('original_updated_at')
+            && $request->original_updated_at != $user->updated_at
+        ) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Dữ liệu đã bị thay đổi bởi người khác.');
         }
 
-        // 3. Validate dữ liệu
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255|regex:' . $this->latinRegex,
+            'email' => 'required|email|unique:users,email,' . $id . '|regex:' . $this->asciiRegex,
+            'phone' => 'nullable|numeric|digits_between:9,12|regex:' . $this->phoneRegex,
             'role' => 'required|in:user,admin',
         ], [
+
             'name.required' => 'Họ tên không được để trống.',
             'name.max' => 'Họ tên không được vượt quá 255 ký tự.',
+            'name.regex' => 'Họ tên không hỗ trợ ký tự hoặc ngôn ngữ đặc biệt.',
+
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email không đúng định dạng.',
-            'email.unique' => 'Email đã tồn tại trong hệ thống.',
-            'phone.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+            'email.unique' => 'Email đã tồn tại.',
+            'email.regex' => 'Email không hỗ trợ ký tự Unicode.',
+
+            'phone.numeric' => 'Số điện thoại phải là chữ số.',
+            'phone.digits_between' => 'Số điện thoại phải có độ dài từ 9 đến 12 số.',
+            'phone.regex' => 'Số điện thoại không hỗ trợ số Unicode.',
+
             'role.required' => 'Vai trò không được để trống.',
             'role.in' => 'Vai trò không hợp lệ.',
         ]);
 
-        // 4. Không cho admin tự thay đổi role của chính mình
         if ($id == Auth::id() && $request->role != $user->role) {
-            return back()->withErrors(['role' => 'Bạn không thể thay đổi vai trò của chính mình.']);
+
+            return back()->withErrors([
+                'role' => 'Bạn không thể thay đổi vai trò của chính mình.'
+            ]);
         }
 
-        // 5. Cập nhật
-        $user->update($request->only('name', 'email', 'phone', 'role'));
+        $user->update($request->only(
+            'name',
+            'email',
+            'phone',
+            'role'
+        ));
 
         return redirect()->route('admin.users')->with('success', 'Cập nhật người dùng thành công.');
     }
 }
+
