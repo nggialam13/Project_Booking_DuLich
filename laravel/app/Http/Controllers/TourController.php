@@ -50,7 +50,7 @@ class TourController extends Controller
         return view('tours.create');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $tour = Tour::find($id);
 
@@ -64,7 +64,7 @@ class TourController extends Controller
         return view('tours.edit', compact('tour'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $tour = Tour::find($id);
 
@@ -150,7 +150,7 @@ class TourController extends Controller
         return view('tours.user-tours', compact('tours'));
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $tour = Tour::findOrFail($id);
         $this->syncTourStatus($tour);
@@ -174,7 +174,8 @@ class TourController extends Controller
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
         $validated['duration'] = abs($endDate->diffInDays($startDate)) + 1;
-        $validated['status'] = $endDate->lt(today()) ? 'inactive' : 'active';
+        // If the tour starts today (or earlier) or ends today (or earlier), mark as inactive
+        $validated['status'] = ($startDate->lte(today()) || $endDate->lte(today())) ? 'inactive' : 'active';
         $validated['available_slots'] = $validated['slots'];
 
         if ($request->hasFile('image')) {
@@ -194,7 +195,7 @@ class TourController extends Controller
         return redirect()->route('tours.index')->with('success', 'Tạo tour thành công!');
     }
 
-    public function destroyTour($id)
+    public function destroyTour(int $id)
     {
         $tour = Tour::find($id);
 
@@ -215,7 +216,7 @@ class TourController extends Controller
         return redirect()->route('tours.index')->with('success', 'Tour đã được xóa thành công!');
     }
 
-    public function toggleStatus($id)
+    public function toggleStatus(int $id)
     {
         $tour = Tour::find($id);
 
@@ -224,7 +225,10 @@ class TourController extends Controller
                 ->with('error', 'Tour đã bị xóa hoặc không còn tồn tại.');
         }
 
-        if (Carbon::parse($tour->end_date)->lt(today())) {
+        $start = Carbon::parse($tour->start_date);
+        $end = Carbon::parse($tour->end_date);
+
+        if ($start->lte(today()) || $end->lte(today())) {
             $tour->status = 'inactive';
         } else {
             $tour->status = $tour->status === 'active' ? 'inactive' : 'active';
@@ -237,14 +241,20 @@ class TourController extends Controller
 
     private function syncExpiredTours(): void
     {
-        Tour::whereDate('end_date', '<', today())
-            ->where('status', '!=', 'inactive')
+        // Mark tours that start today or earlier, or end today or earlier, as inactive
+        Tour::where(function ($q) {
+            $q->whereDate('start_date', '<=', today())
+                ->orWhereDate('end_date', '<=', today());
+        })->where('status', '!=', 'inactive')
             ->update(['status' => 'inactive']);
     }
 
     private function syncTourStatus(Tour $tour): void
     {
-        if (Carbon::parse($tour->end_date)->lt(today()) && $tour->status !== 'inactive') {
+        $start = Carbon::parse($tour->start_date);
+        $end = Carbon::parse($tour->end_date);
+
+        if (($start->lte(today()) || $end->lte(today())) && $tour->status !== 'inactive') {
             $tour->status = 'inactive';
             $tour->save();
         }
