@@ -2,9 +2,52 @@
 
  @section('content')
 
+ <style>
+     .tour-image {
+         position: relative;
+         height: 220px;
+         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+         overflow: hidden;
+         cursor: pointer;
+     }
+
+     @media (max-width: 767.98px) {
+         .tour-image {
+             height: 160px;
+         }
+     }
+
+     @media (max-width: 479.98px) {
+         .tour-image {
+             height: 140px;
+         }
+     }
+
+     .tour-description {
+         overflow: hidden;
+         display: -webkit-box;
+         line-clamp: 2;
+         -webkit-box-orient: vertical;
+     }
+
+     .tour-actions {
+         display: flex;
+         gap: .5rem;
+     }
+
+     .tour-actions.flex-column-sm {
+         flex-direction: column;
+     }
+
+     @media (min-width: 576px) {
+         .tour-actions.flex-column-sm {
+             flex-direction: row;
+         }
+     }
+ </style>
+
 
  <div class="container mb-5">
-     <!-- Search Section -->
      @if($tours->count() > 0)
      <div class="card mb-4">
          <div class="card-body">
@@ -13,13 +56,11 @@
          </div>
      </div>
 
-     <!-- Tour Grid -->
      <div class="row g-4 mb-5">
          @foreach($tours as $tour)
          <div class="col-md-6 col-lg-4">
              <div class="card h-100 shadow-sm tour-card">
-                 <!-- Image -->
-                 <div style="position: relative; height: 220px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden; cursor: pointer;"
+                 <div class="tour-image"
                      role="button"
                      data-bs-toggle="modal"
                      data-bs-target="#tourModal{{ $tour->id }}">
@@ -36,7 +77,6 @@
                      @endif
                  </div>
 
-                 <!-- Content -->
                  <div class="card-body d-flex flex-column">
                      <p class="text-primary mb-2">
                          <i class="fas fa-map-pin"></i> {{ $tour->location }}
@@ -44,11 +84,10 @@
 
                      <h5 class="card-title mb-2">{{ $tour->title }}</h5>
 
-                     <p class="card-text text-muted small mb-3" style="overflow: hidden; display: -webkit-box; line-clamp: 2; -webkit-box-orient: vertical;">
+                     <p class="card-text text-muted small mb-3 tour-description">
                          {{ $tour->description }}
                      </p>
 
-                     <!-- Info Grid -->
                      <div class="row mb-3 pb-3 border-bottom">
                          <div class="col-6">
                              <small class="text-muted d-block">Giá Vé</small>
@@ -60,14 +99,12 @@
                          </div>
                      </div>
 
-                     <!-- Dates -->
                      <p class="small text-muted mb-3">
                          <i class="fas fa-calendar-alt"></i>
                          {{ \Carbon\Carbon::parse($tour->start_date)->format('d/m/Y') }} -
                          {{ \Carbon\Carbon::parse($tour->end_date)->format('d/m/Y') }}
                      </p>
 
-                     <!-- Slots -->
                      <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
                          <span class="small"><i class="fas fa-users"></i> Chỗ còn trống</span>
                          @if($tour->available_slots === 0)
@@ -79,8 +116,7 @@
                              @endif
                      </div>
 
-                     <!-- Buttons -->
-                     <div class="d-flex gap-2 mt-auto">
+                     <div class="tour-actions mt-auto flex-column-sm">
                          <button class="btn btn-outline-secondary btn-sm flex-grow-1" data-bs-toggle="modal"
                              data-bs-target="#tourModal{{ $tour->id }}">
                              <i class="fas fa-info-circle"></i> Chi Tiết
@@ -99,7 +135,6 @@
              </div>
          </div>
 
-         <!-- Chi tiết Modal -->
          <div class="modal fade" id="tourModal{{ $tour->id }}" tabindex="-1">
              <div class="modal-dialog modal-lg">
                  <div class="modal-content">
@@ -166,11 +201,9 @@
          @endforeach
      </div>
 
-     <!-- Pagination -->
      @if($tours->hasPages())
      <nav class="d-flex justify-content-center">
          <ul class="pagination">
-             {{-- Previous Page Link --}}
              @if ($tours->onFirstPage())
              <li class="page-item disabled"><span class="page-link">← Trước</span></li>
              @else
@@ -178,7 +211,6 @@
                      rel="prev">← Trước</a></li>
              @endif
 
-             {{-- Pagination Elements --}}
              @foreach ($tours->getUrlRange(1, $tours->lastPage()) as $page => $url)
              @if ($page == $tours->currentPage())
              <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
@@ -187,7 +219,6 @@
              @endif
              @endforeach
 
-             {{-- Next Page Link --}}
              @if ($tours->hasMorePages())
              <li class="page-item"><a class="page-link" href="{{ $tours->nextPageUrl() }}"
                      rel="next">Tiếp →</a></li>
