@@ -18,8 +18,6 @@
                     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        // bắt sự kiện kiểm tra dữ liệu
-                        
 
                         <div class="mb-3">
                             <label>Ảnh đại diện</label>
