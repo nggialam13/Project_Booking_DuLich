@@ -131,6 +131,13 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
+        // Kiểm tra user có thực sự tồn tại trong DB không
+        $dbUser = User::find($user->id);
+        if (!$dbUser) {
+            Auth::logout();
+            return redirect()->route('login')
+                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
+        }
         return view('auth.profile.show', compact('user'));
     }
 
@@ -139,6 +146,13 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
+        // Kiểm tra user có thực sự tồn tại trong DB không
+        $dbUser = User::find($user->id);
+        if (!$dbUser) {
+            Auth::logout();
+            return redirect()->route('login')
+                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
+        }
         return view('auth.profile.edit', compact('user'));
     }
 
@@ -146,6 +160,13 @@ class AuthController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
+        // Kiểm tra user có thực sự tồn tại trong DB không
+        $dbUser = User::find($user->id);
+        if (!$dbUser) {
+            Auth::logout();
+            return redirect()->route('login')
+                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
+        }
 
         $request->validate([
             'name' => 'required|string|max:255|regex:' . $this->latinRegex,
@@ -223,6 +244,13 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        // Kiểm tra user có thực sự tồn tại trong DB không
+        $dbUser = User::find($user->id);
+        if (!$dbUser) {
+            Auth::logout();
+            return redirect()->route('login')
+                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
+        }
         if (!Hash::check($request->current_password, $user->password)) {
 
             return back()->withErrors([
