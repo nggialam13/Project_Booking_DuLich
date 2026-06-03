@@ -39,6 +39,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/report', [ReportController::class, 'index'])->name('admin.report');
     Route::get('/chart', [ReportController::class, 'chart'])->name('admin.chart');
 });
+Route::middleware(['deleted.user'])->group(function () {
+
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+});
 
 require __DIR__ . '/tour.php';
 require __DIR__.'/booking.php';
