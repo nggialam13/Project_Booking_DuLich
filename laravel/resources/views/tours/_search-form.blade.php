@@ -1,7 +1,7 @@
 <form method="GET" action="{{ $action ?? url()->current() }}" class="row g-2 align-items-end">
     <div class="col-12 col-md-4">
         <label class="form-label small text-muted mb-1">Tiêu đề</label>
-        <input type="text" name="title" class="form-control"
+        <input type="text" name="title" class="form-control" maxlength="255"
             placeholder="Nhập tên tour" value="{{ request('title') }}">
     </div>
     <div class="col-6 col-md-2">
