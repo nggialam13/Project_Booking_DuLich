@@ -3,11 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Booking\BookingController;
 
-/*
-|--------------------------------------------------------------------------
-| USER BOOKING
-|--------------------------------------------------------------------------
-*/
 
 Route::middleware('auth')->group(function () {
 
@@ -34,11 +29,6 @@ Route::middleware('auth')->group(function () {
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN BOOKING
-|--------------------------------------------------------------------------
-*/
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
