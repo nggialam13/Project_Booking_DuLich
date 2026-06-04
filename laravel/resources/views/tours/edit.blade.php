@@ -37,7 +37,7 @@
             <div class="mb-4">
                 <label for="title" class="form-label fw-600">Tiêu đề <span class="text-danger">*</span></label>
                   <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                      id="title" name="title" value="{{ old('title', $tour->title) }}" maxlength="255"
+                      id="title" name="title" value="{{ old('title', $tour->title) }}" maxlength="150"
                       placeholder="Nhập tiêu đề tour" required>
                 @error('title')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -48,7 +48,7 @@
             <div class="mb-4">
                 <label for="description" class="form-label fw-600">Mô tả <span class="text-danger">*</span></label>
                 <textarea class="form-control @error('description') is-invalid @enderror" 
-                          id="description" name="description" rows="5" maxlength="255"
+                          id="description" name="description" rows="5" maxlength="150"
                           placeholder="Nhập mô tả chi tiết về tour" required>{{ old('description', $tour->description) }}</textarea>
                 @error('description')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -59,7 +59,7 @@
             <div class="mb-4">
                 <label for="location" class="form-label fw-600">Địa điểm <span class="text-danger">*</span></label>
                   <input type="text" class="form-control @error('location') is-invalid @enderror" 
-                      id="location" name="location" value="{{ old('location', $tour->location) }}" maxlength="255"
+                      id="location" name="location" value="{{ old('location', $tour->location) }}" maxlength="150"
                       placeholder="Nhập địa điểm tour" required>
                 @error('location')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
