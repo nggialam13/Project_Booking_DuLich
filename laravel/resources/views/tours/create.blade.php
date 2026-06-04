@@ -35,9 +35,9 @@
             <!-- Tiêu đề -->
             <div class="mb-4">
                 <label for="title" class="form-label fw-600">Tiêu đề <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                      id="title" name="title" value="{{ old('title') }}" maxlength="255"
-                       placeholder="Nhập tiêu đề tour" required>
+                <input type="text" class="form-control @error('title') is-invalid @enderror"
+                    id="title" name="title" value="{{ old('title') }}" maxlength="150"
+                    placeholder="Nhập tiêu đề tour" required>
                 @error('title')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -46,9 +46,9 @@
             <!-- Mô tả -->
             <div class="mb-4">
                 <label for="description" class="form-label fw-600">Mô tả <span class="text-danger">*</span></label>
-                <textarea class="form-control @error('description') is-invalid @enderror" 
-                          id="description" name="description" rows="5" maxlength="255"
-                          placeholder="Nhập mô tả chi tiết về tour" required>{{ old('description') }}</textarea>
+                <textarea class="form-control @error('description') is-invalid @enderror"
+                    id="description" name="description" rows="5" maxlength="150"
+                    placeholder="Nhập mô tả chi tiết về tour" required>{{ old('description') }}</textarea>
                 @error('description')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -57,9 +57,9 @@
             <!-- Địa điểm -->
             <div class="mb-4">
                 <label for="location" class="form-label fw-600">Địa điểm <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control @error('location') is-invalid @enderror" 
-                      id="location" name="location" value="{{ old('location') }}" maxlength="255"
-                       placeholder="Nhập địa điểm tour" required>
+                <input type="text" class="form-control @error('location') is-invalid @enderror"
+                    id="location" name="location" value="{{ old('location') }}" maxlength="150"
+                    placeholder="Nhập địa điểm tour" required>
                 @error('location')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -69,18 +69,18 @@
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="price" class="form-label fw-600">Giá (VND) <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control @error('price') is-invalid @enderror" 
-                           id="price" name="price" value="{{ old('price') }}" 
-                           placeholder="0" step="1" required>
+                    <input type="number" class="form-control @error('price') is-invalid @enderror"
+                        id="price" name="price" value="{{ old('price') }}"
+                        placeholder="0" step="1" required>
                     @error('price')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="col-md-6 mb-4">
                     <label for="duration" class="form-label fw-600">Thời gian (ngày)</label>
-                    <input type="number" class="form-control" 
-                           id="duration" name="duration" value="0" 
-                           placeholder="0" readonly>
+                    <input type="number" class="form-control"
+                        id="duration" name="duration" value="0"
+                        placeholder="0" readonly>
                     <small class="text-muted d-block mt-2">Được tính tự động từ ngày bắt đầu & kết thúc</small>
                 </div>
             </div>
@@ -89,8 +89,8 @@
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="start_date" class="form-label fw-600">Ngày bắt đầu <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control @error('start_date') is-invalid @enderror" 
-                           id="start_date" name="start_date" value="{{ old('start_date') }}" required>
+                    <input type="date" class="form-control @error('start_date') is-invalid @enderror"
+                        id="start_date" name="start_date" value="{{ old('start_date') }}" required>
                     @error('start_date')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -98,8 +98,8 @@
 
                 <div class="col-md-6 mb-4">
                     <label for="end_date" class="form-label fw-600">Ngày kết thúc <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control @error('end_date') is-invalid @enderror" 
-                           id="end_date" name="end_date" value="{{ old('end_date') }}" required>
+                    <input type="date" class="form-control @error('end_date') is-invalid @enderror"
+                        id="end_date" name="end_date" value="{{ old('end_date') }}" required>
                     @error('end_date')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -109,9 +109,9 @@
             <!-- Số lượng chỗ -->
             <div class="mb-4">
                 <label for="slots" class="form-label fw-600">Số lượng chỗ <span class="text-danger">*</span></label>
-                <input type="number" class="form-control @error('slots') is-invalid @enderror" 
-                       id="slots" name="slots" value="{{ old('slots') }}" 
-                       placeholder="0" required>
+                <input type="number" class="form-control @error('slots') is-invalid @enderror"
+                    id="slots" name="slots" value="{{ old('slots') }}"
+                    placeholder="0" required>
                 @error('slots')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -120,8 +120,8 @@
             <!-- Hình ảnh -->
             <div class="mb-4">
                 <label for="image" class="form-label fw-600">Hình ảnh</label>
-                <input type="file" class="form-control @error('image') is-invalid @enderror" 
-                       id="image" name="image" accept="image/*">
+                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                    id="image" name="image" accept="image/*">
                 <small class="text-muted d-block mt-2">Định dạng: PNG, JPG | Kích thước tối đa: 2MB</small>
                 @error('image')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
