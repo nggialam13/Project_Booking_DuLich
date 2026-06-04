@@ -84,7 +84,46 @@ class TourController extends Controller
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:' . $booked . '|max:9999',
             'image' => 'nullable|image|mimes:png,jpg|max:2048',
+        ], [
+            'title.required' => 'Vui lòng nhập tiêu đề tour.',
+            'title.string' => 'Tiêu đề tour phải là chuỗi ký tự hợp lệ.',
+            'title.max' => 'Tiêu đề tour không được vượt quá 255 ký tự.',
+            'description.required' => 'Vui lòng nhập mô tả tour.',
+            'description.string' => 'Mô tả tour phải là chuỗi ký tự hợp lệ.',
+            'description.max' => 'Mô tả tour không được vượt quá 255 ký tự.',
+            'price.required' => 'Vui lòng nhập giá tour.',
+            'price.numeric' => 'Giá tour phải là một con số.',
+            'price.min' => 'Giá tour không được nhỏ hơn 0.',
+            'price.max' => 'Giá tour vượt quá giới hạn cho phép.',
+            'location.required' => 'Vui lòng nhập địa điểm tour.',
+            'location.string' => 'Địa điểm tour phải là chuỗi ký tự hợp lệ.',
+            'location.max' => 'Địa điểm tour không được vượt quá 255 ký tự.',
+            'start_date.required' => 'Vui lòng chọn ngày bắt đầu.',
+            'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
+            'start_date.after_or_equal' => 'Ngày bắt đầu phải từ hôm nay trở đi.',
+            'end_date.required' => 'Vui lòng chọn ngày kết thúc.',
+            'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+            'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+            'slots.required' => 'Vui lòng nhập số lượng chỗ.',
+            'slots.integer' => 'Số lượng chỗ phải là số nguyên.',
+            'slots.min' => 'Số lượng chỗ phải lớn hơn 0.',
+            'slots.max' => 'Số lượng chỗ không được vượt quá 9999.',
+            'image.image' => 'Hình ảnh phải là tệp ảnh hợp lệ.',
+            'image.mimes' => 'Hình ảnh chỉ chấp nhận định dạng PNG hoặc JPG.',
+            'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
         ]);
+
+        foreach (['title', 'description', 'location'] as $field) {
+            $validated[$field] = trim((string) $validated[$field]);
+
+            if (preg_match('/^https?:\/\//i', $validated[$field])) {
+                return back()
+                    ->withErrors([
+                        $field => 'Vui lòng nhập ' . ($field === 'title' ? 'tiêu đề' : ($field === 'description' ? 'mô tả' : 'địa điểm')) . ' hợp lệ, không phải đường dẫn URL.',
+                    ])
+                    ->withInput();
+            }
+        }
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
@@ -169,7 +208,46 @@ class TourController extends Controller
             'end_date' => 'required|date|after:start_date',
             'slots' => 'required|integer|min:1|max:9999',
             'image' => 'nullable|image|mimes:png,jpg|max:2048',
+        ], [
+            'title.required' => 'Vui lòng nhập tiêu đề tour.',
+            'title.string' => 'Tiêu đề tour phải là chuỗi ký tự hợp lệ.',
+            'title.max' => 'Tiêu đề tour không được vượt quá 255 ký tự.',
+            'description.required' => 'Vui lòng nhập mô tả tour.',
+            'description.string' => 'Mô tả tour phải là chuỗi ký tự hợp lệ.',
+            'description.max' => 'Mô tả tour không được vượt quá 255 ký tự.',
+            'price.required' => 'Vui lòng nhập giá tour.',
+            'price.numeric' => 'Giá tour phải là một con số.',
+            'price.min' => 'Giá tour không được nhỏ hơn 0.',
+            'price.max' => 'Giá tour vượt quá giới hạn cho phép.',
+            'location.required' => 'Vui lòng nhập địa điểm tour.',
+            'location.string' => 'Địa điểm tour phải là chuỗi ký tự hợp lệ.',
+            'location.max' => 'Địa điểm tour không được vượt quá 255 ký tự.',
+            'start_date.required' => 'Vui lòng chọn ngày bắt đầu.',
+            'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
+            'start_date.after_or_equal' => 'Ngày bắt đầu phải từ hôm nay trở đi.',
+            'end_date.required' => 'Vui lòng chọn ngày kết thúc.',
+            'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+            'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+            'slots.required' => 'Vui lòng nhập số lượng chỗ.',
+            'slots.integer' => 'Số lượng chỗ phải là số nguyên.',
+            'slots.min' => 'Số lượng chỗ phải lớn hơn 0.',
+            'slots.max' => 'Số lượng chỗ không được vượt quá 9999.',
+            'image.image' => 'Hình ảnh phải là tệp ảnh hợp lệ.',
+            'image.mimes' => 'Hình ảnh chỉ chấp nhận định dạng PNG hoặc JPG.',
+            'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
         ]);
+
+        foreach (['title', 'description', 'location'] as $field) {
+            $validated[$field] = trim((string) $validated[$field]);
+
+            if (preg_match('/^https?:\/\//i', $validated[$field])) {
+                return back()
+                    ->withErrors([
+                        $field => 'Vui lòng nhập ' . ($field === 'title' ? 'tiêu đề' : ($field === 'description' ? 'mô tả' : 'địa điểm')) . ' hợp lệ, không phải đường dẫn URL.',
+                    ])
+                    ->withInput();
+            }
+        }
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
