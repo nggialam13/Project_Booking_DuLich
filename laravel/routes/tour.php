@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TourController;
 
+// Ensure route parameter `id` is numeric to avoid errors when non-numeric values are used in URLs
+Route::pattern('id', '[0-9]+');
+
 // User Tours Routes (Public)
 Route::get('/tours', [TourController::class, 'userIndex'])->name('tours.user-index');
 Route::get('/tours/{id}', [TourController::class, 'show'])->name('tours.show');
