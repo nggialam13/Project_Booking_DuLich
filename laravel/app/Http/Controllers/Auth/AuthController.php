@@ -280,7 +280,10 @@ class AuthController extends Controller
         if ($response = $this->checkUserDataChanged()) {
             return $response;
         }
-        return view('auth.change-password');
+
+        $user = Auth::user();
+
+        return view('auth.change-password', compact('user'));
     }
 
     // Đổi mật khẩu
