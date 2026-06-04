@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //hạnh
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'deleted.user' => \App\Http\Middleware\RedirectDeletedUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

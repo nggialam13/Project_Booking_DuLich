@@ -19,6 +19,36 @@ class AuthController extends Controller
     private $asciiRegex = '/^[\x20-\x7E]+$/';
     private $phoneRegex = '/^[0-9]+$/';
 
+    protected function checkUserDataChanged()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return null;
+        }
+
+        $dbUser = User::find($user->id);
+
+        $currentHash = md5($dbUser->email . $dbUser->password);
+        $storedHash = session('user_hash');
+
+        if ($storedHash !== $currentHash) {
+
+            Auth::logout();
+
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    'Email hoặc mật khẩu đã bị thay đổi. Vui lòng đăng nhập lại.'
+                );
+        }
+
+        return null;
+    }
     // Hiển thị form đăng ký
     public function showRegister()
     {
@@ -98,74 +128,87 @@ class AuthController extends Controller
             'password.required' => 'Mật khẩu không được để trống.',
         ]);
 
-        $remember = $request->has('remember') ? true : false;
+        $remember = $request->has('remember');
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email này chưa được đăng ký.'])
+                ->withInput($request->only('email', 'remember'));
+        }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
             $request->session()->regenerate();
-
+            session([
+                'user_hash' => md5(
+                    Auth::user()->email .
+                    Auth::user()->password
+                )
+            ]);
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
             return redirect('/tours');
         }
 
-        throw ValidationException::withMessages([
-            'email' => [trans('auth.failed')],
-        ]);
+        return back()->withErrors(['password' => 'Mật khẩu không đúng.'])
+            ->withInput($request->only('email', 'remember'));
     }
 
     // Logout
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
         return redirect('login')->with('success', 'Đã đăng xuất.');
     }
 
     // Hiển thị profile
     public function showProfile()
     {
+        // Kiểm tra xem dữ liệu người dùng có bị thay đổi không
+        if ($response = $this->checkUserDataChanged()) {
+            return $response;
+        }
         $user = Auth::user();
 
-        // Kiểm tra user có thực sự tồn tại trong DB không
-        $dbUser = User::find($user->id);
-        if (!$dbUser) {
-            Auth::logout();
-            return redirect()->route('login')
-                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
-        }
         return view('auth.profile.show', compact('user'));
     }
 
     // Form edit profile
     public function editProfile()
     {
+        // Kiểm tra xem dữ liệu người dùng có bị thay đổi không
+        if ($response = $this->checkUserDataChanged()) {
+            return $response;
+        }
         $user = Auth::user();
 
-        // Kiểm tra user có thực sự tồn tại trong DB không
-        $dbUser = User::find($user->id);
-        if (!$dbUser) {
-            Auth::logout();
-            return redirect()->route('login')
-                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
-        }
         return view('auth.profile.edit', compact('user'));
     }
 
     // Update profile
     public function updateProfile(Request $request)
     {
+        // Kiểm tra xem dữ liệu người dùng có bị thay đổi không
+        if ($response = $this->checkUserDataChanged()) {
+            return $response;
+        }
         $user = Auth::user();
-        // Kiểm tra user có thực sự tồn tại trong DB không
-        $dbUser = User::find($user->id);
-        if (!$dbUser) {
-            Auth::logout();
-            return redirect()->route('login')
-                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
+
+        $user->refresh();
+
+        // kt xem dl có bị thay đổi ở phiên khác không
+        if (
+            $request->has('original_updated_at')
+            && $request->original_updated_at != $user->updated_at
+        ) {
+            return redirect()
+                ->route('profile.show')
+                ->with(
+                    'error',
+                    'Thông tin đã bị thay đổi ở phiên khác. Vui lòng tải lại trang.'
+                );
         }
 
         $request->validate([
@@ -218,6 +261,13 @@ class AuthController extends Controller
             'gender',
             'dob'
         ));
+        // câp nhật lại hash trong session sau khi thông tin người dùng thay đổi
+        session([
+            'user_hash' => md5(
+                $user->email .
+                $user->password
+            )
+        ]);
 
         return redirect()->route('profile.show')
             ->with('success', 'Cập nhật thông tin thành công.');
@@ -226,12 +276,24 @@ class AuthController extends Controller
     // Form đổi mật khẩu
     public function showChangePasswordForm()
     {
-        return view('auth.change-password');
+        // Kiểm tra xem dữ liệu người dùng có bị thay đổi không
+        if ($response = $this->checkUserDataChanged()) {
+            return $response;
+        }
+
+        $user = Auth::user();
+
+        return view('auth.change-password', compact('user'));
     }
 
     // Đổi mật khẩu
     public function changePassword(Request $request)
     {
+        // Kiểm tra xem dữ liệu người dùng có bị thay đổi không
+        if ($response = $this->checkUserDataChanged()) {
+            return $response;
+        }
+
         $request->validate([
             'current_password' => 'required|regex:' . $this->asciiRegex,
             'new_password' => 'required|min:6|confirmed|regex:' . $this->asciiRegex,
@@ -243,14 +305,20 @@ class AuthController extends Controller
         ]);
 
         $user = Auth::user();
+        $user->refresh();
 
-        // Kiểm tra user có thực sự tồn tại trong DB không
-        $dbUser = User::find($user->id);
-        if (!$dbUser) {
-            Auth::logout();
-            return redirect()->route('login')
-                ->with('error', 'Tài khoản của bạn đã bị xóa khỏi hệ thống. Vui lòng đăng ký lại.');
+        if (
+            $request->has('original_updated_at')
+            && $request->original_updated_at != $user->updated_at
+        ) {
+            return redirect()
+                ->route('profile.show')
+                ->with(
+                    'error',
+                    'Dữ liệu đã bị thay đổi. Vui lòng thực hiện lại.'
+                );
         }
+
         if (!Hash::check($request->current_password, $user->password)) {
 
             return back()->withErrors([
@@ -261,6 +329,13 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
 
         $user->save();
+        // câp nhật lại hash trong session sau khi thông tin người dùng thay đổi
+        session([
+            'user_hash' => md5(
+                $user->email .
+                $user->password
+            )
+        ]);
 
         return redirect()->route('profile.show')
             ->with('success', 'Đổi mật khẩu thành công!');
@@ -281,7 +356,10 @@ class AuthController extends Controller
             return back()->with('error', 'Không thể tự xóa chính mình.');
         }
 
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users')->with('error', 'Người dùng không tồn tại.');
+        }
 
         $hasBookings = Booking::where('user_id', $id)->exists();
 
@@ -298,8 +376,12 @@ class AuthController extends Controller
     // Form edit user
     public function editUser($id)
     {
-        $user = User::findOrFail($id);
-
+        $user = User::find($id);
+        // Kiểm tra id user có thực sự tồn tại trong DB không
+        if (!$user) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Người dùng không tồn tại.');
+        }
         return view('admin.users.edit', compact('user'));
     }
 
@@ -308,6 +390,7 @@ class AuthController extends Controller
     {
         $user = User::find($id);
 
+        // kiểm trra xem dữ liệu có bị thay đổi chưa
         if (!$user) {
             return redirect()->route('admin.users')
                 ->with('error', 'Người dùng không tồn tại hoặc đã bị xóa.');
@@ -363,3 +446,4 @@ class AuthController extends Controller
     }
 }
 
+// test git a
