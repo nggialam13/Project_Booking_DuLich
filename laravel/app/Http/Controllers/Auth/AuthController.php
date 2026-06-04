@@ -196,6 +196,21 @@ class AuthController extends Controller
         }
         $user = Auth::user();
 
+        $user->refresh();
+
+        // kt xem dl có bị thay đổi ở phiên khác không
+        if (
+            $request->has('original_updated_at')
+            && $request->original_updated_at != $user->updated_at
+        ) {
+            return redirect()
+                ->route('profile.show')
+                ->with(
+                    'error',
+                    'Thông tin đã bị thay đổi ở phiên khác. Vui lòng tải lại trang.'
+                );
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|regex:' . $this->latinRegex,
             'email' => 'required|email|unique:users,email,' . $user->id . '|regex:' . $this->asciiRegex,
@@ -275,6 +290,7 @@ class AuthController extends Controller
         if ($response = $this->checkUserDataChanged()) {
             return $response;
         }
+
         $request->validate([
             'current_password' => 'required|regex:' . $this->asciiRegex,
             'new_password' => 'required|min:6|confirmed|regex:' . $this->asciiRegex,
@@ -286,6 +302,19 @@ class AuthController extends Controller
         ]);
 
         $user = Auth::user();
+        $user->refresh();
+
+        if (
+            $request->has('original_updated_at')
+            && $request->original_updated_at != $user->updated_at
+        ) {
+            return redirect()
+                ->route('profile.show')
+                ->with(
+                    'error',
+                    'Dữ liệu đã bị thay đổi. Vui lòng thực hiện lại.'
+                );
+        }
 
         if (!Hash::check($request->current_password, $user->password)) {
 
@@ -413,4 +442,5 @@ class AuthController extends Controller
         return redirect()->route('admin.users')->with('success', 'Cập nhật người dùng thành công.');
     }
 }
-// code đâu r
+
+// test git a

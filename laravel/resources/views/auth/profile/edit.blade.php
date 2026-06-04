@@ -18,6 +18,8 @@
                         <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
+                            <!-- trường hợp đồng thời sửa dữ liệu -->
+                            <input type="hidden" name="original_updated_at" value="{{ $user->updated_at }}">
                             <!-- kiểm tra image còn k -->
                             <div class="mb-3">
                                 <label>Ảnh đại diện</label>
