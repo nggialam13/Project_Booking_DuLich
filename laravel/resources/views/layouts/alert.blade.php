@@ -16,6 +16,14 @@
 </div>
 @endif
 
+<!-- @if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        @foreach($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+    </div>
+@endif -->
+
 <script>
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(el => el.remove());
